@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "test:permissions": "node scripts/probarPermisos.js",
+    "audit:oracle": "node scripts/auditarOracle.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +18,7 @@
     "dotenv": "^18.0.7",
     "exceljs": "^4.4.0",
     "express": "^5.3.0",
+    "express-validator": "^7.3.2",
     "jsonwebtoken": "^9.0.3",
     "oracledb": "^26.0.0",
     "pdfkit": "^0.20.2"
