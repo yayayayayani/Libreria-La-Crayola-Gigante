@@ -5,5 +5,8 @@ node_modules/
 dist/
 coverage/
 *.log
-frontend/test-results/
-frontend/playwright-report/
+
+# Resultados temporales de Playwright
+**/test-results/
+**/playwright-report/
+**/blob-report/
