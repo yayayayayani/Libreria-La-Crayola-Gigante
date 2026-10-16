@@ -1,3 +1,4 @@
+const { prepararImagen, guardarImagen } = require('../services/imagenes');
 
 const oracledb = require('../config/driver');
 
@@ -33,7 +34,7 @@ function validarProducto(datos) {
   const stockNumero = Number(stock);
   const categoriaNumero = Number(idCategoria);
 
-  if (precio === "" || precio === null ||
+  if (!["number", "string"].includes(typeof precio) || precio === "" || precio === null ||
       !Number.isFinite(precioNumero) ||
       precioNumero < 0 ||
       precioNumero > 99999999.99 ||
@@ -43,11 +44,12 @@ function validarProducto(datos) {
 
   if (stock === "" || stock === null ||
       !Number.isSafeInteger(stockNumero) ||
-      stockNumero < 0) {
-    return { error: "El stock debe ser un entero no negativo" };
+      stockNumero < 0 || stockNumero > 9999999999 ||
+      !["number", "string"].includes(typeof stock) || !/^\d+$/.test(String(stock))) {
+    return { error: "El stock debe ser un entero entre 0 y 9999999999" };
   }
 
-  if (!Number.isSafeInteger(categoriaNumero) ||
+  if (!["number", "string"].includes(typeof idCategoria) || !Number.isSafeInteger(categoriaNumero) ||
       categoriaNumero <= 0) {
     return { error: "Selecciona una categoría válida" };
   }
@@ -91,6 +93,7 @@ const listarProductos = async (req, res) => {
          p.PRECIO,
          p.STOCK,
          p.ID_CATEGORIA,
+         (SELECT i.actualizado_en FROM imagenes_productos i WHERE i.id_producto=p.id_producto) AS IMAGEN_ACTUALIZADA,
          c.NOMBRE AS CATEGORIA,
          p.ESTADO,
          p.CREADO_EN
@@ -124,6 +127,7 @@ const crearProducto = async (req, res) => {
       return res.status(400).json({ mensaje: error });
     }
 
+    const imagen = await prepararImagen(req.body?.imagen);
     conexion = await conectar();
 
     if (!await categoriaActiva(conexion, producto.idCategoria)) {
@@ -154,6 +158,7 @@ const crearProducto = async (req, res) => {
     );
 
     await conexion.execute(`INSERT INTO movimientos_inventario(id_producto,id_usuario,tipo,cantidad,stock_anterior,stock_nuevo) VALUES (:id,:usuario,'APERTURA',:stock,0,:stock)`,{id:resultado.outBinds.id[0],usuario:req.usuario.ID_USUARIO,stock:producto.stock});
+    await guardarImagen(conexion, resultado.outBinds.id[0], imagen);
     await conexion.commit();
 
     res.status(201).json({
@@ -161,6 +166,8 @@ const crearProducto = async (req, res) => {
       id: resultado.outBinds.id[0]
     });
   } catch (error) {
+    if (conexion) await conexion.rollback();
+    if (error.status) return res.status(error.status).json({ mensaje: error.message });
     if (error.errorNum === 1) {
       return res.status(409).json({
         mensaje: "El código del producto ya existe"
@@ -194,6 +201,7 @@ const modificarProducto = async (req, res) => {
       return res.status(400).json({ mensaje: error });
     }
 
+    const imagen = await prepararImagen(req.body?.imagen);
     conexion = await conectar();
 
     if (!await categoriaActiva(conexion, producto.idCategoria)) {
@@ -211,7 +219,7 @@ const modificarProducto = async (req, res) => {
          ID_CATEGORIA = :idCategoria
        WHERE ID_PRODUCTO = :id`,
       { codigo:producto.codigo,nombre:producto.nombre,descripcion:producto.descripcion,precio:producto.precio,idCategoria:producto.idCategoria,id },
-      { autoCommit: true }
+      { autoCommit: false }
     );
 
     if (resultado.rowsAffected === 0) {
@@ -220,10 +228,14 @@ const modificarProducto = async (req, res) => {
       });
     }
 
+    await guardarImagen(conexion, id, imagen);
+    await conexion.commit();
     res.json({
       mensaje: "Producto actualizado correctamente"
     });
   } catch (error) {
+    if (conexion) await conexion.rollback();
+    if (error.status) return res.status(error.status).json({ mensaje: error.message });
     if (error.errorNum === 1) {
       return res.status(409).json({
         mensaje: "El código del producto ya existe"

@@ -41,6 +41,7 @@ function Login({ onLogin }) {
 
   return (
     <div className="login-container">
+      <aside className="login-story"><span className="eyebrow">LA CRAYOLA GIGANTE</span><h2>Un mundo de ideas.<br/><em>Todo en su lugar.</em></h2><p>Organiza tu librería, recibe nuevos productos y mantén cada existencia al día.</p><div className="color-swatches" aria-hidden="true"><i/><i/><i/><i/><i/></div><span>CREATIVIDAD QUE NOS UNE</span></aside>
       <div className="login-card">
 
         <div className="logo">
@@ -108,7 +109,7 @@ function Login({ onLogin }) {
         </form>
 
         <div className="login-footer">
-          Librería La Crayola Gigante · Sprint 1
+          Librería La Crayola Gigante · Gestión administrativa
         </div>
 
       </div>

@@ -15,6 +15,7 @@ const categoriasRoutes = require("./routes/categoriasRoutes");
 const app = express();
 
 app.use(cors());
+app.use("/api/productos", express.json({ limit: "5mb" }));
 app.use(express.json());
 
 app.get("/api", (req, res) => {
@@ -32,6 +33,12 @@ app.use("/api/clientes", clientesRoutes);
 app.use("/api/productos", productosRoutes);
 app.use("/api/categorias", categoriasRoutes);
 app.use("/api", require("./routes/sprint2Routes"));
+
+app.use((err, req, res, next) => {
+  if (err.type === 'entity.too.large') return res.status(413).json({mensaje:'El archivo supera el tamaño permitido'});
+  if (err.type === 'entity.parse.failed') return res.status(400).json({mensaje:'El cuerpo JSON no es válido'});
+  next(err);
+});
 
 // Una misma dirección sirve la aplicación y la API en el equipo compartido.
 const path = require('node:path');

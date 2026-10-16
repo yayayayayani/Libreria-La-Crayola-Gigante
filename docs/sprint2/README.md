@@ -15,17 +15,20 @@ El incremento agrega al Sprint 1 el flujo proveedor → compra → detalle → r
 - [Daily Scrum, Sprint Review y Retrospective](SCRUM.md).
 - [Conexión entre tres casas y correo real](DESPLIEGUE.md).
 
-## Puesta en marcha
+## Puesta en marcha vigente (Neon)
 
-1. Mantener el esquema del Sprint 1; para una instalación nueva, el SQL base está en `docs/Libreria_La_Crayola_Gigante_Sprint1_Oracle.sql`.
-2. En `backend`, ejecutar `npm install` y configurar `.env` con el ejemplo. No reemplazar credenciales existentes.
-3. Ejecutar `npm run migrate:sprint2`. Esta migración ya se aplicó en el Oracle local durante la implementación. Registra su versión y una segunda ejecución no repite los datos.
-4. En `frontend`, ejecutar `npm install` y `npm run build`.
-5. En `backend`, ejecutar `npm start`; abrir `http://localhost:3000`.
-6. Entrar con un administrador existente. La migración asigna los cuatro permisos nuevos al rol administrador (`ID_ROL=1`, convención existente). Desde Roles y Permisos asignar al personal las operaciones necesarias.
+1. Seguir [NEON.md](../NEON.md) y conservar la configuración privada de backend/.env.
+2. Instalar dependencias en backend y frontend después de actualizar el código.
+3. En backend, ejecutar `npm run migrate:images` para preparar fotografías. La migración es aditiva; ya se aplicó en la base usada en esta revisión.
+4. En frontend, ejecutar `npm run build`.
+5. En backend, ejecutar `npm start` y abrir http://localhost:3000.
 
-Oracle confirma DDL implícitamente: respaldar antes de aplicar en otro servidor. El migrador detecta correos duplicados de clientes antes de modificar el esquema; no borra ni fusiona clientes. Si el esquema de otra instalación difiere del Sprint 1, revisar sus columnas antes de migrar. Los correos de usuarios existentes se mantienen vacíos; completar al editar, sin inventar direcciones.
+No ejecutar `migrate:sprint2` sobre PostgreSQL; ese comando pertenece a Oracle. El SQL original se conserva como referencia histórica.
+
+## Documentos editables
+
+El [paquete Word de Entrega 2](../entrega2/README.md) contiene planificación, diseño, pruebas, actas, manual e informe de auditoría. La asignación de cierre corresponde a David (compras), Yordy (inventario y pruebas) y Daylin (interfaz y documentación). Las actas requieren las evidencias reales del equipo.
 
 ## Límites verificables
 
-El código y la migración están implementados. La conexión remota requiere que el equipo elija y configure el anfitrión. El envío externo requiere SMTP: las credenciales no estaban configuradas al implementar. La documentación de Scrum incluye guiones y espacios para registrar las reuniones reales, sin atribuir reuniones o aprobaciones inexistentes.
+El código y la migración están implementados. Neon comparte la base; falta el ensayo desde las tres computadoras físicas. No se publicó una URL de la aplicación. El envío externo requiere SMTP: las credenciales no estaban configuradas al implementar. La documentación de Scrum incluye guiones y espacios para registrar las reuniones reales, sin atribuir reuniones o aprobaciones inexistentes.

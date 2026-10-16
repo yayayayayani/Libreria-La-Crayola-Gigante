@@ -1,0 +1,44 @@
+﻿[
+    {
+        "archivo":  "01_Informe_y_planificacion.docx",
+        "paginas":  14,
+        "tablas":  8,
+        "indice":  1,
+        "estado":  "Abierto, paginado e indice actualizado por Microsoft Word"
+    },
+    {
+        "archivo":  "02_Diseno_y_reglas.docx",
+        "paginas":  12,
+        "tablas":  5,
+        "indice":  1,
+        "estado":  "Abierto, paginado e indice actualizado por Microsoft Word"
+    },
+    {
+        "archivo":  "03_Pruebas_y_aceptacion.docx",
+        "paginas":  12,
+        "tablas":  13,
+        "indice":  1,
+        "estado":  "Abierto, paginado e indice actualizado por Microsoft Word"
+    },
+    {
+        "archivo":  "04_Scrum_y_evidencias.docx",
+        "paginas":  10,
+        "tablas":  9,
+        "indice":  1,
+        "estado":  "Abierto, paginado e indice actualizado por Microsoft Word"
+    },
+    {
+        "archivo":  "05_Manual_y_capturas.docx",
+        "paginas":  10,
+        "tablas":  6,
+        "indice":  1,
+        "estado":  "Abierto, paginado e indice actualizado por Microsoft Word"
+    },
+    {
+        "archivo":  "06_Informe_auditoria.docx",
+        "paginas":  8,
+        "tablas":  4,
+        "indice":  1,
+        "estado":  "Abierto, paginado e indice actualizado por Microsoft Word"
+    }
+]

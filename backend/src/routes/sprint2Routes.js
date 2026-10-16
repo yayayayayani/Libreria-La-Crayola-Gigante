@@ -77,7 +77,7 @@ router.post('/compras', permiso('COMPRAS_GESTIONAR'), endpoint(async(req,res,c)=
   await c.commit(); res.status(201).json({id,mensaje:'Compra recibida e inventario actualizado',total:datos.total});
 }));
 router.get('/inventario', permiso(['INVENTARIO_VER','INVENTARIO_GESTIONAR']), endpoint(async(req,res,c)=> {
-  res.json(await filas(c,`SELECT id_producto,codigo,nombre,stock,stock_minimo,estado, CASE WHEN stock <= stock_minimo AND estado='A' THEN 1 ELSE 0 END alerta FROM productos ORDER BY nombre`));
+  res.json(await filas(c,`SELECT p.id_producto,p.codigo,p.nombre,p.stock,p.stock_minimo,p.estado,i.actualizado_en imagen_actualizada, CASE WHEN p.stock <= p.stock_minimo AND p.estado='A' THEN 1 ELSE 0 END alerta FROM productos p LEFT JOIN imagenes_productos i ON i.id_producto=p.id_producto ORDER BY p.nombre`));
 }));
 router.get('/movimientos', permiso('INVENTARIO_VER'), endpoint(async(req,res,c)=> {
   res.json(await filas(c,`SELECT m.*,p.nombre,r.id_compra FROM movimientos_inventario m JOIN productos p ON p.id_producto=m.id_producto LEFT JOIN recepciones r ON r.id_recepcion=m.id_recepcion ORDER BY m.id_movimiento DESC`));
