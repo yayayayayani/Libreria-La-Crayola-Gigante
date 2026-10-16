@@ -4,9 +4,11 @@ import {
   Plus, Pencil, Search, ArrowLeft, Save
 } from "lucide-react";
 import api from "../services/api";
+import useActualizacion from '../hooks/useActualizacion';
 
 const formularioVacio = {
   nombreCompleto: "",
+  correo: "",
   nombreUsuario: "",
   contrasena: "",
   idRol: ""
@@ -43,6 +45,7 @@ function Usuarios({ token, onVolver, identidad }) {
     }
   };
 
+  useActualizacion(cargarUsuarios);
   useEffect(() => {
     let vigente = true;
     const opciones = { headers: { Authorization: `Bearer ${token}` } };
@@ -64,6 +67,7 @@ function Usuarios({ token, onVolver, identidad }) {
   const abrirEditar = (usuario) => {
     setFormulario({
       nombreCompleto: usuario.NOMBRE_COMPLETO,
+      correo: usuario.CORREO || "",
       nombreUsuario: usuario.NOMBRE_USUARIO,
       contrasena: "",
       idRol: usuario.ID_ROL
@@ -86,6 +90,7 @@ function Usuarios({ token, onVolver, identidad }) {
           `/usuarios/${editando}`,
           {
             nombreCompleto: formulario.nombreCompleto,
+            correo: formulario.correo,
             idRol: Number(formulario.idRol)
           },
           config
@@ -183,6 +188,8 @@ function Usuarios({ token, onVolver, identidad }) {
               Nombre completo
               <input
                 value={formulario.nombreCompleto}
+                pattern={"[\\p{L}\\p{M}]+(?:[ '\u2019\\-][\\p{L}\\p{M}]+)*"}
+                title="Solo letras y separadores de nombres; sin números"
                 maxLength={100}
                 required
                 onChange={(e) => setFormulario({
@@ -223,6 +230,10 @@ function Usuarios({ token, onVolver, identidad }) {
                 </label>
               </>
             )}
+
+            <label>Correo electrónico
+              <input type="email" required maxLength={120} value={formulario.correo} onChange={e=>setFormulario({...formulario,correo:e.target.value})} />
+            </label>
 
             <label>
               Rol

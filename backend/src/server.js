@@ -31,12 +31,18 @@ app.use("/api/roles", rolesRoutes);
 app.use("/api/clientes", clientesRoutes);
 app.use("/api/productos", productosRoutes);
 app.use("/api/categorias", categoriasRoutes);
+app.use("/api", require("./routes/sprint2Routes"));
+
+// Una misma dirección sirve la aplicación y la API en el equipo compartido.
+const path = require('node:path');
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
 const PORT = process.env.PORT || 3000;
 
 if (require.main === module) app.listen(PORT, () => {
   console.log(`Servidor iniciado en http://localhost:${PORT}`);
   probarConexion();
+  require('./services/correos').iniciarCorreos();
 });
 
 module.exports = app;

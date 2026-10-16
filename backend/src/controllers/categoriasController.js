@@ -1,5 +1,5 @@
 
-const oracledb = require("oracledb");
+const oracledb = require('../config/driver');
 
 const conectar = () => oracledb.getConnection({
   user: process.env.DB_USER,

@@ -4,9 +4,11 @@ node_modules/
 !.env.example
 dist/
 coverage/
+.migration-backups/
 *.log
 
 # Resultados temporales de Playwright
 **/test-results/
 **/playwright-report/
 **/blob-report/
+

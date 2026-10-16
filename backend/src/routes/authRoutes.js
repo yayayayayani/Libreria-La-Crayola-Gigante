@@ -1,6 +1,6 @@
 
 const express = require("express");
-const oracledb = require("oracledb");
+const oracledb = require('../config/driver');
 
 const { login } = require("../controllers/authController");
 

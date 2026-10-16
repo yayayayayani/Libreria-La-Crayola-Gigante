@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Plus, Pencil, Save, Search } from "lucide-react";
 import api from "../services/api";
+import useActualizacion from '../hooks/useActualizacion';
 
 const inicial = {
   nombres: "",
@@ -41,6 +42,7 @@ function Clientes({ token, onVolver, permisos = [] }) {
     }
   };
 
+  useActualizacion(cargarClientes);
   useEffect(() => {
     if (!puedeVer) return;
     let vigente = true;
@@ -188,6 +190,9 @@ function Clientes({ token, onVolver, permisos = [] }) {
                 <input
                   type={campo === "correo" ? "email" : "text"}
                   value={formulario[campo]}
+                  maxLength={campo === 'direccion' ? 250 : campo === 'correo' ? 120 : campo === 'nit' ? 14 : campo === 'telefono' ? 25 : 100}
+                  pattern={['nombres','apellidos'].includes(campo) ? "[\\p{L}\\p{M}]+(?:[ '\u2019\\-][\\p{L}\\p{M}]+)*" : campo === 'nit' ? '(?:[1-9][0-9]{0,10}\\-?[0-9Kk]|[0-9]{13})' : undefined}
+                  title={campo === 'nit' ? 'NIT tradicional o identificador de 13 dígitos' : ['nombres','apellidos'].includes(campo) ? 'Solo letras y separadores de nombres; sin números' : undefined}
                   required={obligatorio}
                   onChange={(e) => setFormulario({
                     ...formulario,

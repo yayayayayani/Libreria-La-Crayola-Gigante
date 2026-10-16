@@ -4,6 +4,7 @@ import {
   ArrowLeft, Plus, Pencil, Save, Search, Package
 } from "lucide-react";
 import api from "../services/api";
+import useActualizacion from '../hooks/useActualizacion';
 
 const inicial = {
   codigo: "",
@@ -48,6 +49,7 @@ function Productos({ token, onVolver, permisos = [] }) {
     setCategorias(resCategorias.data);
   };
 
+  useActualizacion(async()=>{try{await cargarDatos();}catch(e){setError(mensajeError(e));}});
   useEffect(() => {
     let vigente = true;
     const opciones = { headers: { Authorization: `Bearer ${token}` } };
@@ -329,6 +331,8 @@ function Productos({ token, onVolver, permisos = [] }) {
                 step="1"
                 required
                 value={formulario.stock}
+                disabled={editando !== null}
+                title="Después de crear el producto, las existencias se actualizan mediante compras"
                 onChange={(e) => setFormulario({
                   ...formulario,
                   stock: e.target.value

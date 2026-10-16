@@ -1,7 +1,7 @@
 
 require("dotenv").config();
 
-const oracledb = require("oracledb");
+const oracledb = require("../src/config/driver");
 const bcrypt = require("bcryptjs");
 const readline = require("node:readline/promises");
 

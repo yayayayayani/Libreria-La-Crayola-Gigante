@@ -1,6 +1,6 @@
 
 const jwt = require("jsonwebtoken");
-const oracledb = require("oracledb");
+const oracledb = require('../config/driver');
 
 const verificarToken = async (req, res, next) => {
   let conexion;

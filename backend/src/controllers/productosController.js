@@ -1,5 +1,5 @@
 
-const oracledb = require("oracledb");
+const oracledb = require('../config/driver');
 
 const conectar = () => oracledb.getConnection({
   user: process.env.DB_USER,
@@ -150,8 +150,11 @@ const crearProducto = async (req, res) => {
           type: oracledb.NUMBER
         }
       },
-      { autoCommit: true }
+      { autoCommit: false }
     );
+
+    await conexion.execute(`INSERT INTO movimientos_inventario(id_producto,id_usuario,tipo,cantidad,stock_anterior,stock_nuevo) VALUES (:id,:usuario,'APERTURA',:stock,0,:stock)`,{id:resultado.outBinds.id[0],usuario:req.usuario.ID_USUARIO,stock:producto.stock});
+    await conexion.commit();
 
     res.status(201).json({
       mensaje: "Producto creado correctamente",
@@ -205,10 +208,9 @@ const modificarProducto = async (req, res) => {
          NOMBRE = :nombre,
          DESCRIPCION = :descripcion,
          PRECIO = :precio,
-         STOCK = :stock,
          ID_CATEGORIA = :idCategoria
        WHERE ID_PRODUCTO = :id`,
-      { ...producto, id },
+      { codigo:producto.codigo,nombre:producto.nombre,descripcion:producto.descripcion,precio:producto.precio,idCategoria:producto.idCategoria,id },
       { autoCommit: true }
     );
 

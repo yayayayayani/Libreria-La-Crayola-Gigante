@@ -1,5 +1,6 @@
 
-const oracledb = require("oracledb");
+const oracledb = require('../config/driver');
+const { nombreValido, nitValido } = require('../services/validaciones');
 
 const conectar = () => oracledb.getConnection({
   user: process.env.DB_USER,
@@ -26,6 +27,10 @@ const validarCliente = (datos) => {
   if (!cliente.nombres) {
     return { error: "El nombre es obligatorio" };
   }
+  if (!nombreValido(cliente.nombres) || (cliente.apellidos && !nombreValido(cliente.apellidos))) {
+    return { error: 'Los nombres y apellidos solo pueden contener letras, espacios, apóstrofes y guiones' };
+  }
+  if (cliente.telefono && !/^[+0-9 ()-]{8,25}$/.test(cliente.telefono)) return {error:'Teléfono inválido'};
 
   const limites = {
     nombres: 100,
@@ -51,9 +56,11 @@ const validarCliente = (datos) => {
   }
 
   if (cliente.nit &&
-      !/^(?:[0-9]+-?[0-9K]|CF)$/i.test(cliente.nit)) {
+      !nitValido(cliente.nit)) {
     return { error: "Formato de NIT inválido" };
   }
+
+  if(cliente.nit) cliente.nit = cliente.nit.replace('-', '');
 
   return { cliente };
 };
@@ -146,7 +153,7 @@ const crearCliente = async (req, res) => {
   } catch (error) {
     if (error.errorNum === 1) {
       return res.status(409).json({
-        mensaje: "Ya existe un cliente con ese dato único"
+        mensaje: "El correo o NIT ya está registrado en otro cliente"
       });
     }
 
@@ -206,7 +213,7 @@ const modificarCliente = async (req, res) => {
   } catch (error) {
     if (error.errorNum === 1) {
       return res.status(409).json({
-        mensaje: "Ya existe un cliente con ese dato único"
+        mensaje: "El correo o NIT ya está registrado en otro cliente"
       });
     }
 

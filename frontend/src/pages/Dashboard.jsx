@@ -14,7 +14,8 @@ function Dashboard({
   onUsuarios,
   onRoles,
   onClientes,
-  onProductos
+  onProductos,
+  onCompras
 }) {
   const tienePermiso = (codigo) =>
     (Array.isArray(codigo) ? codigo : [codigo]).some(p => permisos.includes(p));
@@ -43,6 +44,7 @@ function Dashboard({
         <p>Rol asignado: {usuario.rol}</p>
 
         <div className="modules-grid">
+          {tienePermiso(['PROVEEDORES_GESTIONAR','COMPRAS_GESTIONAR','INVENTARIO_VER','INVENTARIO_GESTIONAR']) && <button type="button" className="module-card module-button" onClick={onCompras}><Package size={32}/><h3>Compras e inventario</h3><p>Proveedores, recepción, movimientos y alertas</p></button>}
 
           {tienePermiso("USUARIOS_GESTIONAR") && (
             <button
