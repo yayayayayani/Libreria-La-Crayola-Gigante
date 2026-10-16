@@ -4,6 +4,10 @@ Sistema web de gestión administrativa para una librería, desarrollado como pro
 
 ## Descripción
 
+**Base compartida activa: Neon / PostgreSQL.** Se migraron las 15 tablas de Oracle preservando sus datos; Oracle permanece como respaldo independiente. Ver [guía de Neon y trabajo entre compañeros](docs/NEON.md). Las instrucciones Oracle de abajo se conservan para el entorno anterior; para el uso actual seguir la guía de Neon.
+
+**Actualización Sprint 2:** compras, proveedores, recepción completa, entradas de inventario, movimientos, mínimos, alertas, validaciones y notificaciones SMTP. Ver [documentación de la Entrega 2](docs/sprint2/README.md) y [guía para trabajar desde tres casas](docs/sprint2/DESPLIEGUE.md). La recepción se confirma al registrar la compra y actualiza existencias en una transacción.
+
 La aplicación centraliza la administración de usuarios, roles, permisos, clientes y productos. Los clientes son registros comerciales, **no** usuarios que inician sesión: el acceso al sistema está reservado a personal autorizado.
 
 ## Tecnologías
@@ -162,8 +166,10 @@ Realiza pruebas automatizadas sobre un entorno de prueba cuando sea posible. No 
 
 ## Equipo
 
-Proyecto académico inicialmente organizado por **David, Yordy y Daylin**. El desarrollo actual se está realizando de manera individual.
+Equipo de tres estudiantes: **David, Yordy y Daylin**. La configuración compartida del Sprint 2 permite trabajar sobre un mismo servidor desde distintas casas.
 
 ## Estado
 
 **Sprint 1:** funcionalidades principales implementadas; documentación y evidencias de entrega sujetas a revisión final.
+
+**Sprint 2:** incremento implementado y migración local aplicada. Activación de SMTP, configuración remota y evidencias de las ceremonias reales pendientes del equipo; consultar el estado detallado en `docs/sprint2/`.

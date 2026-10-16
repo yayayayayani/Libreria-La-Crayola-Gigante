@@ -6,10 +6,12 @@ import Usuarios from "./pages/Usuarios";
 import RolesPermisos from "./pages/RolesPermisos";
 import Clientes from "./pages/Clientes";
 import Productos from "./pages/Productos";
+import ComprasInventario from './pages/ComprasInventario';
 import api from "./services/api";
 import "./App.css";
 
 const permisosPagina = {
+  compras: ['PROVEEDORES_GESTIONAR','COMPRAS_GESTIONAR','INVENTARIO_VER','INVENTARIO_GESTIONAR'],
   usuarios: "USUARIOS_GESTIONAR",
   roles: "ROLES_GESTIONAR",
   clientes: ["CLIENTES_VER", "CLIENTES_CREAR", "CLIENTES_EDITAR"],
@@ -128,6 +130,8 @@ function App() {
 
   const volver = () => setPagina("dashboard");
 
+  if(pagina === 'compras' && autorizado(permisosPagina.compras)) return <ComprasInventario token={sesion.token} permisos={permisos} onVolver={volver}/>;
+
   if (pagina === "usuarios" &&
       autorizado("USUARIOS_GESTIONAR")) {
     return (
@@ -169,6 +173,7 @@ function App() {
       onRoles={() => navegar("roles")}
       onClientes={() => navegar("clientes")}
       onProductos={() => navegar("productos")}
+      onCompras={() => navegar('compras')}
     />
   );
 }

@@ -1,5 +1,5 @@
 
-const oracledb = require("oracledb");
+const oracledb = require('./driver');
 
 async function probarConexion() {
   let conexion;
@@ -12,14 +12,16 @@ async function probarConexion() {
     });
 
     const resultado = await conexion.execute(
-      "SELECT COUNT(*) AS TOTAL FROM USER_TABLES"
+      oracledb.motor() === 'postgres'
+        ? "SELECT COUNT(*) AS TOTAL FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'"
+        : "SELECT COUNT(*) AS TOTAL FROM USER_TABLES"
     );
 
-    console.log("Conexión con Oracle establecida correctamente.");
+    console.log(`Conexión con ${oracledb.motor()} establecida correctamente.`);
     console.log("Cantidad de tablas:", resultado.rows[0][0]);
 
   } catch (error) {
-    console.error("Error conectando con Oracle:", error.message);
+    console.error("Error conectando con la base de datos:", error.code || error.name);
   } finally {
     if (conexion) {
       await conexion.close();

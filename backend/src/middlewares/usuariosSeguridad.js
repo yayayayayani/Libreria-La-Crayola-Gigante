@@ -1,4 +1,4 @@
-const oracledb = require("oracledb");
+const oracledb = require('../config/driver');
 
 // El permiso de gestionar usuarios no autoriza a delegar privilegios superiores.
 async function protegerUsuarios(req, res, next) {
@@ -12,8 +12,8 @@ async function protegerUsuarios(req, res, next) {
       (req.method === "PATCH" || datos.idRol !== actor.ID_ROL)) ||
       Object.keys(datos).some(campo => !(
         req.method === "POST"
-          ? ["nombreCompleto", "nombreUsuario", "contrasena", "idRol"]
-          : req.method === "PUT" ? ["nombreCompleto", "idRol"] : ["estado"]
+          ? ["nombreCompleto", "nombreUsuario", "contrasena", "idRol", "correo"]
+          : req.method === "PUT" ? ["nombreCompleto", "idRol", "correo"] : ["estado"]
       ).includes(campo))) {
     return res.status(403).json({ mensaje: "No puedes modificar tus privilegios ni campos protegidos" });
   }

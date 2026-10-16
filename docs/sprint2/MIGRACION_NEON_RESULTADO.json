@@ -1,0 +1,84 @@
+{
+  "fecha": "2026-10-16T02:25:21.358Z",
+  "motor": "PostgreSQL",
+  "tablas": [
+    {
+      "tabla": "ROLES",
+      "registros": 2,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "PERMISOS",
+      "registros": 14,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "CATEGORIAS",
+      "registros": 4,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "CLIENTES",
+      "registros": 2,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "PROVEEDORES",
+      "registros": 0,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "USUARIOS",
+      "registros": 6,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "ROL_PERMISO",
+      "registros": 18,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "PRODUCTOS",
+      "registros": 2,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "COMPRAS",
+      "registros": 0,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "DETALLE_COMPRAS",
+      "registros": 0,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "RECEPCIONES",
+      "registros": 0,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "MOVIMIENTOS_INVENTARIO",
+      "registros": 2,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "BITACORA",
+      "registros": 0,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "CORREOS_PENDIENTES",
+      "registros": 0,
+      "verificacion": "coinciden todas las columnas"
+    },
+    {
+      "tabla": "MIGRACIONES",
+      "registros": 1,
+      "verificacion": "coinciden todas las columnas"
+    }
+  ],
+  "oracle": "sin modificaciones",
+  "correo": "no se enviaron mensajes",
+  "respaldo": "oracle-1792117516326.json"
+}

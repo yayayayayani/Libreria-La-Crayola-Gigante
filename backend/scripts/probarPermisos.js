@@ -1,10 +1,10 @@
-/* Integración real HTTP + JWT + Oracle. Una conexión aislada y ROLLBACK final.
+/* Integración real HTTP + JWT + motor configurado. Una conexión aislada y ROLLBACK final.
  * Los commits de controladores se suprimen SOLO en este proceso de pruebas.
  * Ejecutar desde backend: node scripts/probarPermisos.js
  */
 require("dotenv").config({ quiet: true });
 const assert = require("node:assert/strict");
-const db = require("oracledb");
+const db = require("../src/config/driver");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { once } = require("node:events");
@@ -65,13 +65,13 @@ async function main() {
       assert.equal(respuesta.status, status, `${ruta.method || 'GET'} ${ruta.path}: ${respuesta.texto.slice(0, 250)}`);
       return respuesta;
     };
-    const datosUsuario = { nombreCompleto: "Prueba", nombreUsuario: marca + '_N', contrasena: "PruebaTemporal!123", idRol: rol };
+    const datosUsuario = { nombreCompleto: "Prueba", nombreUsuario: marca + '_N', correo: marca + '@example.invalid', contrasena: "PruebaTemporal!123", idRol: rol };
     const datosProducto = { codigo: marca + '_N', nombre: "Prueba", precio: 1, stock: 0, idCategoria: categoria };
     const rutas = [
       { codigo: codigos[0], path: "/usuarios" },
       { codigo: codigos[0], path: "/usuarios/roles-asignables" },
       { codigo: codigos[0], path: "/usuarios", method: "POST", body: datosUsuario, ok: 201 },
-      { codigo: codigos[0], path: `/usuarios/${usuario}`, method: "PUT", body: { nombreCompleto: "Actualizado", idRol: rol } },
+      { codigo: codigos[0], path: `/usuarios/${usuario}`, method: "PUT", body: { nombreCompleto: "Actualizado", correo: marca + '@example.invalid', idRol: rol } },
       { codigo: codigos[0], path: `/usuarios/${usuario}/estado`, method: "PATCH", body: { estado: "I" }, admin: true },
       { codigo: codigos[1], path: "/roles" },
       { codigo: codigos[1], path: "/roles/permisos" },
@@ -178,13 +178,13 @@ async function main() {
       await esperar({ path: `/clientes/${cliente}/estado`, method: "PATCH", body: { estado: "A" } }, token, 200);
       await esperar({ path: `/productos/${producto}/estado`, method: "PATCH", body: { estado: "A" } }, token, 200);
     });
-    await comprobar("escrituras autorizadas verificadas en Oracle", async () => {
+    await comprobar("escrituras autorizadas verificadas en la base de datos", async () => {
       await asignar(["CLIENTES_EDITAR", "PRODUCTOS_EDITAR", "USUARIOS_GESTIONAR"]);
       await esperar({ path: `/clientes/${cliente}`, method: "PUT", body: { nombres: "Nombre verificado" } }, token, 200);
       assert.equal((await ejecutar("SELECT NOMBRES FROM CLIENTES WHERE ID_CLIENTE = :id", { id: cliente })).rows[0].NOMBRES, "Nombre verificado");
       await esperar({ path: `/productos/${producto}`, method: "PUT", body: { ...datosProducto, precio: 12.5 } }, token, 200);
       assert.equal((await ejecutar("SELECT PRECIO FROM PRODUCTOS WHERE ID_PRODUCTO = :id", { id: producto })).rows[0].PRECIO, 12.5);
-      await esperar({ path: `/usuarios/${usuario}`, method: "PUT", body: { nombreCompleto: "Nombre verificado", idRol: rol } }, token, 200);
+      await esperar({ path: `/usuarios/${usuario}`, method: "PUT", body: { nombreCompleto: "Nombre verificado", correo: marca + '@example.invalid', idRol: rol } }, token, 200);
       assert.equal((await ejecutar("SELECT NOMBRE_COMPLETO FROM USUARIOS WHERE ID_USUARIO = :id", { id: usuario })).rows[0].NOMBRE_COMPLETO, "Nombre verificado");
     });
     await comprobar("login de usuario o rol inactivo", async () => {

@@ -1,6 +1,8 @@
 
-const oracledb = require("oracledb");
+const oracledb = require('../config/driver');
 const bcrypt = require("bcryptjs");
+const { nombreValido, correoValido } = require('../services/validaciones');
+const { encolar, avisarDuplicado } = require('../services/correos');
 
 const conectar = () => oracledb.getConnection({
   user: process.env.DB_USER,
@@ -37,6 +39,7 @@ const listarUsuarios = async (req, res) => {
           u.ID_USUARIO,
           u.NOMBRE_COMPLETO,
           u.NOMBRE_USUARIO,
+          u.CORREO,
           u.ID_ROL,
           r.NOMBRE AS ROL,
           u.ESTADO,
@@ -72,6 +75,10 @@ const crearUsuario = async (req, res) => {
       contrasena,
       idRol
     } = req.body || {};
+    const correo = typeof req.body?.correo === 'string' ? req.body.correo.trim().toLowerCase() : '';
+    if (!nombreValido(nombreCompleto) || nombreCompleto.trim().length > 120 || !correoValido(correo) || nombreUsuario?.length > 50) {
+      return res.status(400).json({mensaje:'Nombre sin números y correo válido obligatorios; revisa la longitud de los campos'});
+    }
 
     if (
       typeof nombreCompleto !== "string" ||
@@ -119,6 +126,7 @@ const crearUsuario = async (req, res) => {
       `INSERT INTO USUARIOS (
          NOMBRE_COMPLETO,
          NOMBRE_USUARIO,
+         CORREO,
          CONTRASENA_HASH,
          ID_ROL,
          ESTADO,
@@ -126,6 +134,7 @@ const crearUsuario = async (req, res) => {
        ) VALUES (
          :nombre,
          :usuario,
+         :correo,
          :hash,
          :idRol,
          'A',
@@ -134,22 +143,28 @@ const crearUsuario = async (req, res) => {
       {
         nombre: nombreCompleto.trim(),
         usuario: nombreUsuario.trim(),
+        correo,
         hash,
         idRol
       },
-      { autoCommit: true }
+      { autoCommit: false }
     );
+    await encolar(conexion,correo,'Cuenta registrada','Tu cuenta de Librería La Crayola Gigante fue registrada. Solicita tus datos de acceso al administrador. No compartas tu contraseña.');
+    await conexion.commit();
 
     return res.status(201).json({
       mensaje: "Usuario creado correctamente"
     });
 
   } catch (error) {
+    if(conexion) await conexion.rollback();
     console.error(error.message);
 
     if (error.errorNum === 1) {
+      const correo = typeof req.body?.correo === 'string' ? req.body.correo.trim().toLowerCase() : '';
+      if(conexion && correo) await avisarDuplicado(conexion,correo);
       return res.status(409).json({
-        mensaje: "Ya existe un registro con esos datos"
+        mensaje: "El correo o usuario ya está registrado. No se puede asignar a otra cuenta."
       });
     }
 
@@ -168,6 +183,8 @@ const modificarUsuario = async (req, res) => {
   try {
     const id = Number(req.params.id);
     const { nombreCompleto, idRol } = req.body || {};
+    const correo = typeof req.body?.correo === 'string' ? req.body.correo.trim().toLowerCase() : '';
+    if (!nombreValido(nombreCompleto) || nombreCompleto.trim().length > 120 || !correoValido(correo)) return res.status(400).json({mensaje:'Nombre sin números y correo válido obligatorios'});
 
     if (
       !Number.isInteger(id) || id <= 0 ||
@@ -205,15 +222,17 @@ const modificarUsuario = async (req, res) => {
     const resultado = await conexion.execute(
       `UPDATE USUARIOS
        SET NOMBRE_COMPLETO = :nombre,
+           CORREO = :correo,
            ID_ROL = :idRol
        WHERE ID_USUARIO = :id AND (:actorRol = 1 OR ID_ROL = :actorRol)`,
       {
         nombre: nombreCompleto.trim(),
+        correo,
         idRol,
         actorRol: req.usuario.ID_ROL,
         id
       },
-      { autoCommit: true }
+      { autoCommit: false }
     );
 
     if (resultado.rowsAffected === 0) {
@@ -221,12 +240,20 @@ const modificarUsuario = async (req, res) => {
         mensaje: "Usuario no encontrado"
       });
     }
+    await encolar(conexion,correo,'Cuenta actualizada','Los datos de tu cuenta en Librería La Crayola Gigante fueron actualizados por un usuario autorizado. Si no esperabas este cambio, contacta al administrador.');
+    await conexion.commit();
 
     return res.json({
       mensaje: "Usuario actualizado correctamente"
     });
 
   } catch (error) {
+    if(conexion) await conexion.rollback();
+    if(error.errorNum === 1) {
+      const correo = typeof req.body?.correo === 'string' ? req.body.correo.trim().toLowerCase() : '';
+      if(conexion && correo) await avisarDuplicado(conexion,correo);
+      return res.status(409).json({mensaje:'El correo ya está registrado. No se puede asignar a otra cuenta.'});
+    }
     console.error(error.message);
     return res.status(500).json({
       mensaje: "Error al modificar usuario"

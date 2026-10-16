@@ -1,5 +1,5 @@
 
-const oracledb = require("oracledb");
+const oracledb = require('../config/driver');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 

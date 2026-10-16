@@ -1,5 +1,5 @@
 
-const oracledb = require("oracledb");
+const oracledb = require('../config/driver');
 
 const verificarPermiso = (codigoPermiso) => {
   return async (req, res, next) => {
