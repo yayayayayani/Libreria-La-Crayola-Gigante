@@ -1,0 +1,44 @@
+[
+  {
+    "archivo": "01_Informe_y_planificacion.docx",
+    "parrafos": 78,
+    "tablas": 8,
+    "figuras": 0,
+    "bytes": 44576
+  },
+  {
+    "archivo": "02_Diseno_y_reglas.docx",
+    "parrafos": 67,
+    "tablas": 5,
+    "figuras": 3,
+    "bytes": 472163
+  },
+  {
+    "archivo": "03_Pruebas_y_aceptacion.docx",
+    "parrafos": 98,
+    "tablas": 13,
+    "figuras": 0,
+    "bytes": 43428
+  },
+  {
+    "archivo": "04_Scrum_y_evidencias.docx",
+    "parrafos": 73,
+    "tablas": 9,
+    "figuras": 0,
+    "bytes": 41894
+  },
+  {
+    "archivo": "05_Manual_y_capturas.docx",
+    "parrafos": 71,
+    "tablas": 6,
+    "figuras": 2,
+    "bytes": 153566
+  },
+  {
+    "archivo": "06_Informe_auditoria.docx",
+    "parrafos": 48,
+    "tablas": 4,
+    "figuras": 0,
+    "bytes": 41372
+  }
+]

@@ -65,3 +65,7 @@ Las consultas periódicas, el worker de correo habilitado y las sesiones de DBea
 No se ha probado desde las computadoras físicas de los compañeros; deben completar ese ensayo una vez que configuren sus copias.
 
 Comandos desde backend: `npm run test:db`, `npm run test:sprint2`, `npm run test:permissions`, `npm run test:neon:browser`. El último requiere frontend instalado, compilado y Microsoft Edge. Las pruebas crean sus propios datos y los retiran al finalizar.
+
+## Fotografías (revisión del 16/10/2026)
+
+Después de instalar las dependencias actualizadas, ejecutar `npm run migrate:images` en backend. Agrega IMAGENES_PRODUCTOS y conserva los datos existentes. Las fotografías se guardan en la misma base compartida, con acceso autenticado. Esta tabla adicional hace que el total de tablas ya no corresponda a las 15 de la migración histórica.

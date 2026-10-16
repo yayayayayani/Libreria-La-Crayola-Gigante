@@ -15,6 +15,33 @@ async function request(path,method='GET',body,access=token) {
 }
 const compra=(extra={})=>({idProveedor:proveedor,factura:randomUUID(),clave:randomUUID(),detalles:[{idProducto:producto,cantidad:3,costo:2.25}],...extra});
 const stock=async()=> (await filas(c,'SELECT stock FROM productos WHERE id_producto=:id',{id:producto}))[0].STOCK;
+
+test('14 fotografía se guarda, consulta con permiso y conserva al editar sin imagen',async()=>{
+ const sharp=require('sharp');
+ const bytes=await sharp({create:{width:12,height:12,channels:3,background:'#cc9900'}}).png().toBuffer();
+ const datos={codigo:marca,nombre:'Prueba producto',descripcion:'Foto',precio:5,stock:0,idCategoria:categoria};
+ let r=await request(`/productos/${producto}`,'PUT',{...datos,imagen:`data:image/png;base64,${bytes.toString('base64')}`});
+ assert.equal(r.status,200,JSON.stringify(r.data));
+ let foto=await fetch(`${base}/productos/${producto}/imagen`,{headers:{Authorization:`Bearer ${token}`}});
+ assert.equal(foto.status,200);assert.match(foto.headers.get('content-type'),/image\/webp/);
+ assert.ok((await foto.arrayBuffer()).byteLength>0);
+ assert.equal((await fetch(`${base}/productos/${producto}/imagen`,{headers:{Authorization:`Bearer ${sinPermiso}`}})).status,403);
+ r=await request(`/productos/${producto}`,'PUT',datos);assert.equal(r.status,200);
+ assert.equal((await filas(c,'SELECT id_producto FROM imagenes_productos WHERE id_producto=:id',{id:producto})).length,1);
+});
+test('15 imagen inválida revierte edición y quitar imagen conserva producto',async()=>{
+ const datos={codigo:marca,nombre:'Nombre incorrecto',precio:5,stock:0,idCategoria:categoria,imagen:'data:image/png;base64,aG9sYQ=='};
+ assert.equal((await request(`/productos/${producto}`,'PUT',datos)).status,400);
+ assert.equal((await filas(c,'SELECT nombre FROM productos WHERE id_producto=:id',{id:producto}))[0].NOMBRE,'Prueba producto');
+ assert.equal((await request(`/productos/${producto}`,'PUT',{...datos,nombre:'Prueba producto',imagen:null})).status,200);
+ assert.equal((await fetch(`${base}/productos/${producto}/imagen`,{headers:{Authorization:`Bearer ${token}`}})).status,204);
+});
+test('16 stock inicial rechaza booleanos y valores mayores al límite del inventario',async()=>{
+ for(const valor of [true,10000000000,' ',[]]) {
+  assert.equal((await request('/productos','POST',{codigo:marca+'_limite',nombre:'Prueba límite',precio:5,stock:valor,idCategoria:categoria})).status,400);
+ }
+ assert.equal((await request('/productos','POST',{codigo:marca+'_limite',nombre:'Prueba límite',precio:[5],stock:0,idCategoria:categoria})).status,400);
+});
 before(async()=>{
  c=await conectar();
  rol=await insertar('INSERT INTO roles(nombre) VALUES (:nombre) RETURNING id_rol INTO :id',{nombre:marca});

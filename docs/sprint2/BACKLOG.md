@@ -48,4 +48,15 @@ Objetivo: completar la recepción de compras y trazabilidad del inventario sin s
 | SB09 · Prueba en tres casas | 08 | Actualizar el repositorio, configurar backend/.env y validar acceso a Neon | Pendiente del equipo |
 | SB10 · Ceremonias y aceptación | Todas | Evidencias reales y firmas | Pendiente del equipo |
 
-Responsables: David, Yordy y Daylin deben confirmar distribución y roles Scrum. No se asignan trabajos históricos a personas sin evidencia. Definición de terminado técnico: código, migración, validaciones, permisos y pruebas satisfactorias. La aceptación de entrega exige además SMTP, ensayo remoto y actas reales.
+Responsables de cierre asignados el 16/10/2026: David, proveedores y compras; Yordy, inventario y pruebas; Daylin, interfaz y documentación. Esta asignación no atribuye trabajo histórico. Definición de terminado técnico: código, migración, validaciones, permisos y pruebas satisfactorias. La aceptación de la consigna exige además la demostración y actas reales. SMTP y ensayo desde las tres casas son ampliaciones del proyecto con comprobación externa pendiente.
+
+## Ampliación del 16/10/2026
+
+| ID | Historia o tarea | Responsable | Estado |
+|---|---|---|---|
+| HU-S2-09 | Como encargado, quiero agregar, reemplazar y quitar fotos para reconocer productos | Daylin | Implementada; aceptación del equipo pendiente |
+| SB11 | Tabla compartida, validación de imágenes y guardado transaccional | David, revisión de Yordy | Implementado y probado en PostgreSQL |
+| SB12 | Diseño adaptable y fotos en catálogo e inventario | Daylin | Implementado; pruebas de navegador |
+| SB13 | Auditoría, correcciones y documentos Word | Yordy y Daylin | Revisión técnica preparada; completar datos y actas reales |
+
+Criterios de HU-S2-09: JPEG/PNG/WebP hasta 3 MB y 16 megapíxeles; vista previa; persistencia compartida; rechazo de archivo inválido sin cambios parciales; conservar imagen si se omite y quitarla solo al guardar null; lectura autorizada.

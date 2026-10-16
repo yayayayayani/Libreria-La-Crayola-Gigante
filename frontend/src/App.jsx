@@ -9,6 +9,7 @@ import Productos from "./pages/Productos";
 import ComprasInventario from './pages/ComprasInventario';
 import api from "./services/api";
 import "./App.css";
+import "./theme.css";
 
 const permisosPagina = {
   compras: ['PROVEEDORES_GESTIONAR','COMPRAS_GESTIONAR','INVENTARIO_VER','INVENTARIO_GESTIONAR'],

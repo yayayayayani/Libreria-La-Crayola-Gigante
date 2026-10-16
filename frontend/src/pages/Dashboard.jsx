@@ -40,8 +40,10 @@ function Dashboard({
       </header>
 
       <main className="dashboard-main">
-        <h2>¡Bienvenido, {usuario.nombre}!</h2>
-        <p>Rol asignado: {usuario.rol}</p>
+        <section className="welcome-banner">
+          <div><span className="eyebrow">TU LIBRERÍA, EN ORDEN</span><h2>¡Bienvenido, {usuario.nombre}!</h2><p>Cada gran idea empieza con una hoja en blanco.<br/>Aquí tienes todo para que la librería siga creciendo.</p><span className="role-pill">{usuario.rol}</span></div>
+          <div className="stationery-art" aria-hidden="true"><div className="paper-art"><span>La Crayola<br/><strong>Gigante.</strong></span><i/><i/><i/></div><div className="pencil-art pencil-one"/><div className="pencil-art pencil-two"/><div className="pencil-art pencil-three"/></div>
+        </section><div className="section-heading"><span className="eyebrow">ESPACIO DE TRABAJO</span><h2>Todo a tu alcance</h2><p>Elige un módulo para comenzar.</p></div>
 
         <div className="modules-grid">
           {tienePermiso(['PROVEEDORES_GESTIONAR','COMPRAS_GESTIONAR','INVENTARIO_VER','INVENTARIO_GESTIONAR']) && <button type="button" className="module-card module-button" onClick={onCompras}><Package size={32}/><h3>Compras e inventario</h3><p>Proveedores, recepción, movimientos y alertas</p></button>}
@@ -103,6 +105,7 @@ function Dashboard({
           </p>
         )}
 
+        <footer className="workspace-footer">La Crayola Gigante · Compras, personas e ideas en un mismo lugar.</footer>
       </main>
     </div>
   );

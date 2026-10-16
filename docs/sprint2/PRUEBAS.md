@@ -58,10 +58,14 @@ Los cinco casos nuevos de navegador obtuvieron **5/5 aprobados**. La regresión 
 
 Los casos automatizados acreditan comportamiento técnico, no sustituyen firmas de aceptación ni prueban entrega de correo en la bandeja del destinatario.
 
-## Validaci?n adicional de entrada
+## Validación adicional de entrada
 
 `npm run test:validation` en backend: aprobado. Verifica que cuerpos y detalles nulos, listas, booleanos o valores escalares se rechacen con estado 400 antes de procesar una compra.
 
-La configuraci?n Gmail se describe en [GMAIL.md](../GMAIL.md). `npm run verify:mail` comprueba autenticaci?n sin enviar mensajes; la comprobaci?n actual detect? campos SMTP a?n incompletos, por lo que no se acredita entrega real.
+La configuración Gmail se describe en [GMAIL.md](../GMAIL.md). `npm run verify:mail` comprueba autenticación sin enviar mensajes; la comprobación actual detectó campos SMTP aún incompletos, por lo que no se acredita entrega real.
 
-Reejecuci?n del 15 de octubre de 2026 con DB_ENGINE=postgres: los 13 casos de backend Sprint 2 aprobaron contra Neon, incluida la prueba SMTP local. M?s la prueba adicional de validaci?n: 14 pruebas aprobadas en esta revisi?n.
+Reejecución del 15 de octubre de 2026 con DB_ENGINE=postgres: los 13 casos de backend Sprint 2 aprobaron contra Neon, incluida la prueba SMTP local. Más la prueba adicional de validaci?n: 14 pruebas aprobadas en esta revisión.
+
+## Revisión del 16/10/2026
+
+Resultados y alcance en [RESULTADOS.md](../entrega2/RESULTADOS.md). Incluye fotografías, límites de stock, regresión de permisos y comprobación visual.

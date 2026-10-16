@@ -4,6 +4,8 @@ node_modules/
 !.env.example
 dist/
 coverage/
+.tools/
+~$*.docx
 .migration-backups/
 *.log
 

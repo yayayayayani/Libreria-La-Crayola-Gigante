@@ -1,3 +1,4 @@
+import FotoProducto from '../components/FotoProducto';
 
 import { useEffect, useState } from "react";
 import {
@@ -16,6 +17,8 @@ const inicial = {
 };
 
 function Productos({ token, onVolver, permisos = [] }) {
+  const [fotoVersion, setFotoVersion] = useState(0);
+  const [leyendoFoto, setLeyendoFoto] = useState(false);
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [formulario, setFormulario] = useState(inicial);
@@ -87,6 +90,22 @@ function Productos({ token, onVolver, permisos = [] }) {
     setMostrarFormulario(true);
   };
 
+  const seleccionarFoto = async (e) => {
+    const archivo = e.target.files?.[0];
+    if (!archivo) return;
+    setError("");
+    if (!['image/jpeg','image/png','image/webp'].includes(archivo.type) || archivo.size > 3 * 1024 * 1024) {
+      setError('Selecciona una imagen JPEG, PNG o WebP de hasta 3 MB');
+      e.target.value = ''; return;
+    }
+    setLeyendoFoto(true);
+    try {
+      const imagen = await new Promise((resolve,reject) => { const reader = new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=reject; reader.readAsDataURL(archivo); });
+      setFormulario(f => ({...f, imagen}));
+    } catch { setError('No se pudo leer el archivo'); }
+    finally { setLeyendoFoto(false); }
+  };
+
   const guardarProducto = async (e) => {
     e.preventDefault();
     if (!(editando !== null ? puedeEditar : puedeCrear)) return;
@@ -113,6 +132,7 @@ function Productos({ token, onVolver, permisos = [] }) {
       }
 
       setMostrarFormulario(false);
+      setFotoVersion(v => v + 1);
       await cargarDatos();
     } catch (err) {
       setError(mensajeError(err));
@@ -238,7 +258,7 @@ function Productos({ token, onVolver, permisos = [] }) {
 
         <form className="categoria-form" onSubmit={crearCategoria}>
           <input
-            placeholder="Ej. Cuadernos, Libros, Escritura..."
+            aria-label="Nombre de categoría" placeholder="Ej. Cuadernos, Libros, Escritura..."
             value={nuevaCategoria}
             onChange={(e) => setNuevaCategoria(e.target.value)}
             required
@@ -351,6 +371,17 @@ function Productos({ token, onVolver, permisos = [] }) {
               />
             </label>
 
+            <div className="foto-editor">
+              <div>
+                <h4>Fotografía del producto</h4>
+                <p>JPEG, PNG o WebP · Hasta 3 MB y 16 megapíxeles. Se comparte con todo el equipo.</p>
+                <label>Seleccionar imagen<input type="file" accept="image/jpeg,image/png,image/webp" disabled={cargando || leyendoFoto} onChange={seleccionarFoto}/></label>
+                <button type="button" className="btn-secondary" disabled={leyendoFoto} onClick={()=>setFormulario(f=>({...f,imagen:null}))}>Quitar imagen</button>
+                {formulario.imagen === null && <p role="status">La imagen se quitará al guardar.</p>
+                }
+              </div>
+              {formulario.imagen ? <img className="foto-preview" src={formulario.imagen} alt="Vista previa del producto"/> : formulario.imagen !== null && editando ? <FotoProducto id={editando} token={token} nombre={formulario.nombre} version={fotoVersion}/> : <Package size={48} aria-hidden="true"/>}
+            </div>
             <div className="form-actions">
               <button
                 type="button"
@@ -363,7 +394,7 @@ function Productos({ token, onVolver, permisos = [] }) {
               <button
                 className="btn-primary"
                 type="submit"
-                disabled={cargando}
+                disabled={cargando || leyendoFoto}
               >
                 <Save size={17}/>
                 {cargando ? "Guardando..." : "Guardar"}
@@ -379,6 +410,7 @@ function Productos({ token, onVolver, permisos = [] }) {
           <input
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
+            aria-label="Buscar productos"
             placeholder="Buscar producto, código o categoría..."
           />
         </div>
@@ -401,7 +433,7 @@ function Productos({ token, onVolver, permisos = [] }) {
               {filtrados.map((p) => (
                 <tr key={p.ID_PRODUCTO}>
                   <td>{p.CODIGO}</td>
-                  <td>{p.NOMBRE}</td>
+                  <td><div className="producto-identidad"><FotoProducto id={p.ID_PRODUCTO} token={token} nombre={p.NOMBRE} version={`${fotoVersion}-${p.IMAGEN_ACTUALIZADA || 0}`}/><span>{p.NOMBRE}</span></div></td>
                   <td>{p.CATEGORIA}</td>
                   <td>{moneda(p.PRECIO)}</td>
                   <td>

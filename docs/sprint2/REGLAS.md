@@ -2,7 +2,7 @@
 
 | ID | Regla | Control |
 |---|---|---|
-| RN01 | Solo un usuario autenticado y con permiso puede operar cada módulo | Middleware JWT y permisos consultados en Oracle |
+| RN01 | Solo un usuario autenticado y con permiso puede operar cada módulo | Middleware JWT y permisos consultados en la base activa |
 | RN02 | Solo proveedores y productos activos participan en compras | Consulta y bloqueo `FOR UPDATE` antes de registrar |
 | RN03 | Una factura normalizada no puede repetirse para el mismo proveedor | Restricción única `(id_proveedor, factura)` |
 | RN04 | Cada compra tiene entre 1 y 100 productos, sin repetidos | Backend y único `(id_compra, id_producto)` |
@@ -19,7 +19,7 @@
 | RN15 | Un correo repetido de cliente tampoco se reutiliza para otro cliente | Índice único independiente en clientes; clientes no son cuentas de acceso |
 | RN16 | Notificar por correo altas y ediciones; avisar al titular ante reutilización rechazada | Cola transaccional; aviso de duplicado limitado a uno por hora en uso normal |
 | RN17 | Los fallos SMTP no se presentan como envíos exitosos | PENDIENTE/ENVIADO, hasta cinco intentos; error técnico sin credenciales |
-| RN18 | Todos trabajan sobre el mismo Oracle a través del mismo backend | Configuración del servidor; listados actualizados cada cinco segundos |
+| RN18 | Los integrantes trabajan sobre la misma base y rama de PostgreSQL en Neon | Configuración de cada backend; listados actualizados cada cinco segundos |
 
 ## NIT y CUI
 

@@ -14,9 +14,9 @@ La aplicación centraliza la administración de usuarios, roles, permisos, clien
 
 - **Frontend:** React y Vite.
 - **Backend:** Node.js y Express (API REST).
-- **Base de datos:** Oracle Database; administración con Oracle SQL Developer.
+- **Base de datos activa:** PostgreSQL en Neon; Oracle se conserva como respaldo histórico.
 - **Seguridad:** JWT y bcryptjs.
-- **Reportes futuros:** PDFKit y ExcelJS (previstos; exportación aún no implementada).
+- **Reportes futuros:** exportación todavía no implementada; se retiraron las dependencias sin uso.
 - **Pruebas:** scripts de integración del backend y Playwright para frontend, según la auditoría de permisos del Sprint 1.
 
 ## Funcionalidades del Sprint 1
@@ -43,6 +43,10 @@ Libreria-La-Crayola-Gigante/
 ├── docs/          # Documentación del proyecto y de los Sprints
 └── .gitignore
 ```
+
+## Instrucciones históricas de Oracle
+
+Las secciones siguientes de instalación Oracle son de referencia. Para el entorno activo usar [NEON.md](docs/NEON.md).
 
 ## Requisitos previos
 
@@ -173,3 +177,7 @@ Equipo de tres estudiantes: **David, Yordy y Daylin**. La configuración compart
 **Sprint 1:** funcionalidades principales implementadas; documentación y evidencias de entrega sujetas a revisión final.
 
 **Sprint 2:** incremento implementado y migración local aplicada. Activación de SMTP, configuración remota y evidencias de las ceremonias reales pendientes del equipo; consultar el estado detallado en `docs/sprint2/`.
+
+## Revisión de presentación, fotografías y documentos
+
+La revisión del 16/10/2026 agrega fotografías compartidas de productos y una interfaz renovada. Consultar [el paquete editable de Entrega 2](docs/entrega2/README.md). Antes de iniciar una copia actualizada, instalar dependencias y ejecutar `npm run migrate:images` en backend; después compilar frontend. El motor activo probado es PostgreSQL.

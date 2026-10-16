@@ -34,6 +34,19 @@ async function main(){
   const [comprador,consulta]=pages;
   await consulta.getByRole('button',{name:'Inventario',exact:true}).click();
   await consulta.getByRole('row').filter({hasText:marca}).getByRole('cell',{name:'Reponer',exact:true}).waitFor();
+  // Carga real desde React y lectura desde la otra sesión ya abierta.
+  await comprador.getByRole('button',{name:'Volver al menú'}).click();
+  await comprador.getByRole('button',{name:/^Productos /}).click();
+  await comprador.getByRole('textbox',{name:'Buscar productos'}).fill(marca);
+  await comprador.getByRole('row').filter({hasText:marca}).getByRole('button',{name:'Editar producto'}).click();
+  const foto=await require('sharp')({create:{width:160,height:160,channels:3,background:'#d9a84b'}}).png().toBuffer();
+  await comprador.getByLabel('Seleccionar imagen').setInputFiles({name:'prueba.png',mimeType:'image/png',buffer:foto});
+  await comprador.getByAltText('Vista previa del producto').waitFor();
+  await comprador.getByRole('button',{name:'Guardar',exact:true}).click();
+  await comprador.getByRole('status').filter({hasText:'Producto actualizado'}).waitFor();
+  await consulta.getByRole('row').filter({hasText:marca}).getByAltText('Cuaderno de prueba',{exact:true}).waitFor();
+  await comprador.getByRole('button',{name:'Volver al menú'}).click();
+  await comprador.getByRole('button',{name:/^Compras e inventario/}).click();
   await comprador.getByRole('button',{name:'Compras',exact:true}).click();
   await comprador.getByRole('combobox',{name:'Proveedor',exact:true}).selectOption(String(proveedor));
   await comprador.getByLabel('Serie y número de factura').fill(marca);
@@ -46,7 +59,7 @@ async function main(){
   assert.equal(saldo,5);
   const mov=await filas(c,"SELECT cantidad,stock_anterior,stock_nuevo FROM movimientos_inventario WHERE id_producto=:id AND tipo='ENTRADA_COMPRA'",{id:producto});
   assert.equal(mov.length,1);assert.deepEqual(mov[0],{CANTIDAD:3,STOCK_ANTERIOR:2,STOCK_NUEVO:5});
-  console.log('APROBADO: login real de dos usuarios, compra desde React, recepción y movimiento en Neon, actualización automática en el segundo navegador.');
+  console.log('APROBADO: login real de dos usuarios, fotografía subida desde React y visible en otra sesión, compra, recepción y movimiento en Neon, actualización automática en el segundo navegador.');
  }finally{
   if(browser)await browser.close();if(server)await new Promise(resolve=>server.close(resolve));
   if(c){
