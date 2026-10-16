@@ -6,13 +6,9 @@ dist/
 coverage/
 .migration-backups/
 *.log
-<<<<<<< Updated upstream
-frontend/test-results/
-frontend/playwright-report/
-=======
 
 # Resultados temporales de Playwright
 **/test-results/
 **/playwright-report/
 **/blob-report/
->>>>>>> Stashed changes
+
