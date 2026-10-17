@@ -1,12 +1,9 @@
-
 const express = require("express");
-const oracledb = require('../config/driver');
+const oracledb = require("../config/driver");
 
 const { login } = require("../controllers/authController");
 
-const {
-  verificarToken
-} = require("../middlewares/authMiddleware");
+const { verificarToken } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
@@ -21,7 +18,7 @@ router.get("/permisos", verificarToken, async (req, res) => {
     conexion = await oracledb.getConnection({
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      connectString: process.env.DB_CONNECT_STRING
+      connectString: process.env.DB_CONNECT_STRING,
     });
 
     const resultado = await conexion.execute(
@@ -32,26 +29,24 @@ router.get("/permisos", verificarToken, async (req, res) => {
        WHERE rp.ID_ROL = :idRol
        ORDER BY p.CODIGO`,
       {
-        idRol: req.usuario.ID_ROL
+        idRol: req.usuario.ID_ROL,
       },
       {
-        outFormat: oracledb.OUT_FORMAT_OBJECT
-      }
+        outFormat: oracledb.OUT_FORMAT_OBJECT,
+      },
     );
 
     res.set("Cache-Control", "no-store");
     return res.json({
       usuario: { id: req.usuario.ID_USUARIO, idRol: req.usuario.ID_ROL, rol: req.usuario.ROL },
-      permisos: resultado.rows.map(p => p.CODIGO)
+      permisos: resultado.rows.map((p) => p.CODIGO),
     });
-
   } catch (error) {
     console.error("Error consultando permisos:", error.message);
 
     return res.status(500).json({
-      mensaje: "Error al consultar permisos"
+      mensaje: "Error al consultar permisos",
     });
-
   } finally {
     if (conexion) {
       await conexion.close();

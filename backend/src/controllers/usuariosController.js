@@ -1,14 +1,14 @@
-
-const oracledb = require('../config/driver');
+const oracledb = require("../config/driver");
 const bcrypt = require("bcryptjs");
-const { nombreValido, correoValido } = require('../services/validaciones');
-const { encolar, avisarDuplicado } = require('../services/correos');
+const { nombreValido, correoValido } = require("../services/validaciones");
+const { encolar, avisarDuplicado } = require("../services/correos");
 
-const conectar = () => oracledb.getConnection({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  connectString: process.env.DB_CONNECT_STRING
-});
+const conectar = () =>
+  oracledb.getConnection({
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    connectString: process.env.DB_CONNECT_STRING,
+  });
 
 const rolesAsignables = async (req, res) => {
   let conexion;
@@ -17,7 +17,8 @@ const rolesAsignables = async (req, res) => {
     const resultado = await conexion.execute(
       `SELECT ID_ROL, NOMBRE FROM ROLES WHERE ESTADO = 'A'
        AND (:idRol = 1 OR ID_ROL = :idRol) ORDER BY NOMBRE`,
-      { idRol: req.usuario.ID_ROL }, { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      { idRol: req.usuario.ID_ROL },
+      { outFormat: oracledb.OUT_FORMAT_OBJECT },
     );
     return res.json(resultado.rows);
   } catch (error) {
@@ -49,15 +50,14 @@ const listarUsuarios = async (req, res) => {
          ON u.ID_ROL = r.ID_ROL
        ORDER BY u.ID_USUARIO`,
       {},
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      { outFormat: oracledb.OUT_FORMAT_OBJECT },
     );
 
     return res.json(resultado.rows);
-
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({
-      mensaje: "Error al consultar usuarios"
+      mensaje: "Error al consultar usuarios",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -69,15 +69,20 @@ const crearUsuario = async (req, res) => {
   let conexion;
 
   try {
-    const {
-      nombreCompleto,
-      nombreUsuario,
-      contrasena,
-      idRol
-    } = req.body || {};
-    const correo = typeof req.body?.correo === 'string' ? req.body.correo.trim().toLowerCase() : '';
-    if (!nombreValido(nombreCompleto) || nombreCompleto.trim().length > 120 || !correoValido(correo) || nombreUsuario?.length > 50) {
-      return res.status(400).json({mensaje:'Nombre sin números y correo válido obligatorios; revisa la longitud de los campos'});
+    const { nombreCompleto, nombreUsuario, contrasena, idRol } = req.body || {};
+    const correo = typeof req.body?.correo === "string" ? req.body.correo.trim().toLowerCase() : "";
+    if (
+      !nombreValido(nombreCompleto) ||
+      nombreCompleto.trim().length > 120 ||
+      !correoValido(correo) ||
+      nombreUsuario?.length > 50
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            "Nombre sin números y correo válido obligatorios; revisa la longitud de los campos",
+        });
     }
 
     if (
@@ -90,7 +95,7 @@ const crearUsuario = async (req, res) => {
       !Number.isInteger(idRol)
     ) {
       return res.status(400).json({
-        mensaje: "Verifica los datos. La contraseña requiere al menos 8 caracteres."
+        mensaje: "Verifica los datos. La contraseña requiere al menos 8 caracteres.",
       });
     }
 
@@ -99,24 +104,24 @@ const crearUsuario = async (req, res) => {
     const rol = await conexion.execute(
       `SELECT ID_ROL FROM ROLES
        WHERE ID_ROL = :idRol AND ESTADO = 'A'`,
-      { idRol }
+      { idRol },
     );
 
     if (rol.rows.length === 0) {
       return res.status(400).json({
-        mensaje: "El rol no existe o está inactivo"
+        mensaje: "El rol no existe o está inactivo",
       });
     }
 
     const existe = await conexion.execute(
       `SELECT ID_USUARIO FROM USUARIOS
        WHERE NOMBRE_USUARIO = :usuario`,
-      { usuario: nombreUsuario.trim() }
+      { usuario: nombreUsuario.trim() },
     );
 
     if (existe.rows.length > 0) {
       return res.status(409).json({
-        mensaje: "El nombre de usuario ya existe"
+        mensaje: "El nombre de usuario ya existe",
       });
     }
 
@@ -145,31 +150,36 @@ const crearUsuario = async (req, res) => {
         usuario: nombreUsuario.trim(),
         correo,
         hash,
-        idRol
+        idRol,
       },
-      { autoCommit: false }
+      { autoCommit: false },
     );
-    await encolar(conexion,correo,'Cuenta registrada','Tu cuenta de Librería La Crayola Gigante fue registrada. Solicita tus datos de acceso al administrador. No compartas tu contraseña.');
+    await encolar(
+      conexion,
+      correo,
+      "Cuenta registrada",
+      "Tu cuenta de Librería La Crayola Gigante fue registrada. Solicita tus datos de acceso al administrador. No compartas tu contraseña.",
+    );
     await conexion.commit();
 
     return res.status(201).json({
-      mensaje: "Usuario creado correctamente"
+      mensaje: "Usuario creado correctamente",
     });
-
   } catch (error) {
-    if(conexion) await conexion.rollback();
+    if (conexion) await conexion.rollback();
     console.error(error.message);
 
     if (error.errorNum === 1) {
-      const correo = typeof req.body?.correo === 'string' ? req.body.correo.trim().toLowerCase() : '';
-      if(conexion && correo) await avisarDuplicado(conexion,correo);
+      const correo =
+        typeof req.body?.correo === "string" ? req.body.correo.trim().toLowerCase() : "";
+      if (conexion && correo) await avisarDuplicado(conexion, correo);
       return res.status(409).json({
-        mensaje: "El correo o usuario ya está registrado. No se puede asignar a otra cuenta."
+        mensaje: "El correo o usuario ya está registrado. No se puede asignar a otra cuenta.",
       });
     }
 
     return res.status(500).json({
-      mensaje: "Error al crear usuario"
+      mensaje: "Error al crear usuario",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -183,17 +193,23 @@ const modificarUsuario = async (req, res) => {
   try {
     const id = Number(req.params.id);
     const { nombreCompleto, idRol } = req.body || {};
-    const correo = typeof req.body?.correo === 'string' ? req.body.correo.trim().toLowerCase() : '';
-    if (!nombreValido(nombreCompleto) || nombreCompleto.trim().length > 120 || !correoValido(correo)) return res.status(400).json({mensaje:'Nombre sin números y correo válido obligatorios'});
+    const correo = typeof req.body?.correo === "string" ? req.body.correo.trim().toLowerCase() : "";
+    if (
+      !nombreValido(nombreCompleto) ||
+      nombreCompleto.trim().length > 120 ||
+      !correoValido(correo)
+    )
+      return res.status(400).json({ mensaje: "Nombre sin números y correo válido obligatorios" });
 
     if (
-      !Number.isInteger(id) || id <= 0 ||
+      !Number.isInteger(id) ||
+      id <= 0 ||
       typeof nombreCompleto !== "string" ||
       !nombreCompleto.trim() ||
       !Number.isInteger(idRol)
     ) {
       return res.status(400).json({
-        mensaje: "Datos inválidos"
+        mensaje: "Datos inválidos",
       });
     }
 
@@ -202,20 +218,19 @@ const modificarUsuario = async (req, res) => {
     const rol = await conexion.execute(
       `SELECT ID_ROL FROM ROLES
        WHERE ID_ROL = :idRol AND ESTADO = 'A'`,
-      { idRol }
+      { idRol },
     );
 
     if (rol.rows.length === 0) {
       return res.status(400).json({
-        mensaje: "Rol no válido"
+        mensaje: "Rol no válido",
       });
     }
 
     // Evitar que el administrador cambie su propio rol.
-    if (id === req.usuario.ID_USUARIO &&
-        idRol !== req.usuario.ID_ROL) {
+    if (id === req.usuario.ID_USUARIO && idRol !== req.usuario.ID_ROL) {
       return res.status(400).json({
-        mensaje: "No puedes cambiar tu propio rol"
+        mensaje: "No puedes cambiar tu propio rol",
       });
     }
 
@@ -230,33 +245,40 @@ const modificarUsuario = async (req, res) => {
         correo,
         idRol,
         actorRol: req.usuario.ID_ROL,
-        id
+        id,
       },
-      { autoCommit: false }
+      { autoCommit: false },
     );
 
     if (resultado.rowsAffected === 0) {
       return res.status(404).json({
-        mensaje: "Usuario no encontrado"
+        mensaje: "Usuario no encontrado",
       });
     }
-    await encolar(conexion,correo,'Cuenta actualizada','Los datos de tu cuenta en Librería La Crayola Gigante fueron actualizados por un usuario autorizado. Si no esperabas este cambio, contacta al administrador.');
+    await encolar(
+      conexion,
+      correo,
+      "Cuenta actualizada",
+      "Los datos de tu cuenta en Librería La Crayola Gigante fueron actualizados por un usuario autorizado. Si no esperabas este cambio, contacta al administrador.",
+    );
     await conexion.commit();
 
     return res.json({
-      mensaje: "Usuario actualizado correctamente"
+      mensaje: "Usuario actualizado correctamente",
     });
-
   } catch (error) {
-    if(conexion) await conexion.rollback();
-    if(error.errorNum === 1) {
-      const correo = typeof req.body?.correo === 'string' ? req.body.correo.trim().toLowerCase() : '';
-      if(conexion && correo) await avisarDuplicado(conexion,correo);
-      return res.status(409).json({mensaje:'El correo ya está registrado. No se puede asignar a otra cuenta.'});
+    if (conexion) await conexion.rollback();
+    if (error.errorNum === 1) {
+      const correo =
+        typeof req.body?.correo === "string" ? req.body.correo.trim().toLowerCase() : "";
+      if (conexion && correo) await avisarDuplicado(conexion, correo);
+      return res
+        .status(409)
+        .json({ mensaje: "El correo ya está registrado. No se puede asignar a otra cuenta." });
     }
     console.error(error.message);
     return res.status(500).json({
-      mensaje: "Error al modificar usuario"
+      mensaje: "Error al modificar usuario",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -271,18 +293,15 @@ const cambiarEstado = async (req, res) => {
     const id = Number(req.params.id);
     const { estado } = req.body || {};
 
-    if (
-      !Number.isInteger(id) || id <= 0 ||
-      !["A", "I"].includes(estado)
-    ) {
+    if (!Number.isInteger(id) || id <= 0 || !["A", "I"].includes(estado)) {
       return res.status(400).json({
-        mensaje: "Estado inválido"
+        mensaje: "Estado inválido",
       });
     }
 
     if (id === req.usuario.ID_USUARIO && estado === "I") {
       return res.status(400).json({
-        mensaje: "No puedes desactivar tu propia cuenta"
+        mensaje: "No puedes desactivar tu propia cuenta",
       });
     }
 
@@ -293,23 +312,22 @@ const cambiarEstado = async (req, res) => {
        SET ESTADO = :estado
        WHERE ID_USUARIO = :id AND (:actorRol = 1 OR ID_ROL = :actorRol)`,
       { estado, id, actorRol: req.usuario.ID_ROL },
-      { autoCommit: true }
+      { autoCommit: true },
     );
 
     if (resultado.rowsAffected === 0) {
       return res.status(404).json({
-        mensaje: "Usuario no encontrado"
+        mensaje: "Usuario no encontrado",
       });
     }
 
     return res.json({
-      mensaje: "Estado actualizado correctamente"
+      mensaje: "Estado actualizado correctamente",
     });
-
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({
-      mensaje: "Error al cambiar estado"
+      mensaje: "Error al cambiar estado",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -321,5 +339,5 @@ module.exports = {
   listarUsuarios,
   crearUsuario,
   modificarUsuario,
-  cambiarEstado
+  cambiarEstado,
 };

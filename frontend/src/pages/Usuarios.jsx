@@ -1,17 +1,14 @@
-
 import { useEffect, useState } from "react";
-import {
-  Plus, Pencil, Search, ArrowLeft, Save
-} from "lucide-react";
+import { Plus, Pencil, Search, ArrowLeft, Save } from "lucide-react";
 import api from "../services/api";
-import useActualizacion from '../hooks/useActualizacion';
+import useActualizacion from "../hooks/useActualizacion";
 
 const formularioVacio = {
   nombreCompleto: "",
   correo: "",
   nombreUsuario: "",
   contrasena: "",
-  idRol: ""
+  idRol: "",
 };
 
 function Usuarios({ token, onVolver, identidad }) {
@@ -26,14 +23,11 @@ function Usuarios({ token, onVolver, identidad }) {
   const [cargando, setCargando] = useState(false);
 
   const config = {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   };
 
   const manejarError = (err) => {
-    setError(
-      err.response?.data?.mensaje ||
-      "Error de comunicación con el servidor"
-    );
+    setError(err.response?.data?.mensaje || "Error de comunicación con el servidor");
   };
 
   const cargarUsuarios = async () => {
@@ -51,9 +45,17 @@ function Usuarios({ token, onVolver, identidad }) {
     const opciones = { headers: { Authorization: `Bearer ${token}` } };
     Promise.all([api.get("/usuarios", opciones), api.get("/usuarios/roles-asignables", opciones)])
       .then(([usuarios, roles]) => {
-        if (vigente) { setUsuarios(usuarios.data); setRoles(roles.data); }
-      }).catch(err => { if (vigente) setError(err.response?.data?.mensaje || "Error al consultar usuarios"); });
-    return () => { vigente = false; };
+        if (vigente) {
+          setUsuarios(usuarios.data);
+          setRoles(roles.data);
+        }
+      })
+      .catch((err) => {
+        if (vigente) setError(err.response?.data?.mensaje || "Error al consultar usuarios");
+      });
+    return () => {
+      vigente = false;
+    };
   }, [token, identidad?.idRol]);
 
   const abrirNuevo = () => {
@@ -70,7 +72,7 @@ function Usuarios({ token, onVolver, identidad }) {
       correo: usuario.CORREO || "",
       nombreUsuario: usuario.NOMBRE_USUARIO,
       contrasena: "",
-      idRol: usuario.ID_ROL
+      idRol: usuario.ID_ROL,
     });
     setEditando(usuario.ID_USUARIO);
     setMensaje("");
@@ -91,9 +93,9 @@ function Usuarios({ token, onVolver, identidad }) {
           {
             nombreCompleto: formulario.nombreCompleto,
             correo: formulario.correo,
-            idRol: Number(formulario.idRol)
+            idRol: Number(formulario.idRol),
           },
-          config
+          config,
         );
 
         setMensaje("Usuario actualizado correctamente");
@@ -102,9 +104,9 @@ function Usuarios({ token, onVolver, identidad }) {
           "/usuarios",
           {
             ...formulario,
-            idRol: Number(formulario.idRol)
+            idRol: Number(formulario.idRol),
           },
-          config
+          config,
         );
 
         setMensaje("Usuario creado correctamente");
@@ -112,7 +114,6 @@ function Usuarios({ token, onVolver, identidad }) {
 
       setMostrarFormulario(false);
       await cargarUsuarios();
-
     } catch (err) {
       manejarError(err);
     } finally {
@@ -124,7 +125,7 @@ function Usuarios({ token, onVolver, identidad }) {
     const nuevoEstado = usuario.ESTADO === "A" ? "I" : "A";
 
     const confirmado = window.confirm(
-      `¿Deseas ${nuevoEstado === "A" ? "activar" : "desactivar"} a ${usuario.NOMBRE_COMPLETO}?`
+      `¿Deseas ${nuevoEstado === "A" ? "activar" : "desactivar"} a ${usuario.NOMBRE_COMPLETO}?`,
     );
 
     if (!confirmado) return;
@@ -133,15 +134,10 @@ function Usuarios({ token, onVolver, identidad }) {
     setError("");
 
     try {
-      await api.patch(
-        `/usuarios/${usuario.ID_USUARIO}/estado`,
-        { estado: nuevoEstado },
-        config
-      );
+      await api.patch(`/usuarios/${usuario.ID_USUARIO}/estado`, { estado: nuevoEstado }, config);
 
       setMensaje("Estado actualizado correctamente");
       await cargarUsuarios();
-
     } catch (err) {
       manejarError(err);
     }
@@ -150,7 +146,7 @@ function Usuarios({ token, onVolver, identidad }) {
   const filtrados = usuarios.filter((u) =>
     `${u.NOMBRE_COMPLETO} ${u.NOMBRE_USUARIO} ${u.ROL}`
       .toLowerCase()
-      .includes(busqueda.toLowerCase())
+      .includes(busqueda.toLowerCase()),
   );
 
   return (
@@ -170,18 +166,20 @@ function Usuarios({ token, onVolver, identidad }) {
       </div>
 
       {mensaje && (
-        <div className="alerta-exito" role="status">{mensaje}</div>
+        <div className="alerta-exito" role="status">
+          {mensaje}
+        </div>
       )}
 
       {error && (
-        <div className="error-message" role="alert">{error}</div>
+        <div className="error-message" role="alert">
+          {error}
+        </div>
       )}
 
       {mostrarFormulario && (
         <div className="form-panel">
-          <h3>
-            {editando !== null ? "Modificar usuario" : "Nuevo usuario"}
-          </h3>
+          <h3>{editando !== null ? "Modificar usuario" : "Nuevo usuario"}</h3>
 
           <form onSubmit={guardar} className="usuario-form">
             <label>
@@ -192,10 +190,12 @@ function Usuarios({ token, onVolver, identidad }) {
                 title="Solo letras y separadores de nombres; sin números"
                 maxLength={100}
                 required
-                onChange={(e) => setFormulario({
-                  ...formulario,
-                  nombreCompleto: e.target.value
-                })}
+                onChange={(e) =>
+                  setFormulario({
+                    ...formulario,
+                    nombreCompleto: e.target.value,
+                  })
+                }
               />
             </label>
 
@@ -207,10 +207,12 @@ function Usuarios({ token, onVolver, identidad }) {
                     value={formulario.nombreUsuario}
                     maxLength={50}
                     required
-                    onChange={(e) => setFormulario({
-                      ...formulario,
-                      nombreUsuario: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setFormulario({
+                        ...formulario,
+                        nombreUsuario: e.target.value,
+                      })
+                    }
                   />
                 </label>
 
@@ -222,17 +224,26 @@ function Usuarios({ token, onVolver, identidad }) {
                     required
                     autoComplete="new-password"
                     value={formulario.contrasena}
-                    onChange={(e) => setFormulario({
-                      ...formulario,
-                      contrasena: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setFormulario({
+                        ...formulario,
+                        contrasena: e.target.value,
+                      })
+                    }
                   />
                 </label>
               </>
             )}
 
-            <label>Correo electrónico
-              <input type="email" required maxLength={120} value={formulario.correo} onChange={e=>setFormulario({...formulario,correo:e.target.value})} />
+            <label>
+              Correo electrónico
+              <input
+                type="email"
+                required
+                maxLength={120}
+                value={formulario.correo}
+                onChange={(e) => setFormulario({ ...formulario, correo: e.target.value })}
+              />
             </label>
 
             <label>
@@ -241,13 +252,19 @@ function Usuarios({ token, onVolver, identidad }) {
                 required
                 disabled={editando === identidad?.id}
                 value={formulario.idRol}
-                onChange={(e) => setFormulario({
-                  ...formulario,
-                  idRol: Number(e.target.value)
-                })}
+                onChange={(e) =>
+                  setFormulario({
+                    ...formulario,
+                    idRol: Number(e.target.value),
+                  })
+                }
               >
                 <option value="">Seleccionar rol</option>
-                {roles.map(rol => <option key={rol.ID_ROL} value={rol.ID_ROL}>{rol.NOMBRE}</option>)}
+                {roles.map((rol) => (
+                  <option key={rol.ID_ROL} value={rol.ID_ROL}>
+                    {rol.NOMBRE}
+                  </option>
+                ))}
               </select>
             </label>
 
@@ -260,11 +277,7 @@ function Usuarios({ token, onVolver, identidad }) {
                 Cancelar
               </button>
 
-              <button
-                type="submit"
-                className="btn-primary"
-                disabled={cargando}
-              >
+              <button type="submit" className="btn-primary" disabled={cargando}>
                 <Save size={17} />
                 {cargando ? "Guardando..." : "Guardar"}
               </button>
@@ -301,32 +314,30 @@ function Usuarios({ token, onVolver, identidad }) {
                   <td>{u.NOMBRE_USUARIO}</td>
                   <td>{u.ROL}</td>
                   <td>
-                    <span className={
-                      u.ESTADO === "A"
-                        ? "estado-activo"
-                        : "estado-inactivo"
-                    }>
+                    <span className={u.ESTADO === "A" ? "estado-activo" : "estado-inactivo"}>
                       {u.ESTADO === "A" ? "Activo" : "Inactivo"}
                     </span>
                   </td>
                   <td>
-                    {(identidad?.idRol === 1 || identidad?.idRol === u.ID_ROL) && <div className="acciones-usuario">
-                      <button
-                        className="btn-editar"
-                        onClick={() => abrirEditar(u)}
-                        aria-label={`Editar ${u.NOMBRE_USUARIO}`}
-                      >
-                        <Pencil size={16} />
-                      </button>
+                    {(identidad?.idRol === 1 || identidad?.idRol === u.ID_ROL) && (
+                      <div className="acciones-usuario">
+                        <button
+                          className="btn-editar"
+                          onClick={() => abrirEditar(u)}
+                          aria-label={`Editar ${u.NOMBRE_USUARIO}`}
+                        >
+                          <Pencil size={16} />
+                        </button>
 
-                      <button
-                        className="btn-secondary"
-                        disabled={u.ID_USUARIO === identidad?.id}
-                        onClick={() => cambiarEstado(u)}
-                      >
-                        {u.ESTADO === "A" ? "Desactivar" : "Activar"}
-                      </button>
-                    </div>}
+                        <button
+                          className="btn-secondary"
+                          disabled={u.ID_USUARIO === identidad?.id}
+                          onClick={() => cambiarEstado(u)}
+                        >
+                          {u.ESTADO === "A" ? "Desactivar" : "Activar"}
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}

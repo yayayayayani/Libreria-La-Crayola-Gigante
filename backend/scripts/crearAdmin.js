@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 
 const oracledb = require("../src/config/driver");
@@ -10,32 +9,24 @@ async function crearAdministrador() {
 
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
   try {
-    const nombre = (await rl.question(
-      "Nombre completo: "
-    )).trim();
+    const nombre = (await rl.question("Nombre completo: ")).trim();
 
-    const usuario = (await rl.question(
-      "Nombre de usuario: "
-    )).trim();
+    const usuario = (await rl.question("Nombre de usuario: ")).trim();
 
-    const contrasena = await rl.question(
-      "Contraseña (mínimo 8 caracteres): "
-    );
+    const contrasena = await rl.question("Contraseña (mínimo 8 caracteres): ");
 
     if (!nombre || !usuario || contrasena.length < 8) {
-      throw new Error(
-        "Datos inválidos. La contraseña debe tener mínimo 8 caracteres."
-      );
+      throw new Error("Datos inválidos. La contraseña debe tener mínimo 8 caracteres.");
     }
 
     conexion = await oracledb.getConnection({
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      connectString: process.env.DB_CONNECT_STRING
+      connectString: process.env.DB_CONNECT_STRING,
     });
 
     const existe = await conexion.execute(
@@ -43,7 +34,7 @@ async function crearAdministrador() {
        FROM USUARIOS
        WHERE NOMBRE_USUARIO = :usuario`,
       { usuario },
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      { outFormat: oracledb.OUT_FORMAT_OBJECT },
     );
 
     if (existe.rows[0].TOTAL > 0) {
@@ -71,16 +62,14 @@ async function crearAdministrador() {
       {
         nombre,
         usuario,
-        hash
+        hash,
       },
-      { autoCommit: true }
+      { autoCommit: true },
     );
 
     console.log("\nAdministrador creado correctamente.");
-
   } catch (error) {
     console.error("Error:", error.message);
-
   } finally {
     if (conexion) {
       await conexion.close();

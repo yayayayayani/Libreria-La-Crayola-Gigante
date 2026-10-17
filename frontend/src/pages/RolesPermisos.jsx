@@ -1,11 +1,5 @@
-
 import { useEffect, useState, useMemo } from "react";
-import {
-  ArrowLeft,
-  ShieldCheck,
-  Save,
-  Lock
-} from "lucide-react";
+import { ArrowLeft, ShieldCheck, Save, Lock } from "lucide-react";
 import api from "../services/api";
 
 function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
@@ -18,40 +12,35 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
 
-  const config = useMemo(() => ({
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }), [token]);
+  const config = useMemo(
+    () => ({
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
+    [token],
+  );
 
   useEffect(() => {
     const cargarDatos = async () => {
       try {
         const [resRoles, resPermisos] = await Promise.all([
           api.get("/roles", config),
-          api.get("/roles/permisos", config)
+          api.get("/roles/permisos", config),
         ]);
 
         setRoles(resRoles.data);
         setPermisos(resPermisos.data);
 
-        const empleado = resRoles.data.find(
-          (r) => r.NOMBRE === "Empleado"
-        );
+        const empleado = resRoles.data.find((r) => r.NOMBRE === "Empleado");
 
         if (empleado) {
           setRolSeleccionado(String(empleado.ID_ROL));
         } else if (resRoles.data.length > 0) {
-          setRolSeleccionado(
-            String(resRoles.data[0].ID_ROL)
-          );
+          setRolSeleccionado(String(resRoles.data[0].ID_ROL));
         }
-
       } catch (err) {
-        setError(
-          err.response?.data?.mensaje ||
-          "Error al cargar roles y permisos"
-        );
+        setError(err.response?.data?.mensaje || "Error al cargar roles y permisos");
       } finally {
         setCargando(false);
       }
@@ -71,23 +60,14 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
       setCargando(true);
 
       try {
-        const respuesta = await api.get(
-          `/roles/${rolSeleccionado}/permisos`,
-          config
-        );
+        const respuesta = await api.get(`/roles/${rolSeleccionado}/permisos`, config);
 
         if (vigente) {
-          setSeleccionados(
-            respuesta.data.map((p) => p.ID_PERMISO)
-          );
+          setSeleccionados(respuesta.data.map((p) => p.ID_PERMISO));
         }
-
       } catch (err) {
         if (vigente) {
-          setError(
-            err.response?.data?.mensaje ||
-            "No se pudieron consultar los permisos"
-          );
+          setError(err.response?.data?.mensaje || "No se pudieron consultar los permisos");
         }
       } finally {
         if (vigente) setCargando(false);
@@ -103,18 +83,13 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
 
   const alternarPermiso = (id) => {
     setSeleccionados((actual) =>
-      actual.includes(id)
-        ? actual.filter((p) => p !== id)
-        : [...actual, id]
+      actual.includes(id) ? actual.filter((p) => p !== id) : [...actual, id],
     );
   };
 
-  const rolActual = roles.find(
-    (r) => String(r.ID_ROL) === rolSeleccionado
-  );
+  const rolActual = roles.find((r) => String(r.ID_ROL) === rolSeleccionado);
 
-  const esAdministrador =
-    rolActual?.ID_ROL === 1;
+  const esAdministrador = rolActual?.ID_ROL === 1;
 
   const guardarPermisos = async () => {
     setError("");
@@ -122,19 +97,11 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
     setGuardando(true);
 
     try {
-      await api.put(
-        `/roles/${rolSeleccionado}/permisos`,
-        { permisos: seleccionados },
-        config
-      );
+      await api.put(`/roles/${rolSeleccionado}/permisos`, { permisos: seleccionados }, config);
 
       setMensaje("Permisos guardados correctamente");
-
     } catch (err) {
-      setError(
-        err.response?.data?.mensaje ||
-        "Error al guardar los permisos"
-      );
+      setError(err.response?.data?.mensaje || "Error al guardar los permisos");
     } finally {
       setGuardando(false);
     }
@@ -151,9 +118,7 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
 
         <div>
           <h2>Gestión de Roles y Permisos</h2>
-          <p>
-            Controla las funciones disponibles para cada rol.
-          </p>
+          <p>Controla las funciones disponibles para cada rol.</p>
         </div>
       </div>
 
@@ -170,16 +135,12 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
       )}
 
       <section className="roles-panel">
-        <label htmlFor="rol">
-          Seleccionar rol
-        </label>
+        <label htmlFor="rol">Seleccionar rol</label>
 
         <select
           id="rol"
           value={rolSeleccionado}
-          onChange={(e) =>
-            setRolSeleccionado(e.target.value)
-          }
+          onChange={(e) => setRolSeleccionado(e.target.value)}
         >
           {roles.map((rol) => (
             <option key={rol.ID_ROL} value={rol.ID_ROL}>
@@ -193,8 +154,7 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
         {esAdministrador && (
           <div className="roles-advertencia">
             <Lock size={18} />
-            Los permisos del Administrador están
-            protegidos y no pueden modificarse aquí.
+            Los permisos del Administrador están protegidos y no pueden modificarse aquí.
           </div>
         )}
 
@@ -203,19 +163,12 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
         ) : (
           <div className="permisos-lista">
             {permisos.map((permiso) => (
-              <label
-                key={permiso.ID_PERMISO}
-                className="permiso-item"
-              >
+              <label key={permiso.ID_PERMISO} className="permiso-item">
                 <input
                   type="checkbox"
-                  checked={seleccionados.includes(
-                    permiso.ID_PERMISO
-                  )}
+                  checked={seleccionados.includes(permiso.ID_PERMISO)}
                   disabled={!puedeAdministrar || esAdministrador || guardando || Boolean(error)}
-                  onChange={() =>
-                    alternarPermiso(permiso.ID_PERMISO)
-                  }
+                  onChange={() => alternarPermiso(permiso.ID_PERMISO)}
                 />
 
                 <div>
@@ -231,17 +184,10 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
           <button
             className="btn-primary"
             onClick={guardarPermisos}
-            disabled={
-              guardando ||
-              cargando ||
-              Boolean(error) ||
-              !rolSeleccionado
-            }
+            disabled={guardando || cargando || Boolean(error) || !rolSeleccionado}
           >
             <Save size={18} />
-            {guardando
-              ? "Guardando..."
-              : "Guardar permisos"}
+            {guardando ? "Guardando..." : "Guardar permisos"}
           </button>
         )}
       </section>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { BookOpen, LogIn, Eye, EyeOff } from "lucide-react";
 import api from "../services/api";
@@ -24,16 +23,12 @@ function Login({ onLogin }) {
     try {
       const respuesta = await api.post("/auth/login", {
         usuario: usuario.trim(),
-        contrasena
+        contrasena,
       });
 
       onLogin(respuesta.data);
-
     } catch (err) {
-      setError(
-        err.response?.data?.mensaje ||
-        "No se pudo conectar con el servidor."
-      );
+      setError(err.response?.data?.mensaje || "No se pudo conectar con el servidor.");
     } finally {
       setCargando(false);
     }
@@ -41,9 +36,24 @@ function Login({ onLogin }) {
 
   return (
     <div className="login-container">
-      <aside className="login-story"><span className="eyebrow">LA CRAYOLA GIGANTE</span><h2>Un mundo de ideas.<br/><em>Todo en su lugar.</em></h2><p>Organiza tu librería, recibe nuevos productos y mantén cada existencia al día.</p><div className="color-swatches" aria-hidden="true"><i/><i/><i/><i/><i/></div><span>CREATIVIDAD QUE NOS UNE</span></aside>
+      <aside className="login-story">
+        <span className="eyebrow">LA CRAYOLA GIGANTE</span>
+        <h2>
+          Un mundo de ideas.
+          <br />
+          <em>Todo en su lugar.</em>
+        </h2>
+        <p>Organiza tu librería, recibe nuevos productos y mantén cada existencia al día.</p>
+        <div className="color-swatches" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+        </div>
+        <span>CREATIVIDAD QUE NOS UNE</span>
+      </aside>
       <div className="login-card">
-
         <div className="logo">
           <BookOpen size={38} />
         </div>
@@ -55,7 +65,6 @@ function Login({ onLogin }) {
         <p>Ingresa tus credenciales para continuar</p>
 
         <form onSubmit={iniciarSesion}>
-
           <label htmlFor="usuario">Nombre de usuario</label>
           <input
             id="usuario"
@@ -84,9 +93,7 @@ function Login({ onLogin }) {
               type="button"
               className="toggle-password"
               onClick={() => setMostrar(!mostrar)}
-              aria-label={
-                mostrar ? "Ocultar contraseña" : "Mostrar contraseña"
-              }
+              aria-label={mostrar ? "Ocultar contraseña" : "Mostrar contraseña"}
             >
               {mostrar ? <EyeOff size={19} /> : <Eye size={19} />}
             </button>
@@ -98,20 +105,13 @@ function Login({ onLogin }) {
             </div>
           )}
 
-          <button
-            className="login-button"
-            type="submit"
-            disabled={cargando}
-          >
+          <button className="login-button" type="submit" disabled={cargando}>
             <LogIn size={19} />
             {cargando ? "Ingresando..." : "Iniciar sesión"}
           </button>
         </form>
 
-        <div className="login-footer">
-          Librería La Crayola Gigante · Gestión administrativa
-        </div>
-
+        <div className="login-footer">Librería La Crayola Gigante · Gestión administrativa</div>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 
 const express = require("express");
@@ -22,7 +21,7 @@ app.get("/api", (req, res) => {
   res.json({
     proyecto: "Librería La Crayola Gigante",
     mensaje: "Servidor funcionando correctamente",
-    estado: "OK"
+    estado: "OK",
   });
 });
 
@@ -30,26 +29,30 @@ app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/roles", rolesRoutes);
 app.use("/api/clientes", clientesRoutes);
+app.use("/api/ventas", require("./routes/ventasRoutes"));
 app.use("/api/productos", productosRoutes);
 app.use("/api/categorias", categoriasRoutes);
 app.use("/api", require("./routes/sprint2Routes"));
 
 app.use((err, req, res, next) => {
-  if (err.type === 'entity.too.large') return res.status(413).json({mensaje:'El archivo supera el tamaño permitido'});
-  if (err.type === 'entity.parse.failed') return res.status(400).json({mensaje:'El cuerpo JSON no es válido'});
+  if (err.type === "entity.too.large")
+    return res.status(413).json({ mensaje: "El archivo supera el tamaño permitido" });
+  if (err.type === "entity.parse.failed")
+    return res.status(400).json({ mensaje: "El cuerpo JSON no es válido" });
   next(err);
 });
 
 // Una misma dirección sirve la aplicación y la API en el equipo compartido.
-const path = require('node:path');
-app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+const path = require("node:path");
+app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
 const PORT = process.env.PORT || 3000;
 
-if (require.main === module) app.listen(PORT, () => {
-  console.log(`Servidor iniciado en http://localhost:${PORT}`);
-  probarConexion();
-  require('./services/correos').iniciarCorreos();
-});
+if (require.main === module)
+  app.listen(PORT, () => {
+    console.log(`Servidor iniciado en http://localhost:${PORT}`);
+    probarConexion();
+    require("./services/correos").iniciarCorreos();
+  });
 
 module.exports = app;
