@@ -17,7 +17,8 @@
     "verify:mail": "node scripts/verificarCorreo.js",
     "test:validation": "node --test tests/validaciones.test.js",
     "migrate:images": "node scripts/migrarImagenes.js",
-    "test:images": "node --test tests/imagenes.test.js"
+    "test:images": "node --test tests/imagenes.test.js",
+    "migrate:sales": "node scripts/migrarVentas.js"
   },
   "keywords": [],
   "author": "",

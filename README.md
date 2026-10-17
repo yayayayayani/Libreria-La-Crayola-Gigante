@@ -174,6 +174,18 @@ Equipo de tres estudiantes: **David, Yordy y Daylin**. La configuración compart
 
 ## Estado
 
+### Ventas a clientes y documentos
+
+El acceso a Ventas a clientes está oculto hasta el siguiente sprint mediante `VENTAS_HABILITADAS = false` en `frontend/src/features.js`. La implementación y los datos se conservan.
+
+Ejecutar `npm run migrate:sales` desde `backend` antes de iniciar esta versión y recompilar con `npm run build` desde `frontend`. La migración añade ventas, detalles y movimientos de salida; asigna `VENTAS_GESTIONAR` al rol administrador (ID 1). Otros roles pueden recibirlo desde Roles y Permisos. Crear un cliente durante una venta requiere además `CLIENTES_CREAR`.
+
+En **Ventas a clientes** se puede seleccionar un cliente activo, añadir uno nuevo o usar **Consumidor final (CF)** sin crear un cliente. La confirmación calcula precios en el servidor y descuenta inventario dentro de la misma transacción. Los reintentos con la misma clave no duplican la venta. Las compras a proveedores siguen registrándose en **Compras e inventario**.
+
+Proveedores y clientes permiten elegir NIT (7 dígitos y un verificador, con guion automático) o DPI/CUI (13 dígitos). Los documentos se guardan sin guion para evitar duplicados equivalentes. El nombre comercial admite letras, números y símbolos, de 1 a 150 caracteres.
+
+Validación: `node --test tests/validaciones.test.js tests/sprint2.test.js` en backend y `npx playwright test tests/sprint2.spec.js` en frontend. Las pruebas de backend usan registros temporales en la base configurada y los eliminan al terminar.
+
 **Sprint 1:** funcionalidades principales implementadas; documentación y evidencias de entrega sujetas a revisión final.
 
 **Sprint 2:** incremento implementado y migración local aplicada. Activación de SMTP, configuración remota y evidencias de las ceremonias reales pendientes del equipo; consultar el estado detallado en `docs/sprint2/`.

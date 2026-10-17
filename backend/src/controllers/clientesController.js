@@ -1,12 +1,12 @@
+const oracledb = require("../config/driver");
+const { nombreValido, documentoValido, normalizarTelefono } = require("../services/validaciones");
 
-const oracledb = require('../config/driver');
-const { nombreValido, nitValido } = require('../services/validaciones');
-
-const conectar = () => oracledb.getConnection({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  connectString: process.env.DB_CONNECT_STRING
-});
+const conectar = () =>
+  oracledb.getConnection({
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    connectString: process.env.DB_CONNECT_STRING,
+  });
 
 const normalizar = (valor) => {
   if (valor === undefined || valor === null) return null;
@@ -21,16 +21,22 @@ const validarCliente = (datos) => {
     nit: normalizar(datos.nit)?.toUpperCase() || null,
     telefono: normalizar(datos.telefono),
     correo: normalizar(datos.correo)?.toLowerCase() || null,
-    direccion: normalizar(datos.direccion)
+    direccion: normalizar(datos.direccion),
   };
 
   if (!cliente.nombres) {
     return { error: "El nombre es obligatorio" };
   }
   if (!nombreValido(cliente.nombres) || (cliente.apellidos && !nombreValido(cliente.apellidos))) {
-    return { error: 'Los nombres y apellidos solo pueden contener letras, espacios, apóstrofes y guiones' };
+    return {
+      error: "Los nombres y apellidos solo pueden contener letras, espacios, apóstrofes y guiones",
+    };
   }
-  if (cliente.telefono && !/^[+0-9 ()-]{8,25}$/.test(cliente.telefono)) return {error:'Teléfono inválido'};
+  try {
+    cliente.telefono = normalizarTelefono(datos.telefono);
+  } catch (e) {
+    return { error: e.message };
+  }
 
   const limites = {
     nombres: 100,
@@ -38,29 +44,32 @@ const validarCliente = (datos) => {
     nit: 20,
     telefono: 25,
     correo: 120,
-    direccion: 250
+    direccion: 250,
   };
 
   for (const [campo, limite] of Object.entries(limites)) {
-    if (cliente[campo] &&
-        Buffer.byteLength(cliente[campo], "utf8") > limite) {
+    if (cliente[campo] && Buffer.byteLength(cliente[campo], "utf8") > limite) {
       return {
-        error: `El campo ${campo} supera el límite permitido`
+        error: `El campo ${campo} supera el límite permitido`,
       };
     }
   }
 
-  if (cliente.correo &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cliente.correo)) {
+  if (cliente.correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cliente.correo)) {
     return { error: "El correo electrónico no es válido" };
   }
 
-  if (cliente.nit &&
-      !nitValido(cliente.nit)) {
-    return { error: "Formato de NIT inválido" };
+  if (
+    cliente.nit &&
+    !documentoValido(
+      cliente.nit,
+      datos.tipoDocumento || (/^[0-9]{13}$/.test(cliente.nit) ? "DPI" : "NIT"),
+    )
+  ) {
+    return { error: "Documento inválido: DPI de 13 dígitos o NIT con guion opcional" };
   }
 
-  if(cliente.nit) cliente.nit = cliente.nit.replace('-', '');
+  if (cliente.nit) cliente.nit = cliente.nit.replace("-", "");
 
   return { cliente };
 };
@@ -86,15 +95,14 @@ const listarClientes = async (req, res) => {
        FROM CLIENTES
        ORDER BY ID_CLIENTE DESC`,
       {},
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      { outFormat: oracledb.OUT_FORMAT_OBJECT },
     );
 
     return res.json(resultado.rows);
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      mensaje: "Error al consultar clientes"
+      mensaje: "Error al consultar clientes",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -139,27 +147,26 @@ const crearCliente = async (req, res) => {
         ...cliente,
         id: {
           dir: oracledb.BIND_OUT,
-          type: oracledb.NUMBER
-        }
+          type: oracledb.NUMBER,
+        },
       },
-      { autoCommit: true }
+      { autoCommit: true },
     );
 
     return res.status(201).json({
       mensaje: "Cliente registrado correctamente",
-      id: resultado.outBinds.id[0]
+      id: resultado.outBinds.id[0],
     });
-
   } catch (error) {
     if (error.errorNum === 1) {
       return res.status(409).json({
-        mensaje: "El correo o NIT ya está registrado en otro cliente"
+        mensaje: "El correo o NIT ya está registrado en otro cliente",
       });
     }
 
     console.error(error);
     return res.status(500).json({
-      mensaje: "Error al registrar cliente"
+      mensaje: "Error al registrar cliente",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -175,7 +182,7 @@ const modificarCliente = async (req, res) => {
 
     if (!Number.isSafeInteger(id) || id <= 0) {
       return res.status(400).json({
-        mensaje: "ID de cliente inválido"
+        mensaje: "ID de cliente inválido",
       });
     }
 
@@ -197,29 +204,28 @@ const modificarCliente = async (req, res) => {
          DIRECCION = :direccion
        WHERE ID_CLIENTE = :id`,
       { ...cliente, id },
-      { autoCommit: true }
+      { autoCommit: true },
     );
 
     if (resultado.rowsAffected === 0) {
       return res.status(404).json({
-        mensaje: "Cliente no encontrado"
+        mensaje: "Cliente no encontrado",
       });
     }
 
     return res.json({
-      mensaje: "Cliente actualizado correctamente"
+      mensaje: "Cliente actualizado correctamente",
     });
-
   } catch (error) {
     if (error.errorNum === 1) {
       return res.status(409).json({
-        mensaje: "El correo o NIT ya está registrado en otro cliente"
+        mensaje: "El correo o NIT ya está registrado en otro cliente",
       });
     }
 
     console.error(error);
     return res.status(500).json({
-      mensaje: "Error al modificar cliente"
+      mensaje: "Error al modificar cliente",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -234,10 +240,9 @@ const cambiarEstado = async (req, res) => {
     const id = Number(req.params.id);
     const { estado } = req.body || {};
 
-    if (!Number.isSafeInteger(id) || id <= 0 ||
-        !["A", "I"].includes(estado)) {
+    if (!Number.isSafeInteger(id) || id <= 0 || !["A", "I"].includes(estado)) {
       return res.status(400).json({
-        mensaje: "Datos inválidos"
+        mensaje: "Datos inválidos",
       });
     }
 
@@ -248,23 +253,22 @@ const cambiarEstado = async (req, res) => {
        SET ESTADO = :estado
        WHERE ID_CLIENTE = :id`,
       { estado, id },
-      { autoCommit: true }
+      { autoCommit: true },
     );
 
     if (resultado.rowsAffected === 0) {
       return res.status(404).json({
-        mensaje: "Cliente no encontrado"
+        mensaje: "Cliente no encontrado",
       });
     }
 
     return res.json({
-      mensaje: "Estado actualizado correctamente"
+      mensaje: "Estado actualizado correctamente",
     });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      mensaje: "Error al cambiar el estado"
+      mensaje: "Error al cambiar el estado",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -275,5 +279,7 @@ module.exports = {
   listarClientes,
   crearCliente,
   modificarCliente,
-  cambiarEstado
+  cambiarEstado,
 };
+
+module.exports.validarCliente = validarCliente;

@@ -1,22 +1,24 @@
-
 import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Usuarios from "./pages/Usuarios";
 import RolesPermisos from "./pages/RolesPermisos";
+import Ventas from "./pages/Ventas";
+import { VENTAS_HABILITADAS } from "./features";
 import Clientes from "./pages/Clientes";
 import Productos from "./pages/Productos";
-import ComprasInventario from './pages/ComprasInventario';
+import ComprasInventario from "./pages/ComprasInventario";
 import api from "./services/api";
 import "./App.css";
 import "./theme.css";
 
 const permisosPagina = {
-  compras: ['PROVEEDORES_GESTIONAR','COMPRAS_GESTIONAR','INVENTARIO_VER','INVENTARIO_GESTIONAR'],
+  ventas: "VENTAS_GESTIONAR",
+  compras: ["PROVEEDORES_GESTIONAR", "COMPRAS_GESTIONAR", "INVENTARIO_VER", "INVENTARIO_GESTIONAR"],
   usuarios: "USUARIOS_GESTIONAR",
   roles: "ROLES_GESTIONAR",
   clientes: ["CLIENTES_VER", "CLIENTES_CREAR", "CLIENTES_EDITAR"],
-  productos: ["PRODUCTOS_VER", "PRODUCTOS_CREAR", "PRODUCTOS_EDITAR"]
+  productos: ["PRODUCTOS_VER", "PRODUCTOS_CREAR", "PRODUCTOS_EDITAR"],
 };
 
 function App() {
@@ -56,8 +58,8 @@ function App() {
       try {
         const respuesta = await api.get("/auth/permisos", {
           headers: {
-            Authorization: `Bearer ${sesion.token}`
-          }
+            Authorization: `Bearer ${sesion.token}`,
+          },
         });
 
         if (vigente) {
@@ -69,10 +71,7 @@ function App() {
         if (vigente) {
           setPermisos([]);
           setIdentidad(null);
-          setError(
-            err.response?.data?.mensaje ||
-            "No se pudieron consultar los permisos"
-          );
+          setError(err.response?.data?.mensaje || "No se pudieron consultar los permisos");
         }
       } finally {
         consultando = false;
@@ -110,16 +109,14 @@ function App() {
       <main className="container">
         <div className="panel">
           <p role="alert">{error}</p>
-          <button onClick={cerrarSesion}>
-            Volver al inicio de sesión
-          </button>
+          <button onClick={cerrarSesion}>Volver al inicio de sesión</button>
         </div>
       </main>
     );
   }
 
   const autorizado = (codigo) =>
-    (Array.isArray(codigo) ? codigo : [codigo]).some(p => permisos.includes(p));
+    (Array.isArray(codigo) ? codigo : [codigo]).some((p) => permisos.includes(p));
 
   const navegar = (destino) => {
     const permiso = permisosPagina[destino];
@@ -131,17 +128,17 @@ function App() {
 
   const volver = () => setPagina("dashboard");
 
-  if(pagina === 'compras' && autorizado(permisosPagina.compras)) return <ComprasInventario token={sesion.token} permisos={permisos} onVolver={volver}/>;
+  if (VENTAS_HABILITADAS && pagina === "ventas" && autorizado("VENTAS_GESTIONAR"))
+    return <Ventas token={sesion.token} permisos={permisos} onVolver={volver} />;
 
-  if (pagina === "usuarios" &&
-      autorizado("USUARIOS_GESTIONAR")) {
-    return (
-      <Usuarios identidad={identidad} token={sesion.token} onVolver={volver} />
-    );
+  if (pagina === "compras" && autorizado(permisosPagina.compras))
+    return <ComprasInventario token={sesion.token} permisos={permisos} onVolver={volver} />;
+
+  if (pagina === "usuarios" && autorizado("USUARIOS_GESTIONAR")) {
+    return <Usuarios identidad={identidad} token={sesion.token} onVolver={volver} />;
   }
 
-  if (pagina === "roles" &&
-      autorizado("ROLES_GESTIONAR")) {
+  if (pagina === "roles" && autorizado("ROLES_GESTIONAR")) {
     return (
       <RolesPermisos
         puedeAdministrar={identidad?.idRol === 1}
@@ -151,18 +148,12 @@ function App() {
     );
   }
 
-  if (pagina === "clientes" &&
-      autorizado(permisosPagina.clientes)) {
-    return (
-      <Clientes permisos={permisos} token={sesion.token} onVolver={volver} />
-    );
+  if (pagina === "clientes" && autorizado(permisosPagina.clientes)) {
+    return <Clientes permisos={permisos} token={sesion.token} onVolver={volver} />;
   }
 
-  if (pagina === "productos" &&
-      autorizado(permisosPagina.productos)) {
-    return (
-      <Productos permisos={permisos} token={sesion.token} onVolver={volver} />
-    );
+  if (pagina === "productos" && autorizado(permisosPagina.productos)) {
+    return <Productos permisos={permisos} token={sesion.token} onVolver={volver} />;
   }
 
   return (
@@ -174,7 +165,8 @@ function App() {
       onRoles={() => navegar("roles")}
       onClientes={() => navegar("clientes")}
       onProductos={() => navegar("productos")}
-      onCompras={() => navegar('compras')}
+      onVentas={() => navegar("ventas")}
+      onCompras={() => navegar("compras")}
     />
   );
 }

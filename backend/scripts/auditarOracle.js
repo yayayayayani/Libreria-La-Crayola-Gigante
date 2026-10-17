@@ -4,8 +4,11 @@ const db = require("oracledb");
 async function main() {
   let conexion;
   try {
-    conexion = await db.getConnection({ user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD, connectString: process.env.DB_CONNECT_STRING });
+    conexion = await db.getConnection({
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      connectString: process.env.DB_CONNECT_STRING,
+    });
     conexion.callTimeout = 10000;
     const consultas = {
       columnas: `SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE FROM USER_TAB_COLUMNS
@@ -24,7 +27,7 @@ async function main() {
         (SELECT COUNT(*) FROM ROL_PERMISO rp WHERE NOT EXISTS (SELECT 1 FROM ROLES r WHERE r.ID_ROL = rp.ID_ROL)
           OR NOT EXISTS (SELECT 1 FROM PERMISOS p WHERE p.ID_PERMISO = rp.ID_PERMISO)) AS ASIGNACIONES FROM DUAL`,
       duplicados: `SELECT ID_ROL, ID_PERMISO, COUNT(*) AS TOTAL FROM ROL_PERMISO
-        GROUP BY ID_ROL, ID_PERMISO HAVING COUNT(*) > 1`
+        GROUP BY ID_ROL, ID_PERMISO HAVING COUNT(*) > 1`,
     };
     for (const [nombre, sql] of Object.entries(consultas)) {
       const resultado = await conexion.execute(sql, {}, { outFormat: db.OUT_FORMAT_OBJECT });

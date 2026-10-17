@@ -1,22 +1,23 @@
-const { prepararImagen, guardarImagen } = require('../services/imagenes');
+const { prepararImagen, guardarImagen } = require("../services/imagenes");
 
-const oracledb = require('../config/driver');
+const oracledb = require("../config/driver");
 
-const conectar = () => oracledb.getConnection({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  connectString: process.env.DB_CONNECT_STRING
-});
+const conectar = () =>
+  oracledb.getConnection({
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    connectString: process.env.DB_CONNECT_STRING,
+  });
 
 function validarProducto(datos) {
-  const {
-    codigo, nombre, descripcion,
-    precio, stock, idCategoria
-  } = datos;
+  const { codigo, nombre, descripcion, precio, stock, idCategoria } = datos;
 
-  if (typeof codigo !== "string" ||
-      typeof nombre !== "string" ||
-      !codigo.trim() || !nombre.trim()) {
+  if (
+    typeof codigo !== "string" ||
+    typeof nombre !== "string" ||
+    !codigo.trim() ||
+    !nombre.trim()
+  ) {
     return { error: "El código y nombre son obligatorios" };
   }
 
@@ -24,8 +25,7 @@ function validarProducto(datos) {
     Buffer.byteLength(codigo.trim(), "utf8") > 50 ||
     Buffer.byteLength(nombre.trim(), "utf8") > 150 ||
     (descripcion != null &&
-      (typeof descripcion !== "string" ||
-       Buffer.byteLength(descripcion, "utf8") > 250))
+      (typeof descripcion !== "string" || Buffer.byteLength(descripcion, "utf8") > 250))
   ) {
     return { error: "Se excedió la longitud de un campo" };
   }
@@ -34,23 +34,35 @@ function validarProducto(datos) {
   const stockNumero = Number(stock);
   const categoriaNumero = Number(idCategoria);
 
-  if (!["number", "string"].includes(typeof precio) || precio === "" || precio === null ||
-      !Number.isFinite(precioNumero) ||
-      precioNumero < 0 ||
-      precioNumero > 99999999.99 ||
-      !/^\d+(\.\d{1,2})?$/.test(String(precio))) {
+  if (
+    !["number", "string"].includes(typeof precio) ||
+    precio === "" ||
+    precio === null ||
+    !Number.isFinite(precioNumero) ||
+    precioNumero < 0 ||
+    precioNumero > 99999999.99 ||
+    !/^\d+(\.\d{1,2})?$/.test(String(precio))
+  ) {
     return { error: "Ingresa un precio válido con máximo 2 decimales" };
   }
 
-  if (stock === "" || stock === null ||
-      !Number.isSafeInteger(stockNumero) ||
-      stockNumero < 0 || stockNumero > 9999999999 ||
-      !["number", "string"].includes(typeof stock) || !/^\d+$/.test(String(stock))) {
+  if (
+    stock === "" ||
+    stock === null ||
+    !Number.isSafeInteger(stockNumero) ||
+    stockNumero < 0 ||
+    stockNumero > 9999999999 ||
+    !["number", "string"].includes(typeof stock) ||
+    !/^\d+$/.test(String(stock))
+  ) {
     return { error: "El stock debe ser un entero entre 0 y 9999999999" };
   }
 
-  if (!["number", "string"].includes(typeof idCategoria) || !Number.isSafeInteger(categoriaNumero) ||
-      categoriaNumero <= 0) {
+  if (
+    !["number", "string"].includes(typeof idCategoria) ||
+    !Number.isSafeInteger(categoriaNumero) ||
+    categoriaNumero <= 0
+  ) {
     return { error: "Selecciona una categoría válida" };
   }
 
@@ -61,8 +73,8 @@ function validarProducto(datos) {
       descripcion: descripcion?.trim() || null,
       precio: precioNumero,
       stock: stockNumero,
-      idCategoria: categoriaNumero
-    }
+      idCategoria: categoriaNumero,
+    },
   };
 }
 
@@ -71,7 +83,7 @@ async function categoriaActiva(conexion, id) {
     `SELECT ID_CATEGORIA
      FROM CATEGORIAS
      WHERE ID_CATEGORIA = :id AND ESTADO = 'A'`,
-    { id }
+    { id },
   );
 
   return resultado.rows.length > 0;
@@ -102,14 +114,14 @@ const listarProductos = async (req, res) => {
          ON p.ID_CATEGORIA = c.ID_CATEGORIA
        ORDER BY p.ID_PRODUCTO DESC`,
       {},
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      { outFormat: oracledb.OUT_FORMAT_OBJECT },
     );
 
     res.json(resultado.rows);
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      mensaje: "Error al consultar productos"
+      mensaje: "Error al consultar productos",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -130,9 +142,9 @@ const crearProducto = async (req, res) => {
     const imagen = await prepararImagen(req.body?.imagen);
     conexion = await conectar();
 
-    if (!await categoriaActiva(conexion, producto.idCategoria)) {
+    if (!(await categoriaActiva(conexion, producto.idCategoria))) {
       return res.status(400).json({
-        mensaje: "La categoría no existe o está inactiva"
+        mensaje: "La categoría no existe o está inactiva",
       });
     }
 
@@ -151,32 +163,35 @@ const crearProducto = async (req, res) => {
         ...producto,
         id: {
           dir: oracledb.BIND_OUT,
-          type: oracledb.NUMBER
-        }
+          type: oracledb.NUMBER,
+        },
       },
-      { autoCommit: false }
+      { autoCommit: false },
     );
 
-    await conexion.execute(`INSERT INTO movimientos_inventario(id_producto,id_usuario,tipo,cantidad,stock_anterior,stock_nuevo) VALUES (:id,:usuario,'APERTURA',:stock,0,:stock)`,{id:resultado.outBinds.id[0],usuario:req.usuario.ID_USUARIO,stock:producto.stock});
+    await conexion.execute(
+      `INSERT INTO movimientos_inventario(id_producto,id_usuario,tipo,cantidad,stock_anterior,stock_nuevo) VALUES (:id,:usuario,'APERTURA',:stock,0,:stock)`,
+      { id: resultado.outBinds.id[0], usuario: req.usuario.ID_USUARIO, stock: producto.stock },
+    );
     await guardarImagen(conexion, resultado.outBinds.id[0], imagen);
     await conexion.commit();
 
     res.status(201).json({
       mensaje: "Producto creado correctamente",
-      id: resultado.outBinds.id[0]
+      id: resultado.outBinds.id[0],
     });
   } catch (error) {
     if (conexion) await conexion.rollback();
     if (error.status) return res.status(error.status).json({ mensaje: error.message });
     if (error.errorNum === 1) {
       return res.status(409).json({
-        mensaje: "El código del producto ya existe"
+        mensaje: "El código del producto ya existe",
       });
     }
 
     console.error(error);
     res.status(500).json({
-      mensaje: "Error al crear producto"
+      mensaje: "Error al crear producto",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -193,7 +208,7 @@ const modificarProducto = async (req, res) => {
 
     if (!Number.isSafeInteger(id) || id <= 0) {
       return res.status(400).json({
-        mensaje: "ID de producto inválido"
+        mensaje: "ID de producto inválido",
       });
     }
 
@@ -204,9 +219,9 @@ const modificarProducto = async (req, res) => {
     const imagen = await prepararImagen(req.body?.imagen);
     conexion = await conectar();
 
-    if (!await categoriaActiva(conexion, producto.idCategoria)) {
+    if (!(await categoriaActiva(conexion, producto.idCategoria))) {
       return res.status(400).json({
-        mensaje: "La categoría no existe o está inactiva"
+        mensaje: "La categoría no existe o está inactiva",
       });
     }
 
@@ -218,33 +233,40 @@ const modificarProducto = async (req, res) => {
          PRECIO = :precio,
          ID_CATEGORIA = :idCategoria
        WHERE ID_PRODUCTO = :id`,
-      { codigo:producto.codigo,nombre:producto.nombre,descripcion:producto.descripcion,precio:producto.precio,idCategoria:producto.idCategoria,id },
-      { autoCommit: false }
+      {
+        codigo: producto.codigo,
+        nombre: producto.nombre,
+        descripcion: producto.descripcion,
+        precio: producto.precio,
+        idCategoria: producto.idCategoria,
+        id,
+      },
+      { autoCommit: false },
     );
 
     if (resultado.rowsAffected === 0) {
       return res.status(404).json({
-        mensaje: "Producto no encontrado"
+        mensaje: "Producto no encontrado",
       });
     }
 
     await guardarImagen(conexion, id, imagen);
     await conexion.commit();
     res.json({
-      mensaje: "Producto actualizado correctamente"
+      mensaje: "Producto actualizado correctamente",
     });
   } catch (error) {
     if (conexion) await conexion.rollback();
     if (error.status) return res.status(error.status).json({ mensaje: error.message });
     if (error.errorNum === 1) {
       return res.status(409).json({
-        mensaje: "El código del producto ya existe"
+        mensaje: "El código del producto ya existe",
       });
     }
 
     console.error(error);
     res.status(500).json({
-      mensaje: "Error al modificar producto"
+      mensaje: "Error al modificar producto",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -259,10 +281,9 @@ const cambiarEstado = async (req, res) => {
     const id = Number(req.params.id);
     const { estado } = req.body || {};
 
-    if (!Number.isSafeInteger(id) || id <= 0 ||
-        !["A", "I"].includes(estado)) {
+    if (!Number.isSafeInteger(id) || id <= 0 || !["A", "I"].includes(estado)) {
       return res.status(400).json({
-        mensaje: "Datos inválidos"
+        mensaje: "Datos inválidos",
       });
     }
 
@@ -273,22 +294,22 @@ const cambiarEstado = async (req, res) => {
        SET ESTADO = :estado
        WHERE ID_PRODUCTO = :id`,
       { id, estado },
-      { autoCommit: true }
+      { autoCommit: true },
     );
 
     if (resultado.rowsAffected === 0) {
       return res.status(404).json({
-        mensaje: "Producto no encontrado"
+        mensaje: "Producto no encontrado",
       });
     }
 
     res.json({
-      mensaje: "Estado actualizado correctamente"
+      mensaje: "Estado actualizado correctamente",
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      mensaje: "Error al cambiar estado"
+      mensaje: "Error al cambiar estado",
     });
   } finally {
     if (conexion) await conexion.close();
@@ -299,5 +320,5 @@ module.exports = {
   listarProductos,
   crearProducto,
   modificarProducto,
-  cambiarEstado
+  cambiarEstado,
 };

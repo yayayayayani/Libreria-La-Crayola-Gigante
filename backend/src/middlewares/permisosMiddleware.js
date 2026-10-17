@@ -1,5 +1,4 @@
-
-const oracledb = require('../config/driver');
+const oracledb = require("../config/driver");
 
 const verificarPermiso = (codigoPermiso) => {
   return async (req, res, next) => {
@@ -8,14 +7,14 @@ const verificarPermiso = (codigoPermiso) => {
     try {
       if (!req.usuario) {
         return res.status(401).json({
-          mensaje: "Usuario no autenticado"
+          mensaje: "Usuario no autenticado",
         });
       }
 
       conexion = await oracledb.getConnection({
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
-        connectString: process.env.DB_CONNECT_STRING
+        connectString: process.env.DB_CONNECT_STRING,
       });
 
       const codigos = Array.isArray(codigoPermiso) ? codigoPermiso : [codigoPermiso];
@@ -29,30 +28,28 @@ const verificarPermiso = (codigoPermiso) => {
            AND p.CODIGO IN (${codigos.map((_, i) => `:codigo${i}`).join(",")})`,
         {
           idRol: req.usuario.ID_ROL,
-          ...binds
+          ...binds,
         },
         {
-          outFormat: oracledb.OUT_FORMAT_OBJECT
-        }
+          outFormat: oracledb.OUT_FORMAT_OBJECT,
+        },
       );
 
       const autorizado = resultado.rows[0].TOTAL > 0;
 
       if (!autorizado) {
         return res.status(403).json({
-          mensaje: "No tienes permisos para realizar esta acción"
+          mensaje: "No tienes permisos para realizar esta acción",
         });
       }
 
       return next();
-
     } catch (error) {
       console.error("Error verificando permiso:", error.message);
 
       return res.status(500).json({
-        mensaje: "Error al comprobar permisos"
+        mensaje: "Error al comprobar permisos",
       });
-
     } finally {
       if (conexion) {
         await conexion.close();
