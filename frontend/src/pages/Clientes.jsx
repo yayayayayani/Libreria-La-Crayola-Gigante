@@ -157,7 +157,6 @@ function Clientes({ token, onVolver, permisos = [] }) {
             <ArrowLeft size={18} /> Volver al menú
           </button>
           <h2>Gestión de Clientes</h2>
-          <p>Administración de clientes de la librería</p>
         </div>
 
         {puedeCrear && (
@@ -183,7 +182,7 @@ function Clientes({ token, onVolver, permisos = [] }) {
         <section className="form-panel">
           <h3>{editando !== null ? "Modificar cliente" : "Registrar cliente"}</h3>
 
-          <form className="usuario-form" onSubmit={guardarCliente}>
+          <form onReset={()=>setMostrarFormulario(false)} className="usuario-form" onSubmit={guardarCliente}>
             <Documento
               tipo={formulario.tipoDocumento}
               valor={formulario.nit}

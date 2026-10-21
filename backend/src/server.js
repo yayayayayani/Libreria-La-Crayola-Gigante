@@ -26,9 +26,12 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use('/api/empleado', require('./routes/empleadoRoutes'));
+app.use("/api/finanzas", require("./routes/finanzasRoutes"));
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/roles", rolesRoutes);
 app.use("/api/clientes", clientesRoutes);
+app.use("/api", require("./routes/pedidosRoutes"));
 app.use("/api/ventas", require("./routes/ventasRoutes"));
 app.use("/api/productos", productosRoutes);
 app.use("/api/categorias", categoriasRoutes);

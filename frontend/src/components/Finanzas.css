@@ -1,0 +1,28 @@
+.finanzas { margin: 28px 0; padding: 28px; background: #fffef9; border: 1px solid #e0e5d7; border-radius: 24px; color: #263c31; }
+.finanzas header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.finanzas h2 { margin: 8px 0; font-size: 28px; }
+.finanzas button { border: 1px solid #c4d1bf; border-radius: 9px; background: #eef4e8; padding: 10px 14px; cursor: pointer; color: #284732; }
+.finanzas button:disabled { opacity: .5; cursor: default; }
+.finanzas-filtros { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; margin: 22px 0; }
+.finanzas label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; }
+.finanzas input,.finanzas select { min-width: 0; border: 1px solid #ccd4c5; border-radius: 8px; padding: 10px; background: white; color: #263c31; font: inherit; }
+.finanzas-periodos { display: flex; gap: 6px; }
+.finanzas-totales { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+.finanzas-totales article { background: #f1f2ea; padding: 20px; border-radius: 16px; }
+.finanzas-totales span { display: block; font-size: 13px; margin-bottom: 12px; }
+.finanzas-totales strong { font-size: clamp(18px,2vw,28px); overflow-wrap: anywhere; }
+.finanzas-totales .entrada { background: #e7f2e5; }.finanzas-totales .salida { background: #fff0e4; }.finanzas-totales .saldo { background: #244d3b; color: white; }
+.finanzas-aclaracion { color: #63705f; font-size: 13px; line-height: 1.7; }
+.finanzas-metodos { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; margin: 22px 0; }
+.finanzas-metodos article { border: 1px solid #e0e5d7; padding: 16px; border-radius: 12px; }
+.finanzas-metodos p { display: flex; justify-content: space-between; gap: 10px; }
+.finanzas table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.finanzas td,.finanzas th { text-align: left; border-bottom: 1px solid #e0e5d7; padding: 12px; }
+.finanzas th { background: #eff2e9; }.finanzas td { overflow-wrap: anywhere; }
+.finanzas-paginacion { display: flex; align-items: center; gap: 16px; margin: 16px 0; }
+.finanzas summary { cursor: pointer; font-weight: 600; padding: 14px 0; }
+.finanzas-registro { border-top: 1px solid #e0e5d7; margin-top: 20px; }
+.finanzas-form fieldset { border: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.finanzas-form { display: grid; gap: 14px; }.finanzas-form p { grid-column: 1 / -1; }
+@media(max-width:800px) { .finanzas-totales { grid-template-columns:1fr 1fr; }.finanzas { padding:18px; }.finanzas-metodos { grid-template-columns:1fr; } }
+@media(max-width:480px) { .finanzas-totales,.finanzas-form fieldset { grid-template-columns:1fr; }.finanzas-filtros label { width:100%; }.finanzas header { align-items:start; }.finanzas h2 { font-size:23px; }.finanzas-paginacion { flex-wrap:wrap; } }

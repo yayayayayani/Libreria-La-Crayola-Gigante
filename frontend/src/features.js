@@ -1,2 +1,2 @@
-// Se habilitará al iniciar el sprint de ventas a clientes.
-export const VENTAS_HABILITADAS = false;
+// Sprint 3: pedidos, ventas y pagos.
+export const VENTAS_HABILITADAS = true;

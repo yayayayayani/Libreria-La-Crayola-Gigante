@@ -17,7 +17,7 @@ async function iniciar(page, permisos, idRol = 2) {
             usuario: {
               id: 2,
               idRol: estado.idRol,
-              rol: estado.idRol === 1 ? "Administrador" : "Empleado",
+              rol: [1, 3].includes(estado.idRol) ? "Administrador" : "Empleado",
             },
           });
     if (route.request().method() !== "GET")
@@ -44,7 +44,7 @@ async function iniciar(page, permisos, idRol = 2) {
     if (path === "/roles" || path === "/usuarios/roles-asignables")
       return responder([
         { ID_ROL: 2, NOMBRE: "Empleado", ESTADO: "A" },
-        ...(estado.idRol === 1 ? [{ ID_ROL: 1, NOMBRE: "Administrador", ESTADO: "A" }] : []),
+        ...([1, 3].includes(estado.idRol) ? [{ ID_ROL: 1, NOMBRE: "Administrador", ESTADO: "A" }] : []),
       ]);
     if (path === "/roles/permisos")
       return responder([{ ID_PERMISO: 1, CODIGO: "CLIENTES_VER", DESCRIPCION: "Consultar" }]);
@@ -67,7 +67,7 @@ async function iniciar(page, permisos, idRol = 2) {
   await page.locator("#usuario").fill("prueba");
   await page.locator("#contrasena").fill("prueba");
   await page.getByRole("button", { name: "Iniciar sesión" }).click();
-  await expect(page.getByText("¡Bienvenido, Prueba!")).toBeVisible();
+  await expect(page.getByText("Hola, Prueba")).toBeVisible();
   return estado;
 }
 
@@ -124,7 +124,7 @@ test("403 muestra mensaje comprensible", async ({ page }) => {
 });
 
 test("revocación periódica cierra pantalla administrativa sin otro login", async ({ page }) => {
-  const estado = await iniciar(page, ["USUARIOS_GESTIONAR"]);
+  const estado = await iniciar(page, ["USUARIOS_GESTIONAR"], 1);
   await page.getByRole("button", { name: /^Usuarios / }).click();
   await expect(page.getByRole("heading", { name: "Gestión de Usuarios" })).toBeVisible();
   estado.permisos = [];
@@ -162,14 +162,14 @@ test("navegar a URL administrativa no concede acceso", async ({ page }) => {
   });
   await expect(page.getByRole("heading", { name: "Gestión de Usuarios" })).toHaveCount(0);
   await page.reload();
-  await expect(page.locator("#usuario")).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Clientes / })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Usuarios / })).toHaveCount(0);
 });
 
-test("gestor de roles no administrador solo consulta", async ({ page }) => {
-  await iniciar(page, ["ROLES_GESTIONAR"]);
-  await page.getByRole("button", { name: /^Roles y Permisos / }).click();
-  await expect(page.getByRole("checkbox")).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Guardar permisos" })).toHaveCount(0);
+test("empleado no puede consultar roles aunque conserve permiso antiguo", async ({ page }) => {
+  const estado = await iniciar(page, ["ROLES_GESTIONAR"]);
+  await expect(page.getByRole("button", { name: /^Roles y Permisos / })).toHaveCount(0);
+  expect(estado.peticiones).not.toContain("GET /roles");
 });
 
 test("administrador puede guardar permisos de Empleado", async ({ page }) => {
@@ -182,10 +182,23 @@ test("administrador puede guardar permisos de Empleado", async ({ page }) => {
 });
 
 test("gestor de usuarios no puede cambiar su propio rol o estado", async ({ page }) => {
-  await iniciar(page, ["USUARIOS_GESTIONAR"]);
+  await iniciar(page, ["USUARIOS_GESTIONAR"], 1);
   await page.getByRole("button", { name: /^Usuarios / }).click();
   await expect(page.getByRole("button", { name: "Desactivar" })).toBeDisabled();
   await page.getByRole("button", { name: "Editar prueba" }).click();
   await expect(page.getByRole("combobox")).toBeDisabled();
-  await expect(page.getByRole("option", { name: "Administrador", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("option", { name: "Administrador", exact: true })).toHaveCount(1);
+});
+
+
+test("Dueño puede administrar usuarios y eliminar con confirmacion",async({page})=>{
+  const e=await iniciar(page,['USUARIOS_GESTIONAR','ROLES_GESTIONAR'],3);
+  await page.route('**/api/usuarios',r=>r.fulfill({json:[{ID_USUARIO:8,NOMBRE_COMPLETO:'Empleado Prueba',NOMBRE_USUARIO:'empleado8',ID_ROL:2,ROL:'Empleado',ESTADO:'A'}]}));
+  await page.getByRole('button',{name:/^Usuarios/}).click();
+  await expect(page.getByRole('button',{name:'Eliminar empleado8'})).toBeEnabled();
+  page.once('dialog',d=>d.dismiss());await page.getByRole('button',{name:'Eliminar empleado8'}).click();
+  expect(e.peticiones).not.toContain('DELETE /usuarios/8');
+  page.once('dialog',d=>d.accept());await page.getByRole('button',{name:'Eliminar empleado8'}).click();
+  await expect(page.getByRole('status')).toContainText('Usuario eliminado');
+  expect(e.peticiones).toContain('DELETE /usuarios/8');
 });

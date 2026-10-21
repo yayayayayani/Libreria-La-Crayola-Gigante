@@ -6,6 +6,7 @@ const { login } = require("../controllers/authController");
 const { verificarToken } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
+const { permisoVisible } = require("../services/acceso");
 
 // Inicio de sesión
 router.post("/login", login);
@@ -39,7 +40,7 @@ router.get("/permisos", verificarToken, async (req, res) => {
     res.set("Cache-Control", "no-store");
     return res.json({
       usuario: { id: req.usuario.ID_USUARIO, idRol: req.usuario.ID_ROL, rol: req.usuario.ROL },
-      permisos: resultado.rows.map((p) => p.CODIGO),
+      permisos: resultado.rows.map((p) => p.CODIGO).filter((codigo) => permisoVisible(req.usuario.ID_ROL, codigo)),
     });
   } catch (error) {
     console.error("Error consultando permisos:", error.message);

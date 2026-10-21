@@ -1,0 +1,44 @@
+/* Jerarquía común para todos los módulos. */
+[hidden] { display:none !important; }
+body { background:#f3f5f4; color:#233c32; }
+.dashboard-main,.usuarios-page,.roles-page { max-width:1240px; margin:auto; padding:24px; }
+.dashboard-header { padding:20px 28px; background:#fff; border-bottom:1px solid #dde6df; }
+.dashboard-header h1 { font-size:22px; }.dashboard-header p { display:none; }
+.saludo-compacto { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:8px 0 24px; }.saludo-compacto h2 { margin:0; font-size:22px; }
+.titulo-modulos { font-size:20px; margin:24px 0 16px; }
+.modules-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.module-card { min-height:130px; padding:22px; border:1px solid #dce5df; border-radius:16px; box-shadow:none; }
+.module-card h3 { font-size:18px; }.module-card p { font-size:13px; }
+.finanzas { margin:0 0 24px; padding:24px; background:#fff; }
+.finanzas header .eyebrow { display:none; }.finanzas h2 { font-size:24px; }
+.finanzas-totales { margin:16px 0; }.finanzas-totales .saldo strong { font-size:32px; }
+.finanzas-desglose { border-top:1px solid #e1e6e2; margin-top:20px; }
+.finanzas-registro summary { display:inline-block; background:#24523c; color:#fff; border-radius:9px; padding:12px 18px; margin:12px 0; }
+.usuarios-top,.roles-header,.modulo-header { margin:16px 0 24px; }
+.usuarios-top h2,.roles-header h2,.modulo-header h2,.section-heading h2 { font-size:26px; margin:0; }
+.usuarios-top p,.roles-header p { display:none; }
+.form-panel,.usuarios-tabla-panel,.roles-panel { background:#fff; border:1px solid #dce5df; border-radius:16px; padding:24px; box-shadow:none; margin-bottom:20px; }
+.usuario-form,.finanzas-form fieldset { gap:18px; }
+input,select,textarea { font-size:15px; } label { line-height:1.5; }
+.sprint-tabs { display:flex; gap:8px; margin:20px 0; padding:6px; background:#e9eeeb; border-radius:12px; flex-wrap:wrap; }
+.sprint-tabs button { border:0; border-radius:8px; background:transparent; padding:10px 18px; color:#365343; }
+.sprint-tabs button[aria-pressed=true] { background:#fff; color:#163e29; box-shadow:0 1px 4px #18332112; font-weight:700; }
+.usuarios-tabla { font-size:14px; }.usuarios-tabla th { background:#eef2ef; padding:14px; }.usuarios-tabla td { padding:14px; border-bottom:1px solid #e6ebe8; }
+.pedidos-create-layout { grid-template-columns:minmax(0,2fr) minmax(260px,1fr); align-items:start; }
+.pedidos-receipt { position:sticky; top:20px; }.pedidos-section-title { margin-bottom:20px; }
+.carnet-empleado { background:#fff; border:1px solid #d9e4dc; border-radius:18px; padding:24px; margin-bottom:24px; }
+.carnet-identidad { display:flex; align-items:center; gap:18px; }.carnet-identidad h2 { margin:6px 0; }.carnet-identidad p { margin:4px 0; }
+.avatar-empleado { width:72px; height:72px; border-radius:18px; display:grid; place-items:center; background:#24523c; color:white; font-size:26px; flex-shrink:0; }
+.carnet-empleado dl { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; padding:20px 0; border-top:1px solid #e5ebe7; margin-top:20px; }
+.carnet-empleado dt { color:#687b70; font-size:13px; }.carnet-empleado dd { margin:8px 0; font-weight:600; }.carnet-empleado summary { cursor:pointer; }
+.aviso-salida { position:fixed; inset:0; z-index:10000; background:#142d25aa; display:grid; place-items:center; padding:20px; }
+.aviso-salida>div { width:min(480px,100%); background:#fff; padding:28px; border-radius:18px; box-shadow:0 20px 80px #0003; }.aviso-salida h2 { margin-top:0; }
+.aviso-salida button { display:block; width:100%; padding:12px; border:1px solid #c9d8ce; border-radius:8px; margin-top:12px; background:#f2f6f3; color:#24523c; font:inherit; cursor:pointer; }.aviso-salida button:first-of-type { background:#24523c; color:#fff; }
+.pago-compra { border:1px solid #d9e4dc; padding:16px; border-radius:12px; margin:20px 0; }.pago-compra summary { cursor:pointer; font-weight:600; }.pago-compra form { margin-top:16px; }
+@media(max-width:760px) { .modules-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.pedidos-create-layout { grid-template-columns:1fr; }.pedidos-receipt { position:static; }.carnet-empleado dl { grid-template-columns:1fr; }.dashboard-main,.usuarios-page,.roles-page { padding:16px; }.form-panel,.finanzas { padding:18px; } }
+@media(max-width:420px) { .modules-grid { grid-template-columns:1fr; }.saludo-compacto { align-items:flex-start; }.carnet-identidad { align-items:flex-start; }.carnet-identidad h2 { font-size:19px; } }
+
+.cliente-en-caja { padding:16px; margin:16px 0; border:1px solid #dce5df; border-radius:12px; background:#f5f8f6; }
+.cliente-en-caja p { font-size:13px; color:#526b5d; margin:8px 0 0; }
+.reporte-filtros { display:flex; flex-wrap:wrap; gap:16px; margin:16px 0; }
+.reporte-filtros label { display:flex; flex-direction:column; gap:6px; }

@@ -1,0 +1,7 @@
+ALTER TABLE pedidos ADD iva_tasa NUMERIC(5,2) NOT NULL DEFAULT 12 CHECK(iva_tasa=12);
+ALTER TABLE pedidos ADD base_imponible NUMERIC(12,2) GENERATED ALWAYS AS (ROUND(total / 1.12, 2)) STORED;
+ALTER TABLE pedidos ADD iva NUMERIC(12,2) GENERATED ALWAYS AS (total - ROUND(total / 1.12, 2)) STORED;
+ALTER TABLE ventas ADD iva_tasa NUMERIC(5,2) NOT NULL DEFAULT 12 CHECK(iva_tasa=12);
+ALTER TABLE ventas ADD base_imponible NUMERIC(12,2) GENERATED ALWAYS AS (ROUND(total / 1.12, 2)) STORED;
+ALTER TABLE ventas ADD iva NUMERIC(12,2) GENERATED ALWAYS AS (total - ROUND(total / 1.12, 2)) STORED;
+INSERT INTO migraciones(nombre) VALUES ('008_iva_incluido');

@@ -1,3 +1,4 @@
+const { permisoVisible } = require("../services/acceso");
 const oracledb = require("../config/driver");
 
 const conectar = () =>
@@ -118,7 +119,7 @@ const actualizarPermisos = async (req, res) => {
 
     // Protegemos los permisos del administrador
     // para evitar bloquear la administración.
-    if (idRol === 1) {
+    if ([1, 3].includes(idRol)) {
       return res.status(403).json({
         mensaje: "Los permisos del administrador están protegidos",
       });
@@ -139,8 +140,11 @@ const actualizarPermisos = async (req, res) => {
     }
 
     if (permisos.length > 0) {
-      const validacion = await conexion.execute(`SELECT ID_PERMISO FROM PERMISOS`);
+      const validacion = await conexion.execute(`SELECT ID_PERMISO,CODIGO FROM PERMISOS`);
 
+      if (validacion.rows.some(fila => permisos.includes(fila[0]) && !permisoVisible(idRol, fila[1]))) {
+        return res.status(403).json({ mensaje: "Los permisos administrativos no se pueden asignar a empleados" });
+      }
       const validos = new Set(validacion.rows.map((fila) => fila[0]));
 
       if (!permisos.every((id) => validos.has(id))) {

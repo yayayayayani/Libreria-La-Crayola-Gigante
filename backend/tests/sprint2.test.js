@@ -229,6 +229,10 @@ after(async () => {
       correo: marca.toLowerCase() + "cliente@example.invalid",
     });
     await c.execute(
+      "DELETE FROM recuperaciones_compra WHERE id_compra IN (SELECT id_compra FROM compras WHERE id_proveedor=:id)",
+      { id: proveedor || -1 },
+    );
+    await c.execute(
       "DELETE FROM detalle_compras WHERE id_compra IN (SELECT id_compra FROM compras WHERE id_proveedor=:id)",
       { id: proveedor || -1 },
     );
@@ -333,10 +337,10 @@ test("05 dos compras simultáneas conservan ambas entradas", async () => {
   );
   assert.equal(await stock(), antes + 6);
 });
-test("06 alerta al alcanzar mínimo y se resuelve al recibir", async () => {
+test("06 alerta por debajo del mínimo y se resuelve al recibir", async () => {
   const actual = await stock();
   assert.equal(
-    (await request(`/inventario/${producto}/minimo`, "PATCH", { minimo: actual })).status,
+    (await request(`/inventario/${producto}/minimo`, "PATCH", { minimo: actual + 1 })).status,
     200,
   );
   let r = await request("/inventario");
@@ -348,6 +352,48 @@ test("06 alerta al alcanzar mínimo y se resuelve al recibir", async () => {
     (await request(`/inventario/${producto}/minimo`, "PATCH", { minimo: -1 })).status,
     400,
   );
+});
+
+test("recepción registra daños y solo incorpora las unidades aceptadas", async () => {
+  const antes = await stock();
+  const datos = compra({ detalles: [
+    { idProducto: producto, cantidad: 80, costo: 2, cantidadDanada: 10, observaciones: "Lápices rotos" },
+  ] });
+  const r = await request("/compras", "POST", datos);
+  assert.equal(r.status, 201, JSON.stringify(r.data));
+  assert.equal(await stock(), antes + 70);
+  const detalle = (await request(`/compras/${r.data.id}`)).data;
+  assert.equal(detalle.detalles[0].CANTIDAD_DANADA, 10);
+  assert.equal(detalle.detalles[0].OBSERVACIONES, "Lápices rotos");
+  assert.equal(detalle.compra.TOTAL, 160);
+  const movimientos = await filas(c, "SELECT * FROM movimientos_inventario WHERE id_recepcion=:id",
+    { id: detalle.recepcion.ID_RECEPCION });
+  assert.equal(movimientos[0].CANTIDAD, 70);
+  assert.equal(movimientos[0].STOCK_NUEVO, antes + 70);
+  assert.equal((await request("/compras", "POST", datos)).status, 409);
+  assert.equal(await stock(), antes + 70);
+  const rechazadas = await request("/compras", "POST", compra({ detalles: [
+    { idProducto: producto, cantidad: 80, costo: 2, cantidadDanada: 80 },
+  ] }));
+  assert.equal(rechazadas.status, 201);
+  assert.equal(await stock(), antes + 70);
+});
+
+test("mínimo no admite cero; alerta en 9 y 0 pero no en 10", async () => {
+  const antes = await stock();
+  try {
+    assert.equal((await request(`/inventario/${producto}/minimo`, "PATCH", { minimo: 0 })).status, 400);
+    assert.equal((await request(`/inventario/${producto}/minimo`, "PATCH", { minimo: 10 })).status, 200);
+    for (const [cantidad, alerta] of [[10, 0], [9, 1], [0, 1]]) {
+      await c.execute("UPDATE productos SET stock=:cantidad WHERE id_producto=:id", { cantidad, id: producto });
+      await c.commit();
+      const r = await request("/inventario");
+      assert.equal(r.data.find((p) => p.ID_PRODUCTO === producto).ALERTA, alerta);
+    }
+  } finally {
+    await c.execute("UPDATE productos SET stock=:cantidad WHERE id_producto=:id", { cantidad: antes, id: producto });
+    await c.commit();
+  }
 });
 test("07 autorización en todos los endpoints nuevos", async () => {
   for (const ruta of [
@@ -510,72 +556,13 @@ test("13 cola conserva fallos y entrega mediante SMTP local de prueba", async ()
   }
 });
 
-test("ventas: CF no crea cliente, descuenta inventario y reintento no duplica", async () => {
+// Las ventas completas se prueban en sprint3.test.js; el acceso antiguo queda cerrado.
+test("ventas: ruta directa bloqueada y catálogo protegido", async () => {
   const antes = await stock();
-  const clientes = (await filas(c, "SELECT COUNT(*) TOTAL FROM clientes"))[0].TOTAL;
-  const datos = {
-    modo: "cf",
-    clave: randomUUID(),
-    detalles: [{ idProducto: producto, cantidad: 2 }],
-    total: 999,
-  };
-  const r = await request("/ventas", "POST", datos);
-  assert.equal(r.status, 201, JSON.stringify(r.data));
-  assert.equal(r.data.total, 10);
-  assert.equal(await stock(), antes - 2);
-  assert.equal((await filas(c, "SELECT COUNT(*) TOTAL FROM clientes"))[0].TOTAL, clientes);
-  const venta = (await filas(c, "SELECT * FROM ventas WHERE id_venta=:id", { id: r.data.id }))[0];
-  assert.equal(venta.ID_CLIENTE, null);
-  assert.equal(venta.DOCUMENTO, "CF");
-  assert.equal((await request("/ventas", "POST", datos)).data.id, r.data.id);
-  assert.equal(await stock(), antes - 2);
-  const movimiento = (
-    await filas(c, "SELECT * FROM movimientos_inventario WHERE id_venta=:id", { id: r.data.id })
-  )[0];
-  assert.equal(movimiento.TIPO, "SALIDA_VENTA");
-  assert.equal(movimiento.STOCK_NUEVO, antes - 2);
-});
-test("ventas: cliente nuevo y existente, rollback y permisos", async () => {
-  const correoCliente = marca.toLowerCase() + "cliente@example.invalid";
-  const cliente = {
-    nombres: "Ana",
-    apellidos: "Prueba",
-    tipoDocumento: "DPI",
-    nit: String(Date.now()),
-    correo: correoCliente,
-  };
-  const datos = {
-    modo: "nuevo",
-    cliente,
-    clave: randomUUID(),
-    detalles: [{ idProducto: producto, cantidad: 1000000 }],
-  };
-  const antes = await stock();
-  assert.equal((await request("/ventas", "POST", datos)).status, 400);
+  for (const modo of ["cf", "nuevo", "existente"])
+    assert.equal((await request("/ventas", "POST", { modo, clave: randomUUID(), detalles: [{ idProducto: producto, cantidad: 1 }] })).status, 409);
   assert.equal(await stock(), antes);
-  assert.equal(
-    (await filas(c, "SELECT * FROM clientes WHERE correo=:correo", { correo: correoCliente }))
-      .length,
-    0,
-  );
-  datos.detalles[0].cantidad = 1;
-  const r = await request("/ventas", "POST", datos);
-  assert.equal(r.status, 201, JSON.stringify(r.data));
-  const creado = (
-    await filas(c, "SELECT * FROM clientes WHERE correo=:correo", { correo: correoCliente })
-  )[0];
-  assert.ok(creado.ID_CLIENTE);
-  const existente = {
-    modo: "existente",
-    idCliente: creado.ID_CLIENTE,
-    clave: randomUUID(),
-    detalles: [{ idProducto: producto, cantidad: 1 }],
-  };
-  assert.equal((await request("/ventas", "POST", existente)).status, 201);
-  assert.equal(
-    (await request("/ventas", "POST", { ...existente, clave: randomUUID() }, sinPermiso)).status,
-    403,
-  );
+  assert.equal((await request("/ventas", "POST", {}, sinPermiso)).status, 403);
   assert.equal((await request("/ventas/catalogo", "GET", undefined, sinPermiso)).status, 403);
 });
 test("proveedores: nombre comercial libre y NIT de ocho caracteres con guion", async () => {
@@ -630,4 +617,42 @@ test("proveedor con compras conserva historial y permite desactivar", async () =
     (await request(`/proveedores/${proveedor}/estado`, "PATCH", { estado: "A" })).status,
     200,
   );
+});
+
+test("rechazos conservan saldo y evidencia de créditos, reembolsos y pérdidas sin duplicar", async () => {
+  const r = await request("/compras", "POST", compra({ detalles: [
+    { idProducto: producto, cantidad: 5, costo: 10.65, cantidadDanada: 1 },
+  ] }));
+  assert.equal(r.status, 201, JSON.stringify(r.data));
+  const ruta = `/compras/${r.data.id}`;
+  const resolver = (tipo, monto, referencia = randomUUID()) => ({
+    tipo, monto, referencia, fechaDocumento: "2026-10-19", observaciones: "Documento de prueba", clave: randomUUID(),
+  });
+  let detalle = (await request(ruta)).data;
+  assert.equal(detalle.saldoRechazos.pendiente, 10.65);
+  const datos = resolver("NOTA_CREDITO", 3);
+  assert.equal((await request(`${ruta}/recuperaciones`, "POST", datos, sinPermiso)).status, 403);
+  assert.equal((await request(`${ruta}/recuperaciones`, "POST", datos)).status, 201);
+  assert.equal((await request(`${ruta}/recuperaciones`, "POST", datos)).status, 200);
+  assert.equal((await request(`${ruta}/recuperaciones`, "POST", { ...datos, clave: randomUUID() })).status, 409);
+  assert.equal((await request(`${ruta}/recuperaciones`, "POST", resolver("REEMBOLSO", 2))).status, 201);
+  assert.equal((await request(`${ruta}/recuperaciones`, "POST", { ...resolver("PERDIDA", 1), observaciones: "" })).status, 400);
+  assert.equal((await request(`${ruta}/recuperaciones`, "POST", resolver("PERDIDA", 1))).status, 201);
+  detalle = (await request(ruta)).data;
+  assert.deepEqual(detalle.saldoRechazos, { rechazado: 10.65, acreditado: 3, reembolsado: 2, perdida: 1, pendiente: 4.65 });
+  assert.equal(detalle.recuperaciones.length, 3);
+  assert.equal(detalle.recuperaciones[0].REFERENCIA, datos.referencia.toUpperCase());
+  assert.ok(detalle.recuperaciones[0].REGISTRADO_POR);
+  const simultaneas = await Promise.all([
+    request(`${ruta}/recuperaciones`, "POST", resolver("REEMBOLSO", 4.65)),
+    request(`${ruta}/recuperaciones`, "POST", resolver("NOTA_CREDITO", 4.65)),
+  ]);
+  assert.deepEqual(simultaneas.map((x) => x.status).sort(), [201, 409]);
+  detalle = (await request(ruta)).data;
+  assert.equal(detalle.saldoRechazos.pendiente, 0);
+  assert.equal(detalle.compra.TOTAL, 53.25);
+  assert.equal(detalle.recuperaciones.length, 4);
+  assert.equal((await request(`${ruta}/recuperaciones`, "POST", resolver("REEMBOLSO", 0.01))).status, 409);
+  const listado = (await request("/compras")).data.find((x) => x.ID_COMPRA === r.data.id);
+  assert.equal(listado.PENDIENTE_RECUPERAR, 0);
 });

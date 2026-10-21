@@ -56,7 +56,13 @@ function validarCompra(datos) {
         "El costo debe ser positivo con máximo dos decimales",
       );
       totalCentavos += Math.round(d.costo * 100) * d.cantidad;
-      return { idProducto: d.idProducto, cantidad: d.cantidad, costo: d.costo };
+      const cantidadDanada = d.cantidadDanada === undefined || d.cantidadDanada === "" ? 0 : d.cantidadDanada;
+      exigir(entero(cantidadDanada, 0, d.cantidad), "La cantidad dañada debe ser un entero entre 0 y la cantidad recibida");
+      const observaciones = d.observaciones === undefined ? "" : d.observaciones;
+      exigir(typeof observaciones === "string" && observaciones.length <= 500,
+        "Las observaciones deben tener máximo 500 caracteres");
+      return { idProducto: d.idProducto, cantidad: d.cantidad, costo: d.costo,
+        cantidadDanada, observaciones: observaciones.trim() || null };
     })
     .sort((a, b) => a.idProducto - b.idProducto);
   exigir(
