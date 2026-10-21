@@ -4,6 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "migrate:recuperaciones": "node scripts/migrarRecuperaciones.js",
+    "migrate:recepcion-opcional": "node scripts/recepcionOpcional.js",
+    "migrate:fix-sprint2": "node scripts/corregirSprint2.js",
+    "migrate:sprint3": "node scripts/migrarSprint3.js",
+    "test:sprint3": "node --test tests/sprint3.test.js",
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test:permissions": "node scripts/probarPermisos.js",

@@ -12,6 +12,7 @@ const {
   crearUsuario,
   modificarUsuario,
   cambiarEstado,
+  eliminarUsuario,
 } = require("../controllers/usuariosController");
 
 const router = express.Router();
@@ -24,6 +25,7 @@ router.get("/", verificarPermiso("USUARIOS_GESTIONAR"), listarUsuarios);
 router.post("/", verificarPermiso("USUARIOS_GESTIONAR"), protegerUsuarios, crearUsuario);
 
 router.put("/:id", verificarPermiso("USUARIOS_GESTIONAR"), protegerUsuarios, modificarUsuario);
+router.delete("/:id", verificarPermiso("USUARIOS_GESTIONAR"), protegerUsuarios, eliminarUsuario);
 
 router.patch(
   "/:id/estado",

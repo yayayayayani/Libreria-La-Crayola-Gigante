@@ -1,8 +1,15 @@
 const oracledb = require("../config/driver");
 const bcrypt = require("bcryptjs");
-const { nombreValido, correoValido } = require("../services/validaciones");
+const { nombreValido, correoValido, exigir } = require("../services/validaciones");
 const { encolar, avisarDuplicado } = require("../services/correos");
 
+function laboral(b) {
+  const sueldo = b.sueldo == null || b.sueldo === "" ? null : b.sueldo;
+  exigir(sueldo === null || (typeof sueldo === "number" && Number.isFinite(sueldo) && sueldo >= 0 && sueldo <= 9999999999.99 && Math.abs(sueldo * 100 - Math.round(sueldo * 100)) < 1e-6), "Sueldo invalido");
+  exigir(b.horario == null || (typeof b.horario === "string" && b.horario.length <= 250), "Horario invalido");
+  exigir(b.puesto == null || (typeof b.puesto === "string" && b.puesto.length <= 100), "Puesto invalido");
+  return { sueldo, horario: b.horario?.trim() || null, puesto: b.puesto?.trim() || null };
+}
 const conectar = () =>
   oracledb.getConnection({
     user: process.env.DB_USER,
@@ -16,7 +23,7 @@ const rolesAsignables = async (req, res) => {
     conexion = await conectar();
     const resultado = await conexion.execute(
       `SELECT ID_ROL, NOMBRE FROM ROLES WHERE ESTADO = 'A'
-       AND (:idRol = 1 OR ID_ROL = :idRol) ORDER BY NOMBRE`,
+       AND (:idRol IN (1,3) OR ID_ROL = :idRol) ORDER BY NOMBRE`,
       { idRol: req.usuario.ID_ROL },
       { outFormat: oracledb.OUT_FORMAT_OBJECT },
     );
@@ -40,7 +47,7 @@ const listarUsuarios = async (req, res) => {
           u.ID_USUARIO,
           u.NOMBRE_COMPLETO,
           u.NOMBRE_USUARIO,
-          u.CORREO,
+          u.CORREO,u.SUELDO,u.HORARIO,u.PUESTO,
           u.ID_ROL,
           r.NOMBRE AS ROL,
           u.ESTADO,
@@ -69,6 +76,7 @@ const crearUsuario = async (req, res) => {
   let conexion;
 
   try {
+    const trabajo = laboral(req.body || {});
     const { nombreCompleto, nombreUsuario, contrasena, idRol } = req.body || {};
     const correo = typeof req.body?.correo === "string" ? req.body.correo.trim().toLowerCase() : "";
     if (
@@ -135,7 +143,7 @@ const crearUsuario = async (req, res) => {
          CONTRASENA_HASH,
          ID_ROL,
          ESTADO,
-         CREADO_EN
+         CREADO_EN,SUELDO,HORARIO,PUESTO
        ) VALUES (
          :nombre,
          :usuario,
@@ -143,13 +151,14 @@ const crearUsuario = async (req, res) => {
          :hash,
          :idRol,
          'A',
-         SYSTIMESTAMP
+         SYSTIMESTAMP,:sueldo,:horario,:puesto
        )`,
       {
         nombre: nombreCompleto.trim(),
         usuario: nombreUsuario.trim(),
         correo,
         hash,
+        ...trabajo,
         idRol,
       },
       { autoCommit: false },
@@ -167,6 +176,7 @@ const crearUsuario = async (req, res) => {
     });
   } catch (error) {
     if (conexion) await conexion.rollback();
+    if (error.status) return res.status(error.status).json({ mensaje: error.message });
     console.error(error.message);
 
     if (error.errorNum === 1) {
@@ -192,6 +202,7 @@ const modificarUsuario = async (req, res) => {
 
   try {
     const id = Number(req.params.id);
+    const trabajo = laboral(req.body || {});
     const { nombreCompleto, idRol } = req.body || {};
     const correo = typeof req.body?.correo === "string" ? req.body.correo.trim().toLowerCase() : "";
     if (
@@ -238,12 +249,17 @@ const modificarUsuario = async (req, res) => {
       `UPDATE USUARIOS
        SET NOMBRE_COMPLETO = :nombre,
            CORREO = :correo,
-           ID_ROL = :idRol
-       WHERE ID_USUARIO = :id AND (:actorRol = 1 OR ID_ROL = :actorRol)`,
+           ID_ROL = :idRol,
+           SUELDO=CASE WHEN :laboral=1 THEN :sueldo ELSE SUELDO END,
+           HORARIO=CASE WHEN :laboral=1 THEN :horario ELSE HORARIO END,
+           PUESTO=CASE WHEN :laboral=1 THEN :puesto ELSE PUESTO END
+       WHERE ID_USUARIO = :id AND (:actorRol IN (1,3) OR ID_ROL = :actorRol)`,
       {
         nombre: nombreCompleto.trim(),
         correo,
         idRol,
+        ...trabajo,
+        laboral: Object.hasOwn(req.body, "sueldo") ? 1 : 0,
         actorRol: req.usuario.ID_ROL,
         id,
       },
@@ -268,6 +284,7 @@ const modificarUsuario = async (req, res) => {
     });
   } catch (error) {
     if (conexion) await conexion.rollback();
+    if (error.status) return res.status(error.status).json({ mensaje: error.message });
     if (error.errorNum === 1) {
       const correo =
         typeof req.body?.correo === "string" ? req.body.correo.trim().toLowerCase() : "";
@@ -310,7 +327,7 @@ const cambiarEstado = async (req, res) => {
     const resultado = await conexion.execute(
       `UPDATE USUARIOS
        SET ESTADO = :estado
-       WHERE ID_USUARIO = :id AND (:actorRol = 1 OR ID_ROL = :actorRol)`,
+       WHERE ID_USUARIO = :id AND (:actorRol IN (1,3) OR ID_ROL = :actorRol)`,
       { estado, id, actorRol: req.usuario.ID_ROL },
       { autoCommit: true },
     );
@@ -334,7 +351,35 @@ const cambiarEstado = async (req, res) => {
   }
 };
 
+const eliminarUsuario = async (req, res) => {
+  let c;
+  try {
+    const id=Number(req.params.id);
+    exigir(Number.isSafeInteger(id)&&id>0,'Usuario inválido');
+    exigir(id!==req.usuario.ID_USUARIO,'No puedes eliminar tu propia cuenta',403);
+    c=await conectar();
+    const {filas}=require('../services/db');
+    const [u]=await filas(c,'SELECT id_usuario,nombre_usuario FROM usuarios WHERE id_usuario=:id FOR UPDATE',{id});
+    exigir(u,'Usuario no encontrado',404);
+    // Comprobar también referencias con ON DELETE CASCADE antes de borrar.
+    const referencias=await filas(c,`SELECT t.relname tabla,a.attname columna FROM pg_constraint k
+      JOIN pg_class t ON t.oid=k.conrelid JOIN pg_namespace n ON n.oid=t.relnamespace
+      JOIN pg_attribute a ON a.attrelid=t.oid AND a.attnum=ANY(k.conkey)
+      WHERE k.contype='f' AND k.confrelid='usuarios'::regclass AND n.nspname='public'`);
+    const quote=s=>'"'+s.replaceAll('"','""')+'"';
+    for(const r of referencias){
+      const vinculados=await filas(c,`SELECT 1 FROM public.${quote(r.TABLA)} WHERE ${quote(r.COLUMNA)}=:id LIMIT 1`,{id});
+      exigir(!vinculados.length,'Este usuario tiene historial. Desactívalo para conservar sus operaciones.',409);
+    }
+    await c.execute('DELETE FROM usuarios WHERE id_usuario=:id',{id});
+    await c.execute("INSERT INTO bitacora(id_usuario,accion,tabla_afectada,id_registro_afectado,detalle) VALUES (:actor,'USUARIO_ELIMINADO','USUARIOS',:id,:detalle)",{actor:req.usuario.ID_USUARIO,id,detalle:`Usuario sin operaciones: ${u.NOMBRE_USUARIO}`});
+    await c.commit();res.json({mensaje:'Usuario eliminado'});
+  }catch(e){if(c)await c.rollback();res.status(e.status||(e.code==='23503'?409:500)).json({mensaje:e.status?e.message:e.code==='23503'?'El usuario tiene historial; desactívalo.':'No se pudo eliminar el usuario'});}
+  finally{if(c)await c.close();}
+};
+
 module.exports = {
+  eliminarUsuario,
   rolesAsignables,
   listarUsuarios,
   crearUsuario,

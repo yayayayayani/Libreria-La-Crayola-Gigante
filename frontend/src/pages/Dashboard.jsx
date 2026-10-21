@@ -1,7 +1,10 @@
+import CarnetEmpleado from "../components/CarnetEmpleado";
+import Finanzas from "../components/Finanzas";
 import { VENTAS_HABILITADAS } from "../features";
 import { BookOpen, Users, Package, ShieldCheck, LogOut } from "lucide-react";
 
 function Dashboard({
+  token,
   usuario,
   permisos,
   onLogout,
@@ -30,45 +33,17 @@ function Dashboard({
       </header>
 
       <main className="dashboard-main">
-        <section className="welcome-banner">
-          <div>
-            <span className="eyebrow">TU LIBRERÍA, EN ORDEN</span>
-            <h2>¡Bienvenido, {usuario.nombre}!</h2>
-            <p>
-              Cada gran idea empieza con una hoja en blanco.
-              <br />
-              Aquí tienes todo para que la librería siga creciendo.
-            </p>
-            <span className="role-pill">{usuario.rol}</span>
-          </div>
-          <div className="stationery-art" aria-hidden="true">
-            <div className="paper-art">
-              <span>
-                La Crayola
-                <br />
-                <strong>Gigante.</strong>
-              </span>
-              <i />
-              <i />
-              <i />
-            </div>
-            <div className="pencil-art pencil-one" />
-            <div className="pencil-art pencil-two" />
-            <div className="pencil-art pencil-three" />
-          </div>
-        </section>
-        <div className="section-heading">
-          <span className="eyebrow">ESPACIO DE TRABAJO</span>
-          <h2>Todo a tu alcance</h2>
-          <p>Elige un módulo para comenzar.</p>
-        </div>
+        <div className="saludo-compacto"><h2>Hola, {usuario.nombre || usuario.rol}</h2><span className="role-pill">{usuario.rol}</span></div>
+        {![1, 3].includes(usuario.idRol) && <CarnetEmpleado token={token} />}
+        {[1, 3].includes(usuario.idRol) && <Finanzas token={token} />}
+        <h2 className="titulo-modulos">Módulos</h2>
 
         <div className="modules-grid">
           {VENTAS_HABILITADAS && tienePermiso("VENTAS_GESTIONAR") && (
             <button type="button" className="module-card module-button" onClick={onVentas}>
               <BookOpen size={32} />
               <h3>Ventas a clientes</h3>
-              <p>Cliente existente, nuevo o consumidor final</p>
+              <p>{[1, 3].includes(usuario.idRol) ? "Pedidos, aprobaciones, pagos y reportes" : "Tus ventas, cobros y comprobantes"}</p>
             </button>
           )}
           {tienePermiso([
@@ -79,8 +54,8 @@ function Dashboard({
           ]) && (
             <button type="button" className="module-card module-button" onClick={onCompras}>
               <Package size={32} />
-              <h3>Compras e inventario</h3>
-              <p>Proveedores, recepción, movimientos y alertas</p>
+              <h3>{[1, 3].includes(usuario.idRol) ? "Compras e inventario" : "Inventario"}</h3>
+              <p>{[1, 3].includes(usuario.idRol) ? "Proveedores, compras y movimientos" : "Existencias, movimientos y alertas"}</p>
             </button>
           )}
 
@@ -123,9 +98,7 @@ function Dashboard({
           </p>
         )}
 
-        <footer className="workspace-footer">
-          La Crayola Gigante · Compras, personas e ideas en un mismo lugar.
-        </footer>
+
       </main>
     </div>
   );

@@ -1,4 +1,5 @@
 const oracledb = require("../config/driver");
+const { permisoVisible } = require("../services/acceso");
 
 const verificarPermiso = (codigoPermiso) => {
   return async (req, res, next) => {
@@ -17,7 +18,9 @@ const verificarPermiso = (codigoPermiso) => {
         connectString: process.env.DB_CONNECT_STRING,
       });
 
-      const codigos = Array.isArray(codigoPermiso) ? codigoPermiso : [codigoPermiso];
+      const codigos = (Array.isArray(codigoPermiso) ? codigoPermiso : [codigoPermiso])
+        .filter((codigo) => permisoVisible(req.usuario.ID_ROL, codigo));
+      if (!codigos.length) return res.status(403).json({ mensaje: "Esta función es exclusiva de administración" });
       const binds = Object.fromEntries(codigos.map((codigo, i) => [`codigo${i}`, codigo]));
       const resultado = await conexion.execute(
         `SELECT COUNT(*) AS TOTAL

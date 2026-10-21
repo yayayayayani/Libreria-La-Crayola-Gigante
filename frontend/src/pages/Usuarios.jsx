@@ -8,7 +8,7 @@ const formularioVacio = {
   correo: "",
   nombreUsuario: "",
   contrasena: "",
-  idRol: "",
+  idRol: "", sueldo: "", horario: "", puesto: "",
 };
 
 function Usuarios({ token, onVolver, identidad }) {
@@ -72,7 +72,7 @@ function Usuarios({ token, onVolver, identidad }) {
       correo: usuario.CORREO || "",
       nombreUsuario: usuario.NOMBRE_USUARIO,
       contrasena: "",
-      idRol: usuario.ID_ROL,
+      idRol: usuario.ID_ROL, sueldo: usuario.SUELDO ?? "", horario: usuario.HORARIO || "", puesto: usuario.PUESTO || "",
     });
     setEditando(usuario.ID_USUARIO);
     setMensaje("");
@@ -94,6 +94,7 @@ function Usuarios({ token, onVolver, identidad }) {
             nombreCompleto: formulario.nombreCompleto,
             correo: formulario.correo,
             idRol: Number(formulario.idRol),
+            sueldo: formulario.sueldo === "" ? null : Number(formulario.sueldo), horario: formulario.horario, puesto: formulario.puesto,
           },
           config,
         );
@@ -105,6 +106,7 @@ function Usuarios({ token, onVolver, identidad }) {
           {
             ...formulario,
             idRol: Number(formulario.idRol),
+            sueldo: formulario.sueldo === "" ? null : Number(formulario.sueldo), horario: formulario.horario, puesto: formulario.puesto,
           },
           config,
         );
@@ -143,6 +145,12 @@ function Usuarios({ token, onVolver, identidad }) {
     }
   };
 
+  const eliminar = async (usuario) => {
+    if(!window.confirm(`¿Eliminar a ${usuario.NOMBRE_COMPLETO}? Solo se permite si no tiene historial. Si ya realizó operaciones, usa Desactivar.`))return;
+    setError('');setMensaje('');setCargando(true);
+    try{await api.delete(`/usuarios/${usuario.ID_USUARIO}`,config);setMensaje('Usuario eliminado');await cargarUsuarios();}
+    catch(err){manejarError(err);}finally{setCargando(false);}
+  };
   const filtrados = usuarios.filter((u) =>
     `${u.NOMBRE_COMPLETO} ${u.NOMBRE_USUARIO} ${u.ROL}`
       .toLowerCase()
@@ -157,7 +165,6 @@ function Usuarios({ token, onVolver, identidad }) {
             <ArrowLeft size={18} /> Volver al menú
           </button>
           <h2>Gestión de Usuarios</h2>
-          <p>Administración del personal de la librería</p>
         </div>
 
         <button className="btn-primary" onClick={abrirNuevo}>
@@ -181,7 +188,7 @@ function Usuarios({ token, onVolver, identidad }) {
         <div className="form-panel">
           <h3>{editando !== null ? "Modificar usuario" : "Nuevo usuario"}</h3>
 
-          <form onSubmit={guardar} className="usuario-form">
+          <form onReset={()=>setMostrarFormulario(false)} onSubmit={guardar} className="usuario-form">
             <label>
               Nombre completo
               <input
@@ -268,6 +275,9 @@ function Usuarios({ token, onVolver, identidad }) {
               </select>
             </label>
 
+            <label>Puesto<input maxLength="100" value={formulario.puesto} onChange={e => setFormulario({ ...formulario, puesto: e.target.value })} /></label>
+            <label>Sueldo mensual (Q)<input type="number" min="0" step="0.01" max="9999999999.99" value={formulario.sueldo} onChange={e => setFormulario({ ...formulario, sueldo: e.target.value })} /></label>
+            <label>Horario<input maxLength="250" placeholder="Lunes a viernes, 8:00 a 17:00" value={formulario.horario} onChange={e => setFormulario({ ...formulario, horario: e.target.value })} /></label>
             <div className="form-actions">
               <button
                 type="button"
@@ -319,7 +329,7 @@ function Usuarios({ token, onVolver, identidad }) {
                     </span>
                   </td>
                   <td>
-                    {(identidad?.idRol === 1 || identidad?.idRol === u.ID_ROL) && (
+                    {([1, 3].includes(identidad?.idRol) || identidad?.idRol === u.ID_ROL) && (
                       <div className="acciones-usuario">
                         <button
                           className="btn-editar"
@@ -336,6 +346,7 @@ function Usuarios({ token, onVolver, identidad }) {
                         >
                           {u.ESTADO === "A" ? "Desactivar" : "Activar"}
                         </button>
+                        <button className="btn-secondary" disabled={cargando || u.ID_USUARIO === identidad?.id} onClick={()=>eliminar(u)} aria-label={`Eliminar ${u.NOMBRE_USUARIO}`}>Eliminar</button>
                       </div>
                     )}
                   </td>

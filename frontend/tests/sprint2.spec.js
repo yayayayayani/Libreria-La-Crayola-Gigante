@@ -1,5 +1,89 @@
 import { test, expect } from "@playwright/test";
-import { VENTAS_HABILITADAS } from "../src/features";
+
+test("registra una nota de crédito y conserva su evidencia en el detalle", async ({ page }) => {
+  await iniciar(page);
+  const compra = { ID_COMPRA: 81, PROVEEDOR: "Unimarck", FACTURA: "S345", TOTAL: 53.25, ID_RECEPCION: 60, ESTADO: "RECIBIDA" };
+  const datos = {
+    compra, recepcion: { ID_RECEPCION: 60, FECHA: "2026-10-19T18:00:00Z" },
+    detalles: [{ ID_DETALLE: 1, NOMBRE: "Hojas", CANTIDAD: 5, COSTO: 10.65, CANTIDAD_DANADA: 1 }],
+    recuperaciones: [],
+    saldoRechazos: { rechazado: 10.65, acreditado: 0, reembolsado: 0, perdida: 0, pendiente: 10.65 },
+  };
+  await page.route("**/api/compras", (route) => route.fulfill({ json: [{ ...compra, PENDIENTE_RECUPERAR: datos.saldoRechazos.pendiente }] }));
+  await page.route("**/api/compras/81", (route) => route.fulfill({ json: datos }));
+  await page.route("**/api/compras/81/recuperaciones", (route) => {
+    const body = route.request().postDataJSON();
+    expect(body).toMatchObject({ tipo: "NOTA_CREDITO", monto: 10.65, referencia: "NC-123", fechaDocumento: "2026-10-19" });
+    datos.saldoRechazos.acreditado = 10.65;
+    datos.saldoRechazos.pendiente = 0;
+    datos.recuperaciones.push({ ID_RECUPERACION: 1, TIPO: body.tipo, MONTO: body.monto,
+      REFERENCIA: body.referencia, FECHA_DOCUMENTO: body.fechaDocumento,
+      REGISTRADO_POR: "Ana", CREADO_EN: "2026-10-19T18:00:00Z" });
+    return route.fulfill({ status: 201, json: { mensaje: "Resolución registrada" } });
+  });
+  await page.getByRole("button", { name: /^Compras e inventario/ }).click();
+  await page.getByRole("button", { name: "Compras", exact: true }).click();
+  await page.getByRole("button", { name: "Ver detalle" }).click();
+  const seguimiento = page.getByRole("region", { name: "Seguimiento del dinero rechazado" });
+  await seguimiento.getByRole("button", { name: "Registrar resolución del saldo" }).click();
+  await expect(page.getByLabel("Monto a registrar (Q)")).toHaveValue("10.65");
+  await page.getByLabel("Número de nota, comprobante o autorización").fill("NC-123");
+  await page.getByLabel("Fecha del documento", { exact: true }).fill("2026-10-19");
+  await page.getByRole("button", { name: "Guardar resolución" }).click();
+  await expect(seguimiento.getByText("NC-123")).toBeVisible();
+  await expect(seguimiento.getByText("El monto rechazado está completamente documentado.")).toBeVisible();
+  await expect(seguimiento.getByRole("button", { name: "Registrar resolución del saldo" })).toHaveCount(0);
+});
+
+test("detalle de compra desglosa factura, recepción y rechazos", async ({ page }) => {
+  await iniciar(page);
+  const compra = { ID_COMPRA: 81, PROVEEDOR: "Unimarck", PROVEEDOR_NIT: "12345678",
+    FACTURA: "S345", TOTAL: 53.25, REGISTRADO_POR: "Ana López", FECHA: "2026-10-19T18:00:00Z",
+    ID_RECEPCION: 60, ESTADO: "RECIBIDA" };
+  await page.route("**/api/compras", (route) => route.fulfill({ json: [compra] }));
+  await page.route("**/api/compras/81", (route) => route.fulfill({ json: {
+    compra, recepcion: { ID_RECEPCION: 60, FECHA: compra.FECHA },
+    detalles: [{ ID_DETALLE: 1, NOMBRE: "Paquete de hojas", CODIGO: "HOJ-01",
+      CANTIDAD: 5, COSTO: 10.65, CANTIDAD_DANADA: 1, OBSERVACIONES: "Un paquete estaba mojado" }],
+  } }));
+  await page.getByRole("button", { name: /^Compras e inventario/ }).click();
+  await page.getByRole("button", { name: "Compras", exact: true }).click();
+  await page.getByRole("button", { name: "Ver detalle" }).click();
+  const detalle = page.getByRole("region", { name: "Detalle de compra 81" });
+  await expect(detalle.getByText("Ana López")).toBeVisible();
+  await expect(detalle.getByText("Un paquete estaba mojado")).toBeVisible();
+  await expect(detalle.getByRole("cell", { name: "Rechazo parcial" })).toBeVisible();
+  const fila = detalle.getByRole("row").nth(1);
+  await expect(fila.getByRole("cell").nth(1)).toHaveText("5");
+  await expect(fila.getByRole("cell").nth(2)).toHaveText("4");
+  await expect(fila.getByRole("cell").nth(3)).toHaveText("1");
+  await expect(detalle.getByText(/Valor de unidades aceptadas:/)).toContainText("42.60");
+  await expect(detalle.getByText(/Valor de unidades rechazadas:/)).toContainText("10.65");
+  await detalle.getByRole("button", { name: "Cerrar detalle" }).click();
+  await expect(detalle).toHaveCount(0);
+});
+
+test("recargar conserva sesión y módulo; cerrar sesión los elimina", async ({ page }) => {
+  await iniciar(page);
+  await page.getByRole("button", { name: /^Compras e inventario/ }).click();
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Compras e inventario", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: /Volver al menú/ }).click();
+  await page.getByRole("button", { name: /Cerrar sesión/ }).click();
+  await page.reload();
+  await expect(page.locator("#usuario")).toBeVisible();
+  expect(await page.evaluate(() => sessionStorage.getItem("crayola.sesion"))).toBeNull();
+});
+
+test("recargar con token vencido exige iniciar sesión nuevamente", async ({ page }) => {
+  await iniciar(page);
+  await page.route("**/api/auth/permisos", (route) =>
+    route.fulfill({ status: 401, json: { mensaje: "Sesión expirada" } }));
+  await page.reload();
+  await expect(page.locator("#usuario")).toBeVisible();
+  expect(await page.evaluate(() => sessionStorage.getItem("crayola.sesion"))).toBeNull();
+});
+
 test("eliminar proveedor solicita confirmación y permite cancelar", async ({ page }) => {
   await iniciar(page);
   let eliminado = false;
@@ -9,6 +93,7 @@ test("eliminar proveedor solicita confirmación y permite cancelar", async ({ pa
     await route.fulfill({ json: { mensaje: "Proveedor eliminado" } });
   });
   await page.getByRole("button", { name: /^Compras e inventario/ }).click();
+  await page.getByRole("button", { name: "Proveedores", exact: true }).click();
   page.once("dialog", (dialog) => dialog.dismiss());
   await page.getByRole("button", { name: "Eliminar", exact: true }).click();
   expect(eliminado).toBe(false);
@@ -20,6 +105,7 @@ test("eliminar proveedor solicita confirmación y permite cancelar", async ({ pa
 test("proveedor permite nombre libre, NIT con guion y valida DPI", async ({ page }) => {
   const estado = await iniciar(page);
   await page.getByRole("button", { name: /^Compras e inventario/ }).click();
+  await page.getByRole("button", { name: "Proveedores", exact: true }).click();
   await page.getByLabel("Nombre comercial").fill("1");
   await page.getByLabel("NIT", { exact: true }).fill("1234567-8");
   const telefono = page.getByLabel("Teléfono", { exact: true });
@@ -53,24 +139,7 @@ test("proveedor permite nombre libre, NIT con guion y valida DPI", async ({ page
   await expect(dpi).toHaveCount(0);
   expect(estado.proveedor.tipoDocumento).toBe("DPI");
 });
-for (const modo of ["cf", "existente", "nuevo"])
-  test(`venta con ${modo}`, async ({ page }) => {
-    test.skip(!VENTAS_HABILITADAS, "Ventas a clientes se habilitará en el siguiente sprint");
-    const estado = await iniciar(page, ["VENTAS_GESTIONAR", "CLIENTES_CREAR"]);
-    await page.getByRole("button", { name: /^Ventas a clientes/ }).click();
-    await page.getByLabel("Cliente de la venta").selectOption(modo);
-    if (modo === "existente")
-      await page.getByRole("combobox", { name: "Cliente", exact: true }).selectOption("1");
-    if (modo === "nuevo") {
-      await page.getByLabel("Nombres", { exact: true }).fill("Ana");
-      await page.getByLabel("NIT", { exact: true }).fill("1234567-8");
-    }
-    await page.getByLabel("Producto 1").selectOption("1");
-    await page.getByRole("button", { name: "Confirmar venta" }).click();
-    await expect(page.getByRole("status")).toContainText("Venta #9");
-    expect(estado.venta.modo).toBe(modo);
-    expect(estado.venta.detalles).toEqual([{ idProducto: 1, cantidad: 1 }]);
-  });
+// El flujo de ventas se valida en sprint3.spec.js.
 async function iniciar(
   page,
   permisos = [
@@ -120,9 +189,9 @@ async function iniciar(
           NOMBRE: "Cuaderno",
           CODIGO: "C1",
           STOCK: estado.stock,
-          STOCK_MINIMO: 3,
+          STOCK_MINIMO: 10,
           ESTADO: "A",
-          ALERTA: estado.stock <= 3 ? 1 : 0,
+          ALERTA: estado.stock < 10 ? 1 : 0,
         },
       ]);
     if (path === "/movimientos") return ok([]);
@@ -149,21 +218,22 @@ test("compra completa envía detalle y muestra confirmación", async ({ page }) 
   await page.getByLabel("Serie y número de factura").fill("A-1");
   await page.getByRole("combobox", { name: "Producto 1", exact: true }).selectOption("1");
   await page.getByLabel("Cantidad", { exact: true }).fill("4");
+  await page.getByLabel("Unidades dañadas 1").fill("");
   await page.getByLabel("Costo unitario (Q)").fill("2.50");
   await page.getByRole("button", { name: "Confirmar recepción y registrar compra" }).click();
   await expect(page.getByText("Compra recibida e inventario actualizado. Compra #7")).toBeVisible();
-  expect(estado.compra.detalles).toEqual([{ idProducto: 1, cantidad: 4, costo: 2.5 }]);
+  expect(estado.compra.detalles).toEqual([{ idProducto: 1, cantidad: 4, costo: 2.5, cantidadDanada: 0, observaciones: "" }]);
   expect(estado.compra.clave).toHaveLength(32);
 });
 test("inventario actualiza cambios de otro usuario y resuelve alerta", async ({ page }) => {
   const estado = await iniciar(page, ["INVENTARIO_VER"]);
   await page.getByRole("button", { name: /^Compras e inventario/ }).click();
-  await expect(page.getByText("1 productos activos en su mínimo o por debajo.")).toBeVisible();
+  await expect(page.getByText("1 productos activos por debajo de su mínimo (10 unidades por defecto).")).toBeVisible();
   estado.stock = 10;
-  await expect(page.getByText("0 productos activos en su mínimo o por debajo.")).toBeVisible({
+  await expect(page.getByText("0 productos activos por debajo de su mínimo (10 unidades por defecto).")).toBeVisible({
     timeout: 8000,
   });
-  await expect(page.getByRole("cell", { name: "10", exact: true })).toBeVisible();
+  await expect(page.getByRole("cell", { name: "10", exact: true }).first()).toBeVisible();
   await expect(page.getByRole("button", { name: "Guardar", exact: true })).toHaveCount(0);
 });
 test("permiso de consulta oculta compras y proveedores", async ({ page }) => {
@@ -199,4 +269,21 @@ test("correo duplicado muestra aviso y conserva el formulario", async ({ page })
   await page.getByRole("button", { name: "Guardar", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("El correo ya está registrado");
   await expect(page.getByLabel("Correo electrónico")).toHaveValue("prueba@example.invalid");
+});
+
+test("recepción permite revisar 80 unidades y rechazar 10", async ({ page }) => {
+  const estado = await iniciar(page);
+  await page.getByRole("button", { name: /^Compras e inventario/ }).click();
+  await page.getByRole("button", { name: "Compras", exact: true }).click();
+  await page.getByRole("combobox", { name: "Proveedor", exact: true }).selectOption("1");
+  await page.getByLabel("Serie y número de factura").fill("A-80");
+  await page.getByRole("combobox", { name: "Producto 1", exact: true }).selectOption("1");
+  await page.getByLabel("Cantidad", { exact: true }).fill("80");
+  await page.getByLabel("Costo unitario (Q)").fill("2");
+  await page.getByLabel("Unidades dañadas 1").fill("10");
+  await expect(page.getByText(/Al inventario: 70 unidades/)).toBeVisible();
+  await expect(page.getByLabel("Observaciones de recepción 1")).not.toHaveAttribute("required");
+  await page.getByRole("button", { name: "Confirmar recepción y registrar compra" }).click();
+  await expect(page.getByText("Compra recibida e inventario actualizado. Compra #7")).toBeVisible();
+  expect(estado.compra.detalles[0]).toMatchObject({ cantidad: 80, cantidadDanada: 10, observaciones: "" });
 });

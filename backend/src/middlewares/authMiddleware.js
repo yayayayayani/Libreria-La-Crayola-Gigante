@@ -77,7 +77,7 @@ const verificarToken = async (req, res, next) => {
 };
 
 const soloAdministrador = (req, res, next) => {
-  if (req.usuario.ID_ROL !== 1) {
+  if (![1, 3].includes(req.usuario.ID_ROL)) {
     return res.status(403).json({
       mensaje: "No tienes permisos para esta función",
     });

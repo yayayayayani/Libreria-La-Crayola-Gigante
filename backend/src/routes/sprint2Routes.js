@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { verificarToken } = require("../middlewares/authMiddleware");
 const { verificarPermiso } = require("../middlewares/permisosMiddleware");
 const { conectar, filas, idSalida } = require("../services/db");
+const { resumenRecuperaciones, validarRecuperacion, centavos } = require("../services/recuperaciones");
 const {
   exigir,
   entero,
@@ -152,7 +153,10 @@ router.get(
     res.json(
       await filas(
         c,
-        `SELECT c.*,p.nombre proveedor,r.id_recepcion,r.fecha fecha_recepcion FROM compras c JOIN proveedores p ON p.id_proveedor=c.id_proveedor JOIN recepciones r ON r.id_compra=c.id_compra ORDER BY c.id_compra DESC`,
+        `SELECT c.*,c.total-COALESCE((SELECT SUM(m.monto) FROM movimientos_financieros m WHERE m.id_compra=c.id_compra AND m.anulado_en IS NULL),0) pendiente_pago,p.nombre proveedor,r.id_recepcion,r.fecha fecha_recepcion,
+        COALESCE((SELECT SUM(d.cantidad_danada*d.costo) FROM detalle_compras d WHERE d.id_compra=c.id_compra),0)
+        - COALESCE((SELECT SUM(a.monto) FROM recuperaciones_compra a WHERE a.id_compra=c.id_compra),0) pendiente_recuperar
+        FROM compras c JOIN proveedores p ON p.id_proveedor=c.id_proveedor JOIN recepciones r ON r.id_compra=c.id_compra ORDER BY c.id_compra DESC`,
       ),
     );
   }),
@@ -163,17 +167,51 @@ router.get(
   endpoint(async (req, res, c) => {
     const id = Number(req.params.id);
     exigir(entero(id), "ID inválido");
-    const compras = await filas(c, "SELECT * FROM compras WHERE id_compra=:id", { id });
+    const compras = await filas(c,
+      "SELECT c.*,c.total-COALESCE((SELECT SUM(m.monto) FROM movimientos_financieros m WHERE m.id_compra=c.id_compra AND m.anulado_en IS NULL),0) pendiente_pago,p.nombre proveedor,p.nit proveedor_nit,u.nombre_completo registrado_por FROM compras c JOIN proveedores p ON p.id_proveedor=c.id_proveedor JOIN usuarios u ON u.id_usuario=c.id_usuario WHERE c.id_compra=:id", { id });
     exigir(compras.length, "Compra no encontrada", 404);
+    const detalles = await filas(c,
+      `SELECT d.*,p.nombre,p.codigo FROM detalle_compras d JOIN productos p ON p.id_producto=d.id_producto WHERE d.id_compra=:id ORDER BY d.id_detalle`, { id });
+    const recuperaciones = await filas(c,
+      "SELECT r.*,u.nombre_completo registrado_por FROM recuperaciones_compra r JOIN usuarios u ON u.id_usuario=r.id_usuario WHERE r.id_compra=:id ORDER BY r.id_recuperacion", { id });
     res.json({
       compra: compras[0],
-      detalles: await filas(
-        c,
-        `SELECT d.*,p.nombre FROM detalle_compras d JOIN productos p ON p.id_producto=d.id_producto WHERE d.id_compra=:id`,
-        { id },
-      ),
+      detalles,
+      recuperaciones,
+      saldoRechazos: resumenRecuperaciones(detalles, recuperaciones),
       recepcion: (await filas(c, "SELECT * FROM recepciones WHERE id_compra=:id", { id }))[0],
     });
+  }),
+);
+router.post(
+  "/compras/:id/recuperaciones",
+  permiso("COMPRAS_GESTIONAR"),
+  endpoint(async (req, res, c) => {
+    const id = Number(req.params.id);
+    exigir(entero(id), "ID inválido");
+    const datos = validarRecuperacion(req.body || {});
+    // Serializar resoluciones para impedir que dos abonos excedan el saldo.
+    exigir((await filas(c, "SELECT id_compra FROM compras WHERE id_compra=:id FOR UPDATE", { id })).length,
+      "Compra no encontrada", 404);
+    const previos = await filas(c, "SELECT * FROM recuperaciones_compra WHERE clave=:clave", { clave: datos.clave });
+    if (previos.length) {
+      const p = previos[0];
+      exigir(p.ID_COMPRA === id && p.TIPO === datos.tipo && centavos(p.MONTO) === centavos(datos.monto) &&
+        p.REFERENCIA === datos.referencia && p.FECHA_DOCUMENTO === datos.fechaDocumento &&
+        (p.OBSERVACIONES || null) === datos.observaciones, "La clave ya corresponde a otro registro", 409);
+      res.json({ mensaje: "Resolución ya registrada", id: p.ID_RECUPERACION });
+      return;
+    }
+    const detalles = await filas(c, "SELECT cantidad_danada,costo FROM detalle_compras WHERE id_compra=:id", { id });
+    const registros = await filas(c, "SELECT tipo,monto FROM recuperaciones_compra WHERE id_compra=:id", { id });
+    const saldo = resumenRecuperaciones(detalles, registros);
+    exigir(centavos(datos.monto) <= centavos(saldo.pendiente), "El monto supera el saldo pendiente de los productos rechazados", 409);
+    const r = await c.execute(
+      `INSERT INTO recuperaciones_compra(id_compra,id_usuario,tipo,monto,referencia,fecha_documento,observaciones,clave)
+       VALUES (:id,:usuario,:tipo,:monto,:referencia,:fechaDocumento,:observaciones,:clave) RETURNING id_recuperacion INTO :salida`,
+      { id, usuario: req.usuario.ID_USUARIO, ...datos, salida: idSalida() });
+    await c.commit();
+    res.status(201).json({ mensaje: "Resolución registrada", id: r.outBinds.salida[0] });
   }),
 );
 router.get(
@@ -193,6 +231,15 @@ router.post(
   permiso("COMPRAS_GESTIONAR"),
   endpoint(async (req, res, c) => {
     const datos = validarCompra(req.body || {});
+    const pago = req.body.pago ?? null;
+    exigir(pago === null || (typeof pago === "object" && ["EFECTIVO", "TARJETA", "TRANSFERENCIA"].includes(pago.metodo) && typeof (pago.referencia ?? "") === "string" && (pago.referencia || "").length <= 100), "Pago de compra invalido");
+    const solicitud = JSON.stringify({ ...datos, pago, usuario: req.usuario.ID_USUARIO });
+    await c.execute("SELECT pg_advisory_xact_lock(hashtext(:clave))", { clave: `compra-${datos.clave}` });
+    const [prev] = await filas(c, "SELECT id_compra,solicitud,total FROM compras WHERE clave=:clave", { clave: datos.clave });
+    if (prev) {
+      exigir(req.body.pago !== undefined && prev.SOLICITUD === solicitud, "La clave corresponde a otra compra", 409);
+      return res.json({ id: prev.ID_COMPRA, total: prev.TOTAL, mensaje: "Compra ya registrada" });
+    }
     // Clave única y factura única impiden entradas duplicadas ante reintentos.
     const prov = await filas(
       c,
@@ -208,17 +255,18 @@ router.post(
         { id: d.idProducto },
       );
       exigir(ps.length, "Un producto no existe o está inactivo");
-      exigir(ps[0].STOCK + d.cantidad <= 9999999999, "La existencia supera el límite permitido");
+      exigir(ps[0].STOCK + d.cantidad - d.cantidadDanada <= 9999999999, "La existencia supera el límite permitido");
       saldos.set(d.idProducto, ps[0].STOCK);
     }
     const r = await c.execute(
-      `INSERT INTO compras(id_proveedor,id_usuario,factura,clave,total) VALUES (:proveedor,:usuario,:factura,:clave,:total) RETURNING id_compra INTO :id`,
+      `INSERT INTO compras(id_proveedor,id_usuario,factura,clave,total,solicitud) VALUES (:proveedor,:usuario,:factura,:clave,:total,:solicitud) RETURNING id_compra INTO :id`,
       {
         proveedor: datos.idProveedor,
         usuario: req.usuario.ID_USUARIO,
         factura: datos.factura,
         clave: datos.clave,
         total: datos.total,
+        solicitud,
         id: idSalida(),
       },
     );
@@ -229,11 +277,13 @@ router.post(
     );
     for (const d of datos.detalles) {
       await c.execute(
-        "INSERT INTO detalle_compras(id_compra,id_producto,cantidad,costo) VALUES (:id,:idProducto,:cantidad,:costo)",
+        "INSERT INTO detalle_compras(id_compra,id_producto,cantidad,costo,cantidad_danada,observaciones) VALUES (:id,:idProducto,:cantidad,:costo,:cantidadDanada,:observaciones)",
         { id, ...d },
       );
+      const aceptadas = d.cantidad - d.cantidadDanada;
+      if (aceptadas === 0) continue;
       await c.execute("UPDATE productos SET stock=stock+:cantidad WHERE id_producto=:idProducto", {
-        cantidad: d.cantidad,
+        cantidad: aceptadas,
         idProducto: d.idProducto,
       });
       await c.execute(
@@ -242,12 +292,17 @@ router.post(
           producto: d.idProducto,
           recepcion: recepcion.outBinds.recepcion[0],
           usuario: req.usuario.ID_USUARIO,
-          cantidad: d.cantidad,
+          cantidad: aceptadas,
           anterior: saldos.get(d.idProducto),
-          nuevo: saldos.get(d.idProducto) + d.cantidad,
+          nuevo: saldos.get(d.idProducto) + aceptadas,
         },
       );
     }
+    if (pago) {
+      await c.execute("INSERT INTO movimientos_financieros(id_usuario,id_compra,clave,tipo,categoria,metodo,monto,fecha,concepto,referencia) VALUES (:usuario,:compra,:clave,'EGRESO','COMPRA',:metodo,:monto,CURRENT_DATE,:concepto,:referencia)",
+        { usuario: req.usuario.ID_USUARIO, compra: id, clave: `compra-${id}`, metodo: pago.metodo, monto: datos.total, concepto: `Compra #${id} - ${datos.factura}`.slice(0,250), referencia: pago.referencia?.trim() || null });
+    }
+    await c.execute("INSERT INTO bitacora(id_usuario,accion,tabla_afectada,id_registro_afectado,detalle) VALUES (:usuario,'COMPRA_REGISTRADA','COMPRAS',:id,:detalle)", { usuario: req.usuario.ID_USUARIO, id, detalle: pago ? `Compra pagada: ${pago.metodo}, Q${datos.total}` : "Compra a credito" });
     await c.commit();
     res.status(201).json({
       id,
@@ -263,7 +318,7 @@ router.get(
     res.json(
       await filas(
         c,
-        `SELECT p.id_producto,p.codigo,p.nombre,p.stock,p.stock_minimo,p.estado,i.actualizado_en imagen_actualizada, CASE WHEN p.stock <= p.stock_minimo AND p.estado='A' THEN 1 ELSE 0 END alerta FROM productos p LEFT JOIN imagenes_productos i ON i.id_producto=p.id_producto ORDER BY p.nombre`,
+        `SELECT p.id_producto,p.codigo,p.nombre,p.stock,p.stock_minimo,p.estado,i.actualizado_en imagen_actualizada, CASE WHEN p.stock < p.stock_minimo AND p.estado='A' THEN 1 ELSE 0 END alerta FROM productos p LEFT JOIN imagenes_productos i ON i.id_producto=p.id_producto ORDER BY p.nombre`,
       ),
     );
   }),
@@ -286,7 +341,7 @@ router.patch(
   endpoint(async (req, res, c) => {
     const id = Number(req.params.id),
       minimo = req.body?.minimo;
-    exigir(entero(id) && entero(minimo, 0), "El mínimo debe ser un entero no negativo");
+    exigir(entero(id) && entero(minimo, 10), "El mínimo debe ser un entero mayor o igual a 10");
     const r = await c.execute("UPDATE productos SET stock_minimo=:minimo WHERE id_producto=:id", {
       minimo,
       id,

@@ -14,9 +14,9 @@ async function protegerUsuarios(req, res, next) {
       (campo) =>
         !(
           req.method === "POST"
-            ? ["nombreCompleto", "nombreUsuario", "contrasena", "idRol", "correo"]
+            ? ["nombreCompleto", "nombreUsuario", "contrasena", "idRol", "correo", "sueldo", "horario", "puesto"]
             : req.method === "PUT"
-              ? ["nombreCompleto", "idRol", "correo"]
+              ? ["nombreCompleto", "idRol", "correo", "sueldo", "horario", "puesto"]
               : ["estado"]
         ).includes(campo),
     )
@@ -25,7 +25,7 @@ async function protegerUsuarios(req, res, next) {
       .status(403)
       .json({ mensaje: "No puedes modificar tus privilegios ni campos protegidos" });
   }
-  if (actor.ID_ROL === 1) return next();
+  if ([1, 3].includes(actor.ID_ROL)) return next();
   if (req.method !== "PATCH" && datos.idRol !== actor.ID_ROL) {
     return res
       .status(403)

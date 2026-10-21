@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { ArrowLeft, ShieldCheck, Save, Lock } from "lucide-react";
+import { soloAdmin } from "../services/acceso";
 import api from "../services/api";
 
 function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
@@ -89,7 +90,7 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
 
   const rolActual = roles.find((r) => String(r.ID_ROL) === rolSeleccionado);
 
-  const esAdministrador = rolActual?.ID_ROL === 1;
+  const esAdministrador = [1, 3].includes(rolActual?.ID_ROL);
 
   const guardarPermisos = async () => {
     setError("");
@@ -97,7 +98,7 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
     setGuardando(true);
 
     try {
-      await api.put(`/roles/${rolSeleccionado}/permisos`, { permisos: seleccionados }, config);
+      await api.put(`/roles/${rolSeleccionado}/permisos`, { permisos: seleccionados.filter(id => !soloAdmin.has(permisos.find(p => p.ID_PERMISO === id)?.CODIGO)) }, config);
 
       setMensaje("Permisos guardados correctamente");
     } catch (err) {
@@ -118,7 +119,6 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
 
         <div>
           <h2>Gestión de Roles y Permisos</h2>
-          <p>Controla las funciones disponibles para cada rol.</p>
         </div>
       </div>
 
@@ -140,7 +140,7 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
         <select
           id="rol"
           value={rolSeleccionado}
-          onChange={(e) => setRolSeleccionado(e.target.value)}
+          onChange={(e) => { const rol=e.target.value;window.dispatchEvent(new CustomEvent("solicitar-salida",{detail:()=>setRolSeleccionado(rol)})); }}
         >
           {roles.map((rol) => (
             <option key={rol.ID_ROL} value={rol.ID_ROL}>
@@ -149,12 +149,13 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
           ))}
         </select>
 
+        <form key={rolSeleccionado} onSubmit={e => { e.preventDefault(); guardarPermisos(); }}>
         <h3>Permisos del rol</h3>
 
         {esAdministrador && (
           <div className="roles-advertencia">
             <Lock size={18} />
-            Los permisos del Administrador están protegidos y no pueden modificarse aquí.
+            Los permisos de {rolActual.NOMBRE} están protegidos y no pueden modificarse aquí.
           </div>
         )}
 
@@ -162,7 +163,7 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
           <p>Cargando permisos...</p>
         ) : (
           <div className="permisos-lista">
-            {permisos.map((permiso) => (
+            {permisos.filter(p => esAdministrador || !soloAdmin.has(p.CODIGO)).map((permiso) => (
               <label key={permiso.ID_PERMISO} className="permiso-item">
                 <input
                   type="checkbox"
@@ -183,13 +184,14 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
         {puedeAdministrar && !esAdministrador && (
           <button
             className="btn-primary"
-            onClick={guardarPermisos}
+            type="submit"
             disabled={guardando || cargando || Boolean(error) || !rolSeleccionado}
           >
             <Save size={18} />
             {guardando ? "Guardando..." : "Guardar permisos"}
           </button>
         )}
+        </form>
       </section>
     </main>
   );

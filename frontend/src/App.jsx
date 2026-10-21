@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { permisosVisibles } from "./services/acceso";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Usuarios from "./pages/Usuarios";
 import RolesPermisos from "./pages/RolesPermisos";
-import Ventas from "./pages/Ventas";
+import Ventas from "./pages/Pedidos";
 import { VENTAS_HABILITADAS } from "./features";
 import Clientes from "./pages/Clientes";
 import Productos from "./pages/Productos";
@@ -11,6 +12,7 @@ import ComprasInventario from "./pages/ComprasInventario";
 import api from "./services/api";
 import "./App.css";
 import "./theme.css";
+import './orden.css';
 
 const permisosPagina = {
   ventas: "VENTAS_GESTIONAR",
@@ -21,15 +23,44 @@ const permisosPagina = {
   productos: ["PRODUCTOS_VER", "PRODUCTOS_CREAR", "PRODUCTOS_EDITAR"],
 };
 
+const claveSesion = "crayola.sesion";
+const clavePagina = "crayola.pagina";
+function leerSesion() {
+  try {
+    const datos = JSON.parse(sessionStorage.getItem(claveSesion));
+    return typeof datos?.token === "string" && datos.token ? { token: datos.token } : null;
+  } catch {
+    return null;
+  }
+}
+function leerPagina() {
+  try {
+    const pagina = sessionStorage.getItem(clavePagina);
+    return Object.hasOwn(permisosPagina, pagina) ? pagina : "dashboard";
+  } catch {
+    return "dashboard";
+  }
+}
+function guardarEnPestana(clave, valor) {
+  try {
+    if (valor === null) sessionStorage.removeItem(clave);
+    else sessionStorage.setItem(clave, valor);
+  } catch {
+    // Si el navegador bloquea el almacenamiento, la sesión sigue en memoria.
+  }
+}
+
 function App() {
-  const [sesion, setSesion] = useState(null);
+  const [sesion, setSesion] = useState(leerSesion);
   const [identidad, setIdentidad] = useState(null);
   const [permisos, setPermisos] = useState([]);
-  const [pagina, setPagina] = useState("dashboard");
-  const [cargando, setCargando] = useState(false);
+  const [pagina, setPagina] = useState(leerPagina);
+  const [cargando, setCargando] = useState(() => Boolean(sesion));
   const [error, setError] = useState("");
 
   const iniciarSesion = (datos) => {
+    guardarEnPestana(claveSesion, JSON.stringify({ token: datos.token }));
+    guardarEnPestana(clavePagina, null);
     setCargando(true);
     setIdentidad(null);
     setSesion(datos);
@@ -39,7 +70,11 @@ function App() {
   };
 
   const cerrarSesion = () => {
+    guardarEnPestana(claveSesion, null);
+    guardarEnPestana(clavePagina, null);
     setSesion(null);
+    setIdentidad(null);
+    setCargando(false);
     setPermisos([]);
     setPagina("dashboard");
     setError("");
@@ -63,12 +98,16 @@ function App() {
         });
 
         if (vigente) {
-          setPermisos(respuesta.data.permisos);
+          setPermisos(permisosVisibles(respuesta.data.usuario?.idRol, respuesta.data.permisos));
           setIdentidad(respuesta.data.usuario);
           setError("");
         }
       } catch (err) {
         if (vigente) {
+          if (err.response?.status === 401) {
+            cerrarSesion();
+            return;
+          }
           setPermisos([]);
           setIdentidad(null);
           setError(err.response?.data?.mensaje || "No se pudieron consultar los permisos");
@@ -122,11 +161,15 @@ function App() {
     const permiso = permisosPagina[destino];
 
     if (!permiso || autorizado(permiso)) {
+      guardarEnPestana(clavePagina, destino);
       setPagina(destino);
     }
   };
 
-  const volver = () => setPagina("dashboard");
+  const volver = () => {
+    guardarEnPestana(clavePagina, null);
+    setPagina("dashboard");
+  };
 
   if (VENTAS_HABILITADAS && pagina === "ventas" && autorizado("VENTAS_GESTIONAR"))
     return <Ventas token={sesion.token} permisos={permisos} onVolver={volver} />;
@@ -141,7 +184,7 @@ function App() {
   if (pagina === "roles" && autorizado("ROLES_GESTIONAR")) {
     return (
       <RolesPermisos
-        puedeAdministrar={identidad?.idRol === 1}
+        puedeAdministrar={[1, 3].includes(identidad?.idRol)}
         token={sesion.token}
         onVolver={volver}
       />
@@ -158,6 +201,7 @@ function App() {
 
   return (
     <Dashboard
+      token={sesion.token}
       usuario={{ ...sesion.usuario, ...identidad }}
       permisos={permisos}
       onLogout={cerrarSesion}

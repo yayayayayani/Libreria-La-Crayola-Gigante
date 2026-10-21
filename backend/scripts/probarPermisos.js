@@ -204,6 +204,7 @@ async function main() {
       },
     ];
     for (const ruta of rutas) {
+      if (["USUARIOS_GESTIONAR", "ROLES_GESTIONAR"].includes(ruta.codigo)) ruta.admin = true;
       const nombre = `${ruta.codigo} ${ruta.method || "GET"} ${ruta.path}`;
       await comprobar(nombre + " autorizado", async () => {
         await asignar([ruta.codigo]);

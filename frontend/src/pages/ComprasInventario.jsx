@@ -2,6 +2,7 @@ import Telefono from "../components/Telefono";
 import Documento from "../components/Documento";
 import { tipoDocumento, formatearDocumento } from "../services/documentos";
 import FotoProducto from "../components/FotoProducto";
+import DetalleCompra from "../components/DetalleCompra";
 import { useState } from "react";
 import api from "../services/api";
 import useActualizacion from "../hooks/useActualizacion";
@@ -15,7 +16,7 @@ const vacio = {
   direccion: "",
   estado: "A",
 };
-const linea = () => ({ idProducto: "", cantidad: 1, costo: "" });
+const linea = () => ({ idProducto: "", cantidad: 1, costo: "", cantidadDanada: 0, observaciones: "" });
 // Funciona también sobre HTTP privado, donde randomUUID puede no estar disponible.
 const claveOperacion = () =>
   Array.from(crypto.getRandomValues(new Uint8Array(16)), (v) =>
@@ -30,7 +31,8 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
     (puede("INVENTARIO_VER") || puede("INVENTARIO_GESTIONAR")) && "Inventario",
     puede("INVENTARIO_VER") && "Movimientos",
   ].filter(Boolean);
-  const [tab, setTab] = useState(tabs[0]);
+  const [tab, setTab] = useState(tabs.includes("Compras") ? "Compras" : tabs[0]);
+  const [pagoCompra, setPagoCompra] = useState("EFECTIVO"), [referenciaPago,setReferenciaPago] = useState("");
   const [proveedores, setProveedores] = useState([]),
     [productos, setProductos] = useState([]),
     [compras, setCompras] = useState([]),
@@ -47,8 +49,7 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
     [soloAlertas, setSoloAlertas] = useState(false);
   const [error, setError] = useState(""),
     [mensaje, setMensaje] = useState(""),
-    [ocupado, setOcupado] = useState(false),
-    [actualizado, setActualizado] = useState(null);
+    [ocupado, setOcupado] = useState(false);
   const config = { headers: { Authorization: `Bearer ${token}` } };
   const fallo = (e) =>
     setError(
@@ -69,7 +70,7 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
     if (puede("INVENTARIO_VER"))
       tareas.push(api.get("/movimientos", config).then((r) => setMovimientos(r.data)));
     await Promise.all(tareas);
-    setActualizado(new Date());
+
   };
   useActualizacion(async () => {
     try {
@@ -131,16 +132,19 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
           idProveedor: Number(idProveedor),
           factura,
           clave,
+          pago: pagoCompra === "CREDITO" ? null : { metodo: pagoCompra, referencia: referenciaPago },
           detalles: detalles.map((d) => ({
             idProducto: Number(d.idProducto),
             cantidad: Number(d.cantidad),
             costo: Number(d.costo),
+            cantidadDanada: Number(d.cantidadDanada),
+            observaciones: d.observaciones,
           })),
         },
         config,
       );
       setMensaje(`${r.data.mensaje}. Compra #${r.data.id}`);
-      setFactura("");
+      setFactura(""); setReferenciaPago("");
       setDetalles([linea()]);
       setClave(claveOperacion());
     });
@@ -155,21 +159,9 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
         ← Volver al menú
       </button>
       <div className="section-heading">
-        <span className="eyebrow">ABASTECIMIENTO · SPRINT 2</span>
+
         <h2>Compras e inventario</h2>
       </div>
-      <div className="flujo-compra" aria-label="Proceso de abastecimiento">
-        {["Proveedor", "Compra", "Detalle", "Recepción", "Inventario"].map((paso, i) => (
-          <span key={paso}>
-            <b>{i + 1}</b>
-            {paso}
-          </span>
-        ))}
-      </div>
-      <p>
-        Actualización automática cada 5 segundos
-        {actualizado ? ` · Última consulta: ${actualizado.toLocaleTimeString("es-GT")}` : ""}
-      </p>
       {(puede("INVENTARIO_VER") || puede("INVENTARIO_GESTIONAR")) && (
         <div className="productos-resumen">
           <div className="producto-resumen-card">
@@ -212,7 +204,7 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
         <>
           <section className="form-panel">
             <h3>{editando ? "Editar proveedor" : "Nuevo proveedor"}</h3>
-            <form className="usuario-form" onSubmit={guardarProveedor}>
+            <form onReset={()=>{setForm(vacio);setEditando(null);}} className="usuario-form" onSubmit={guardarProveedor}>
               <label style={{ gridColumn: "1 / -1" }}>
                 Nombre comercial
                 <input
@@ -352,11 +344,8 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
         <>
           <section className="form-panel">
             <h3>Registrar compra y recepción</h3>
-            <p>
-              Registra únicamente productos ya recibidos. Al guardar se confirma la recepción
-              completa y se suman las existencias.
-            </p>
-            <form onSubmit={guardarCompra}>
+            <form onReset={()=>{setFactura("");setIdProveedor("");setDetalles([linea()]);setReferenciaPago("");setClave(claveOperacion());}} onSubmit={guardarCompra}>
+              <h4>1. Datos de la factura</h4>
               <div className="usuario-form">
                 <label>
                   Proveedor
@@ -385,6 +374,7 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
                   />
                 </label>
               </div>
+              <h4 className="compra-seccion-titulo">2. Productos recibidos</h4>
               {detalles.map((d, i) => (
                 <div className="compra-linea" key={i}>
                   <label>
@@ -426,7 +416,7 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
                       onChange={(e) => editarLinea(i, "costo", e.target.value)}
                     />
                   </label>
-                  <span>{moneda(Number(d.cantidad) * Number(d.costo))}</span>
+                  <span>Subtotal: {moneda(Number(d.cantidad) * Number(d.costo))}</span>
                   <button
                     type="button"
                     className="btn-secondary"
@@ -445,6 +435,33 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
               >
                 Agregar producto
               </button>
+              <h4 className="compra-seccion-titulo">3. Revisión de recepción</h4>
+              <p>Estos campos son opcionales. Si todo llegó bien, puedes dejarlos vacíos.</p>
+              <div className="recepcion-lista">
+                {detalles.map((d, i) => (
+                  <section className="recepcion-producto" key={i}>
+                    <div className="recepcion-resumen">
+                      <strong>{productos.find((p) => p.ID_PRODUCTO === Number(d.idProducto))?.NOMBRE || `Producto ${i + 1}`}</strong>
+                      <span>Recibidas: {d.cantidad || 0}</span>
+                      <span>Al inventario: {Math.max(0, Number(d.cantidad) - Number(d.cantidadDanada))} unidades.</span>
+                    </div>
+                    <div className="recepcion-campos">
+                      <label>
+                        Unidades dañadas {i + 1} (opcional)
+                        <input type="number" min="0" max={d.cantidad} step="1" placeholder="0"
+                          value={d.cantidadDanada}
+                          onChange={(e) => editarLinea(i, "cantidadDanada", e.target.value)} />
+                      </label>
+                      <label>
+                        Observaciones de recepción {i + 1} (opcional)
+                        <textarea maxLength={500} rows={2} placeholder="Añade un comentario si lo necesitas"
+                          value={d.observaciones}
+                          onChange={(e) => editarLinea(i, "observaciones", e.target.value)} />
+                      </label>
+                    </div>
+                  </section>
+                ))}
+              </div>
               <p>
                 <strong>
                   Total:{" "}
@@ -456,6 +473,8 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
                   )}
                 </strong>
               </p>
+              <div className="usuario-form"><label>Pago de la compra<select value={pagoCompra} onChange={e=>setPagoCompra(e.target.value)}><option value="EFECTIVO">Pagada en efectivo</option><option value="TARJETA">Pagada con tarjeta</option><option value="TRANSFERENCIA">Pagada por transferencia</option><option value="CREDITO">A crédito / pendiente</option></select></label>{pagoCompra !== "CREDITO" && <label>Referencia de pago<input maxLength="100" value={referenciaPago} onChange={e=>setReferenciaPago(e.target.value)} /></label>}</div>
+              <p className="compra-pago-resumen">{pagoCompra === "CREDITO" ? "Queda pendiente de pago." : "El total se descontará del saldo al guardar."}</p>
               <button className="btn-primary" disabled={ocupado}>
                 {ocupado ? "Guardando…" : "Confirmar recepción y registrar compra"}
               </button>
@@ -470,6 +489,8 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
                   <th>Proveedor</th>
                   <th>Factura</th>
                   <th>Total</th>
+                  <th>Por pagar</th>
+                  <th>Pendiente de recuperar</th>
                   <th>Recepción</th>
                   <th>Detalle</th>
                 </tr>
@@ -481,6 +502,8 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
                     <td>{c.PROVEEDOR}</td>
                     <td>{c.FACTURA}</td>
                     <td>{moneda(c.TOTAL)}</td>
+                    <td>{moneda(c.PENDIENTE_PAGO ?? c.TOTAL)}</td>
+                    <td>{moneda(c.PENDIENTE_RECUPERAR || 0)}</td>
                     <td>
                       #{c.ID_RECEPCION} · {c.ESTADO}
                     </td>
@@ -503,29 +526,18 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
             {!compras.length && <p>No hay compras registradas.</p>}
           </div>
           {detalle && (
-            <section className="form-panel">
-              <h3>
-                Compra #{detalle.compra.ID_COMPRA} · Recepción #{detalle.recepcion.ID_RECEPCION}
-              </h3>
-              <p>Fecha: {new Date(detalle.recepcion.FECHA).toLocaleString("es-GT")}</p>
-              <ul>
-                {detalle.detalles.map((d) => (
-                  <li key={d.ID_DETALLE}>
-                    {d.NOMBRE}: {d.CANTIDAD} × {moneda(d.COSTO)} = {moneda(d.CANTIDAD * d.COSTO)}
-                  </li>
-                ))}
-              </ul>
-              <button className="btn-secondary" onClick={() => setDetalle(null)}>
-                Cerrar detalle
-              </button>
-            </section>
+            <DetalleCompra detalle={detalle} token={token} onCerrar={() => setDetalle(null)}
+              onActualizar={async () => {
+                setDetalle((await api.get(`/compras/${detalle.compra.ID_COMPRA}`, config)).data);
+                await cargar();
+              }} />
           )}
         </>
       )}
       {tabVisible === "Inventario" && (
         <>
           <p className={alertas.length ? "error-message" : "alerta-exito"} role="status">
-            {alertas.length} productos activos en su mínimo o por debajo.
+            {alertas.length} productos activos por debajo de su mínimo (10 unidades por defecto).
           </p>
           <label>
             <input
@@ -568,6 +580,7 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
                     {puede("INVENTARIO_GESTIONAR") && (
                       <td>
                         <form
+                          onReset={()=>setMinimos(actual=>({...actual,[p.ID_PRODUCTO]:p.STOCK_MINIMO}))}
                           className="minimo-form"
                           onSubmit={(e) => {
                             e.preventDefault();
@@ -586,7 +599,7 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
                           <input
                             aria-label={`Mínimo de ${p.NOMBRE}`}
                             type="number"
-                            min="0"
+                            min="10"
                             max="9999999999"
                             step="1"
                             required

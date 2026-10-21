@@ -227,7 +227,6 @@ function Productos({ token, onVolver, permisos = [] }) {
             <ArrowLeft size={18} /> Volver al menú
           </button>
           <h2>Gestión de Productos</h2>
-          <p>Inventario de Librería La Crayola Gigante</p>
         </div>
 
         {puedeCrear && (
@@ -275,7 +274,7 @@ function Productos({ token, onVolver, permisos = [] }) {
         <section className="form-panel">
           <h3>Registrar categoría</h3>
 
-          <form className="categoria-form" onSubmit={crearCategoria}>
+          <form onReset={()=>setNuevaCategoria("")} className="categoria-form" onSubmit={crearCategoria}>
             <input
               aria-label="Nombre de categoría"
               placeholder="Ej. Cuadernos, Libros, Escritura..."
@@ -296,7 +295,7 @@ function Productos({ token, onVolver, permisos = [] }) {
         <section className="form-panel">
           <h3>{editando !== null ? "Modificar producto" : "Registrar producto"}</h3>
 
-          <form className="usuario-form" onSubmit={guardarProducto}>
+          <form onReset={()=>setMostrarFormulario(false)} className="usuario-form" onSubmit={guardarProducto}>
             <label>
               Código
               <input
