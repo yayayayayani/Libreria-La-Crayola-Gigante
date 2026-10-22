@@ -1,0 +1,17 @@
+{
+  "categorias": 8,
+  "productos": 40,
+  "clientes": 20,
+  "proveedores": 4,
+  "compras": 4,
+  "pedidos": 64,
+  "ventas": 58,
+  "pagos": 66,
+  "comprobantes": 57,
+  "movimientos_inventario": 153,
+  "movimientos_puntos": 20,
+  "movimientos_financieros": 11,
+  "Diferencias de inventario": 0,
+  "Diferencias de puntos": 0,
+  "Diferencias en ventas pagadas": 0
+}

@@ -1,0 +1,4171 @@
+{
+  "01": {
+    "paragraphs": [
+      [
+        "Normal",
+        "Entrega 3: planificación, backlogs e historias de usuario"
+      ],
+      [
+        "Normal",
+        "David García · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Yordy Carreto · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Daylin Loarca · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "[Institución y carrera]"
+      ],
+      [
+        "Normal",
+        "[Curso y sección]"
+      ],
+      [
+        "Normal",
+        "[Nombre del docente]"
+      ],
+      [
+        "Normal",
+        "20 de octubre de 2026"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante · Entrega 3"
+      ],
+      [
+        "Heading 1",
+        "Contenido"
+      ],
+      [
+        "toc 1",
+        "Contenido\t2"
+      ],
+      [
+        "toc 1",
+        "Entrega 3: planificación, backlogs e historias de usuario\t4"
+      ],
+      [
+        "toc 1",
+        "Propósito del incremento\t4"
+      ],
+      [
+        "toc 1",
+        "Alcance comprometido y ampliaciones\t4"
+      ],
+      [
+        "toc 1",
+        "Organización de David, Yordy y Daylin\t5"
+      ],
+      [
+        "toc 1",
+        "Product Backlog actualizado\t6"
+      ],
+      [
+        "toc 1",
+        "Historias de usuario y aceptación\t7"
+      ],
+      [
+        "toc 2",
+        "HU01. Crear pedido desde caja\t7"
+      ],
+      [
+        "toc 2",
+        "HU02. Gestionar estados del pedido\t8"
+      ],
+      [
+        "toc 2",
+        "HU03. Solicitar y decidir descuentos\t8"
+      ],
+      [
+        "toc 2",
+        "HU04. Generar venta y detalle\t9"
+      ],
+      [
+        "toc 2",
+        "HU05. Registrar cobros\t9"
+      ],
+      [
+        "toc 2",
+        "HU06. Actualizar inventario y auditoría\t9"
+      ],
+      [
+        "toc 2",
+        "HU07. Restringir funciones por rol\t10"
+      ],
+      [
+        "toc 2",
+        "HU08. Buscar y reportar\t10"
+      ],
+      [
+        "toc 2",
+        "HU09. Fidelizar mediante puntos\t10"
+      ],
+      [
+        "toc 2",
+        "HU10. Consultar dinero y comprobantes\t11"
+      ],
+      [
+        "toc 1",
+        "Sprint Backlog asignado\t11"
+      ],
+      [
+        "toc 1",
+        "Criterio de terminado y cierre\t12"
+      ],
+      [
+        "toc 1",
+        "Referencias\t13"
+      ],
+      [
+        "Normal",
+        "Índice automático: en Word, hacer clic derecho y elegir Actualizar campo si cambia la paginación."
+      ],
+      [
+        "Heading 1",
+        "Entrega 3: planificación, backlogs e historias de usuario"
+      ],
+      [
+        "Heading 1",
+        "Propósito del incremento"
+      ],
+      [
+        "Normal",
+        "La tercera entrega de Librería La Crayola Gigante conecta la atención al cliente con el cobro y la salida de inventario. La necesidad principal es evitar que una venta quede registrada sin explicar qué se vendió, quién la realizó, cuánto se cobró y por qué disminuyeron las existencias. Para resolverlo, el pedido concentra la intención de compra y la venta conserva el resultado económico de la operación."
+      ],
+      [
+        "Normal",
+        "El objetivo del Sprint es completar un recorrido verificable: cliente, pedido, validación de inventario, aprobación, venta, pago y salida de inventario. Una compra puede corresponder a un cliente registrado, a un receptor identificado por NIT sin cuenta o a Consumidor Final. Solo el cliente registrado participa en el programa de puntos. Esta distinción permite atender en caja sin obligar a todas las personas a inscribirse."
+      ],
+      [
+        "Normal",
+        "La documentación se actualiza con base en el código disponible y en la verificación técnica del 20 de octubre de 2026. La distribución de tareas que sigue organiza la revisión y la presentación del equipo; no atribuye retrospectivamente a cada integrante cambios cuya autoría no se ha comprobado. Las fechas reales de inicio y finalización del Sprint deben incorporarse al calendario académico del curso."
+      ],
+      [
+        "Heading 1",
+        "Alcance comprometido y ampliaciones"
+      ],
+      [
+        "Normal",
+        "El núcleo de la entrega comprende pedidos, estados, aprobaciones, ventas y detalles, pagos, descuentos, restricciones por rol, auditoría, errores y búsquedas avanzadas. Se incluyen dos reportes iniciales y una batería de pruebas superior al mínimo de diez casos. La aplicación agrega puntos, comprobantes internos imprimibles, control de ingresos y egresos, identificación por NIT desde caja y el rol Dueño."
+      ],
+      [
+        "Normal",
+        "Las ampliaciones no cambian el criterio principal de aceptación: el inventario disminuye cuando el pago queda completo y la operación supera la última validación de existencias. Registrar un pedido o un abono no reserva ni descuenta unidades. La certificación FEL, las devoluciones de ventas pagadas y el arqueo por turno se mantienen fuera del incremento actual."
+      ],
+      [
+        "Heading 1",
+        "Organización de David, Yordy y Daylin"
+      ],
+      [
+        "Normal",
+        "La responsabilidad principal indica quién prepara la demostración, revisa el comportamiento y recoge la evidencia de su bloque. Una tarea se cierra con revisión cruzada. Los puntos de estimación son una propuesta de planificación; no se presentan como el resultado de una reunión de estimación anterior."
+      ],
+      [
+        "Normal",
+        "Tabla 1"
+      ],
+      [
+        "Normal",
+        "Organización de David, Yordy y Daylin"
+      ],
+      [
+        "Heading 1",
+        "Product Backlog actualizado"
+      ],
+      [
+        "Normal",
+        "El Product Backlog representa el trabajo del producto completo. Los elementos anteriores se conservan como contexto; no se vuelven a contabilizar como desarrollo nuevo de este Sprint. La prioridad expresa el orden recomendado para el negocio y la entrega."
+      ],
+      [
+        "Normal",
+        "Tabla 2"
+      ],
+      [
+        "Normal",
+        "Product Backlog actualizado"
+      ],
+      [
+        "Heading 1",
+        "Historias de usuario y aceptación"
+      ],
+      [
+        "Normal",
+        "Cada historia describe una necesidad del usuario y una condición que puede comprobarse. Los identificadores HU enlazan la planificación, las tareas y las pruebas. La aceptación técnica se respalda con pruebas; la aceptación de la presentación corresponde al equipo y al docente."
+      ],
+      [
+        "Heading 2",
+        "HU01. Crear pedido desde caja"
+      ],
+      [
+        "Normal",
+        "Como vendedor, quiero seleccionar un comprador y uno o varios productos para preparar su compra sin abandonar la pantalla de ventas. Su valor es reducir cambios de pantalla y conservar el carrito mientras se registra un cliente nuevo."
+      ],
+      [
+        "Normal",
+        "- Dado un producto activo y con existencias, al crear el pedido el servidor calcula precio y total y devuelve un identificador."
+      ],
+      [
+        "Normal",
+        "- Dada una cantidad superior al stock, el sistema rechaza la operación y no deja un pedido parcial."
+      ],
+      [
+        "Normal",
+        "- Dado un comprador sin cuenta, puede elegirse CF o ingresar nombre y NIT; el pedido no queda ligado a un cliente ficticio."
+      ],
+      [
+        "Normal",
+        "- Dado un cliente nuevo, el vendedor puede registrarlo desde caja. Un NIT duplicado conserva los campos y los productos para corregir la selección."
+      ],
+      [
+        "Heading 2",
+        "HU02. Gestionar estados del pedido"
+      ],
+      [
+        "Normal",
+        "Como encargado de ventas, quiero conocer el estado de cada pedido para continuar únicamente con las acciones permitidas. La lista distingue aprobación automática, espera de decisión, rechazo, cancelación, venta pendiente de cobro y pago completo."
+      ],
+      [
+        "Normal",
+        "- El pedido de descuento igual o inferior al 10 % y total inferior a Q5,000 queda aprobado automáticamente."
+      ],
+      [
+        "Normal",
+        "- No se genera venta de un pedido pendiente, rechazado o cancelado."
+      ],
+      [
+        "Normal",
+        "- Solo se cancela un pedido antes de convertirlo en venta. El estado Pagado no se revierte desde esta función."
+      ],
+      [
+        "Heading 2",
+        "HU03. Solicitar y decidir descuentos"
+      ],
+      [
+        "Normal",
+        "Como administrador o dueño, quiero que los descuentos excepcionales requieran revisión de otro usuario para conservar control sobre las condiciones comerciales."
+      ],
+      [
+        "Normal",
+        "- Solo un usuario con DESCUENTOS_APLICAR solicita descuentos entre 0 y 50 %."
+      ],
+      [
+        "Normal",
+        "- Un descuento mayor al 10 % o un total desde Q5,000 exige aprobación."
+      ],
+      [
+        "Normal",
+        "- La persona creadora no aprueba su propio pedido; otra persona autorizada decide e indica un motivo."
+      ],
+      [
+        "Normal",
+        "- La decisión queda registrada con su relación al pedido y al usuario que la realizó."
+      ],
+      [
+        "Heading 2",
+        "HU04. Generar venta y detalle"
+      ],
+      [
+        "Normal",
+        "Como vendedor, quiero convertir un pedido aprobado en una venta para conservar los productos, cantidades e importes acordados."
+      ],
+      [
+        "Normal",
+        "- La venta pertenece a un único pedido y no se duplica cuando se repite la solicitud."
+      ],
+      [
+        "Normal",
+        "- El detalle conserva cantidades y precios de la operación; el cliente no impone precios desde el navegador."
+      ],
+      [
+        "Normal",
+        "- Generar la venta todavía no descuenta existencias; la salida depende del cobro completo."
+      ],
+      [
+        "Heading 2",
+        "HU05. Registrar cobros"
+      ],
+      [
+        "Normal",
+        "Como cajero, quiero elegir efectivo, tarjeta o transferencia y registrar el pago para dejar evidencia de cómo se cobró."
+      ],
+      [
+        "Normal",
+        "- Tarjeta y transferencia requieren referencia; efectivo admite importe recibido y cálculo de cambio."
+      ],
+      [
+        "Normal",
+        "- Un pago mayor al saldo se rechaza sin guardar importes parciales de la solicitud."
+      ],
+      [
+        "Normal",
+        "- Los abonos permanecen asociados a la venta. Cuando se completa el saldo, se realiza la validación final de stock."
+      ],
+      [
+        "Normal",
+        "- Un reintento con la misma clave no registra dos cobros ni dos salidas."
+      ],
+      [
+        "Heading 2",
+        "HU06. Actualizar inventario y auditoría"
+      ],
+      [
+        "Normal",
+        "Como responsable de inventario, quiero que el pago final produzca una salida trazable para explicar cada disminución de existencias."
+      ],
+      [
+        "Normal",
+        "- Con stock suficiente, pago final, estado Pagado, salida y auditoría se confirman en una misma transacción."
+      ],
+      [
+        "Normal",
+        "- Sin stock suficiente, el pago final se revierte; los abonos anteriores no se eliminan."
+      ],
+      [
+        "Normal",
+        "- Dos ventas que compiten por las últimas unidades no pueden consumir el mismo stock."
+      ],
+      [
+        "Heading 2",
+        "HU07. Restringir funciones por rol"
+      ],
+      [
+        "Normal",
+        "Como responsable del negocio, quiero separar la operación del empleado de la administración para proteger información financiera y de personal."
+      ],
+      [
+        "Normal",
+        "- Empleado solo accede a sus ventas y a las funciones operativas autorizadas."
+      ],
+      [
+        "Normal",
+        "- Administrador y Dueño acceden a finanzas, reportes globales, aprobaciones y administración."
+      ],
+      [
+        "Normal",
+        "- La API rechaza accesos no autorizados aunque se intente invocarla directamente."
+      ],
+      [
+        "Normal",
+        "- Un usuario con historial no puede eliminarse físicamente; puede desactivarse. Nadie elimina su propia cuenta."
+      ],
+      [
+        "Heading 2",
+        "HU08. Buscar y reportar"
+      ],
+      [
+        "Normal",
+        "Como encargado del negocio, quiero filtrar operaciones por cliente o documento, estado y fechas para encontrar un cobro y revisar resultados."
+      ],
+      [
+        "Normal",
+        "- Los filtros se combinan y rechazan fechas inválidas."
+      ],
+      [
+        "Normal",
+        "- Se consultan ventas pagadas por día de pedido y productos vendidos por unidades e importe bruto."
+      ],
+      [
+        "Normal",
+        "- Se descarga el CSV del reporte consultado. La exportación financiera incluye todo el rango, no solo la página visible."
+      ],
+      [
+        "Heading 2",
+        "HU09. Fidelizar mediante puntos"
+      ],
+      [
+        "Normal",
+        "Como cliente registrado, quiero acumular y usar puntos para obtener un beneficio en compras posteriores."
+      ],
+      [
+        "Normal",
+        "- Cada bloque de Q100 efectivamente pagado con dinero genera 10 puntos al completar la venta."
+      ],
+      [
+        "Normal",
+        "- Cada bloque de 100 puntos equivale a Q10; se combina con efectivo, tarjeta o transferencia."
+      ],
+      [
+        "Normal",
+        "- CF y NIT sin cuenta no acumulan ni canjean. El saldo y sus movimientos se conservan ligados al cliente."
+      ],
+      [
+        "Heading 2",
+        "HU10. Consultar dinero y comprobantes"
+      ],
+      [
+        "Normal",
+        "Como administrador, quiero consultar ingresos, egresos y saldo, y conservar el comprobante de cada venta para revisar la operación del negocio."
+      ],
+      [
+        "Normal",
+        "- Las compras marcadas como pagadas generan un egreso vinculado. Las compras a crédito quedan pendientes."
+      ],
+      [
+        "Normal",
+        "- Los puntos no se suman como ingreso de dinero. El saldo depende de los movimientos efectivamente registrados."
+      ],
+      [
+        "Normal",
+        "- La venta pagada genera un comprobante interno consultable e imprimible en dos copias. El PDF no equivale a certificación FEL."
+      ],
+      [
+        "Heading 1",
+        "Sprint Backlog asignado"
+      ],
+      [
+        "Normal",
+        "El estado «Verificado técnicamente» indica que existe implementación comprobada. La tarea de exposición, revisión o captura que se asigna a cada integrante permanece abierta hasta que la ejecute. Las estimaciones siguientes expresan esfuerzo relativo propuesto; no son horas trabajadas."
+      ],
+      [
+        "Normal",
+        "Tabla 3"
+      ],
+      [
+        "Normal",
+        "Sprint Backlog asignado"
+      ],
+      [
+        "Heading 1",
+        "Criterio de terminado y cierre"
+      ],
+      [
+        "Normal",
+        "Una función se considera técnicamente terminada cuando sus validaciones se ejecutan en el servidor, conserva integridad ante errores, respeta permisos y supera sus pruebas relevantes. El recorrido de una venta exige además demostrar el pago y la salida correspondiente. El código compilado debe poder ejecutarse desde la configuración documentada."
+      ],
+      [
+        "Normal",
+        "El cierre académico requiere completar carnés y datos institucionales, realizar la presentación y anexar capturas reales. La ausencia de Daily históricos se declara en el documento Scrum. El equipo no debe marcar ese requisito como demostrado únicamente por disponer de plantillas o por celebrar una reunión posterior."
+      ],
+      [
+        "Heading 1",
+        "Referencias"
+      ],
+      [
+        "Normal",
+        "Schwaber, K., & Sutherland, J. (2020). The Scrum Guide. https://scrumguides.org/scrum-guide.html"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante. (2026). Código fuente y pruebas de Sprint 3 [Repositorio de trabajo no publicado]. backend/src/routes/pedidosRoutes.js; backend/tests/sprint3.test.js; frontend/src/pages/Pedidos.jsx."
+      ]
+    ],
+    "tables": [
+      [
+        [
+          "Integrante",
+          "Responsabilidad asignada",
+          "Revisión cruzada",
+          "Evidencia de cierre"
+        ],
+        [
+          "David García",
+          "Pedidos, descuentos, aprobación y conversión a venta",
+          "Yordy revisa integridad; Daylin revisa el recorrido de caja",
+          "Demostración de venta disponible, stock insuficiente y pedido sujeto a aprobación"
+        ],
+        [
+          "Yordy Carreto",
+          "Pagos, salida de inventario, permisos y pruebas de API",
+          "David contrasta importes y Daylin revisa mensajes",
+          "Resultados de pruebas, movimiento de salida, acceso denegado y conciliación de pagos"
+        ],
+        [
+          "Daylin Loarca",
+          "Interfaz, reportes, comprobantes, documentación y capturas",
+          "David revisa alcance; Yordy contrasta evidencia técnica",
+          "CSV descargados, comprobante, manual y documentos con evidencias reales"
+        ]
+      ],
+      [
+        [
+          "ID",
+          "Necesidad y valor",
+          "Prioridad",
+          "Situación"
+        ],
+        [
+          "PB01",
+          "Autenticar usuarios y separar funciones por rol",
+          "Alta",
+          "Base previa y ajustes de Sprint 3"
+        ],
+        [
+          "PB02",
+          "Mantener clientes, productos y categorías",
+          "Alta",
+          "Base previa; alta de clientes ampliada desde caja"
+        ],
+        [
+          "PB03",
+          "Registrar compras, recepción y entradas de inventario",
+          "Alta",
+          "Sprint 2; conexión financiera ampliada"
+        ],
+        [
+          "PB04",
+          "Crear pedidos con precios y stock verificados por servidor",
+          "Alta",
+          "Implementado en Sprint 3"
+        ],
+        [
+          "PB05",
+          "Aplicar descuentos y aprobar excepciones",
+          "Alta",
+          "Implementado en Sprint 3"
+        ],
+        [
+          "PB06",
+          "Convertir pedidos aprobados en ventas con detalle",
+          "Alta",
+          "Implementado en Sprint 3"
+        ],
+        [
+          "PB07",
+          "Cobrar y actualizar inventario de forma consistente",
+          "Alta",
+          "Implementado en Sprint 3"
+        ],
+        [
+          "PB08",
+          "Buscar operaciones y consultar su auditoría",
+          "Alta",
+          "Implementado en Sprint 3"
+        ],
+        [
+          "PB09",
+          "Consultar y descargar reportes de ventas y productos",
+          "Alta",
+          "Implementado en Sprint 3"
+        ],
+        [
+          "PB10",
+          "Acumular y canjear puntos de clientes registrados",
+          "Media",
+          "Ampliación implementada"
+        ],
+        [
+          "PB11",
+          "Identificar comprador por NIT sin crear cuenta",
+          "Media",
+          "Ampliación implementada"
+        ],
+        [
+          "PB12",
+          "Consultar dinero disponible y registrar egresos",
+          "Alta",
+          "Ampliación implementada"
+        ],
+        [
+          "PB13",
+          "Imprimir dos copias y consultar comprobantes internos",
+          "Media",
+          "Ampliación implementada; no FEL"
+        ],
+        [
+          "PB14",
+          "Certificar documentos fiscales mediante FEL",
+          "Alta",
+          "Pendiente; requiere integración externa"
+        ],
+        [
+          "PB15",
+          "Registrar devoluciones, reembolsos y ajuste de puntos",
+          "Alta",
+          "Pendiente"
+        ],
+        [
+          "PB16",
+          "Abrir, contar y cerrar caja por turno",
+          "Alta",
+          "Pendiente"
+        ],
+        [
+          "PB17",
+          "Recuperar respaldos y calcular utilidad por costo histórico",
+          "Alta",
+          "Pendiente de operación completa"
+        ]
+      ],
+      [
+        [
+          "Tarea / historia",
+          "Responsable y revisor",
+          "Entregable asignado",
+          "Puntos propuestos"
+        ],
+        [
+          "S3-01 / HU01",
+          "David / Daylin",
+          "Revisar altas de comprador y conservar carrito",
+          "3"
+        ],
+        [
+          "S3-02 / HU01",
+          "David / Yordy",
+          "Demostrar validación de stock y precios",
+          "5"
+        ],
+        [
+          "S3-03 / HU02",
+          "David / Yordy",
+          "Explicar estados y acciones válidas",
+          "3"
+        ],
+        [
+          "S3-04 / HU03",
+          "David / Daylin",
+          "Preparar pedido con descuento y segundo aprobador",
+          "5"
+        ],
+        [
+          "S3-05 / HU04",
+          "David / Yordy",
+          "Contrastar pedido, venta y detalle",
+          "3"
+        ],
+        [
+          "S3-06 / HU05",
+          "Yordy / David",
+          "Demostrar efectivo, referencia y abono",
+          "5"
+        ],
+        [
+          "S3-07 / HU06",
+          "Yordy / David",
+          "Conciliar stock antes y después",
+          "5"
+        ],
+        [
+          "S3-08 / HU06",
+          "Yordy / Daylin",
+          "Revisar auditoría y reintentos",
+          "5"
+        ],
+        [
+          "S3-09 / HU07",
+          "Yordy / David",
+          "Verificar empleado, administrador y dueño",
+          "3"
+        ],
+        [
+          "S3-10 / HU08",
+          "Daylin / Yordy",
+          "Preparar filtros, dos reportes y CSV",
+          "3"
+        ],
+        [
+          "S3-11 / HU09",
+          "Yordy / Daylin",
+          "Demostrar puntos más pago en dinero",
+          "3"
+        ],
+        [
+          "S3-12 / HU10",
+          "Daylin / David",
+          "Revisar comprobante e impresión",
+          "3"
+        ],
+        [
+          "S3-13 / HU10",
+          "David / Yordy",
+          "Conciliar compra pagada y saldo",
+          "3"
+        ],
+        [
+          "S3-14 / Todas",
+          "Daylin / Equipo",
+          "Actualizar documentos, figuras y capturas",
+          "5"
+        ],
+        [
+          "S3-15 / Todas",
+          "Yordy / Equipo",
+          "Registrar Review y retrospectiva reales",
+          "3"
+        ]
+      ]
+    ]
+  },
+  "02": {
+    "paragraphs": [
+      [
+        "Normal",
+        "Entrega 3: diseño, modelo de datos y reglas de negocio"
+      ],
+      [
+        "Normal",
+        "David García · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Yordy Carreto · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Daylin Loarca · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "[Institución y carrera]"
+      ],
+      [
+        "Normal",
+        "[Curso y sección]"
+      ],
+      [
+        "Normal",
+        "[Nombre del docente]"
+      ],
+      [
+        "Normal",
+        "20 de octubre de 2026"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante · Entrega 3"
+      ],
+      [
+        "Heading 1",
+        "Contenido"
+      ],
+      [
+        "toc 1",
+        "Contenido\t2"
+      ],
+      [
+        "toc 1",
+        "Entrega 3: diseño, modelo de datos y reglas de negocio\t4"
+      ],
+      [
+        "toc 1",
+        "Visión del diseño\t4"
+      ],
+      [
+        "toc 1",
+        "Diagrama del proceso\t5"
+      ],
+      [
+        "toc 1",
+        "Diagrama de estados\t7"
+      ],
+      [
+        "toc 1",
+        "Modelo relacional\t9"
+      ],
+      [
+        "toc 2",
+        "Diccionario del núcleo\t10"
+      ],
+      [
+        "toc 2",
+        "pedidos\t10"
+      ],
+      [
+        "toc 2",
+        "detalle_pedidos\t11"
+      ],
+      [
+        "toc 2",
+        "aprobaciones\t11"
+      ],
+      [
+        "toc 2",
+        "ventas\t12"
+      ],
+      [
+        "toc 2",
+        "detalle_ventas\t13"
+      ],
+      [
+        "toc 2",
+        "pagos\t13"
+      ],
+      [
+        "toc 2",
+        "movimientos_inventario\t14"
+      ],
+      [
+        "toc 2",
+        "bitacora\t14"
+      ],
+      [
+        "toc 2",
+        "Tablas de apoyo\t15"
+      ],
+      [
+        "toc 1",
+        "Reglas de negocio verificables\t15"
+      ],
+      [
+        "toc 2",
+        "Ejemplos numéricos\t17"
+      ],
+      [
+        "toc 1",
+        "Permisos y datos visibles\t17"
+      ],
+      [
+        "toc 1",
+        "Contratos de API y manejo de errores\t18"
+      ],
+      [
+        "toc 1",
+        "Transacciones e integridad\t19"
+      ],
+      [
+        "toc 1",
+        "Referencias\t20"
+      ],
+      [
+        "Normal",
+        "Índice automático: en Word, hacer clic derecho y elegir Actualizar campo si cambia la paginación."
+      ],
+      [
+        "Heading 1",
+        "Entrega 3: diseño, modelo de datos y reglas de negocio"
+      ],
+      [
+        "Heading 1",
+        "Visión del diseño"
+      ],
+      [
+        "Normal",
+        "La solución mantiene una interfaz React, una API Express y una base PostgreSQL alojada en Neon. El navegador presenta formularios y resultados, pero la autorización, los importes y las validaciones finales se resuelven en el servidor. Esta separación impide que un cambio manual en el navegador determine por sí solo el precio, el descuento permitido o las existencias disponibles."
+      ],
+      [
+        "Normal",
+        "El pedido y la venta cumplen funciones diferentes. El pedido conserva la solicitud y su estado de aprobación; la venta identifica la operación económica. Los pagos se relacionan con la venta y el inventario se actualiza únicamente al completar el importe. El comprobante conserva una representación de la venta pagada para consultarla después sin depender de cambios posteriores en el catálogo."
+      ],
+      [
+        "Normal",
+        "Figura 1"
+      ],
+      [
+        "Normal",
+        "Arquitectura de la aplicación y responsabilidades"
+      ],
+      [
+        "Normal",
+        "Nota. Elaboración técnica a partir del código y modelo de datos del proyecto."
+      ],
+      [
+        "Heading 1",
+        "Diagrama del proceso"
+      ],
+      [
+        "Normal",
+        "El flujo principal incluye la aprobación automática de operaciones ordinarias y una rama de decisión humana para las excepciones. Las validaciones de inventario se repiten porque el stock puede cambiar entre la creación del pedido y su cobro. Los pedidos no reservan unidades."
+      ],
+      [
+        "Normal",
+        "Figura 2"
+      ],
+      [
+        "Normal",
+        "Pedido, aprobación, venta, pago y salida de inventario"
+      ],
+      [
+        "Normal",
+        "Nota. Elaboración técnica a partir del código y modelo de datos del proyecto."
+      ],
+      [
+        "Normal",
+        "Un abono no genera salida. Si la validación final detecta que otra venta consumió las últimas unidades, el nuevo pago completo se rechaza y no se altera el stock. Los abonos previamente confirmados permanecen registrados. Esta limitación debe explicarse al encargado: todavía no existe una devolución automática de esos abonos."
+      ],
+      [
+        "Heading 1",
+        "Diagrama de estados"
+      ],
+      [
+        "Normal",
+        "Figura 3"
+      ],
+      [
+        "Normal",
+        "Estados permitidos del pedido"
+      ],
+      [
+        "Normal",
+        "Nota. Elaboración técnica a partir del código y modelo de datos del proyecto."
+      ],
+      [
+        "Normal",
+        "Tabla 1"
+      ],
+      [
+        "Normal",
+        "Diagrama de estados"
+      ],
+      [
+        "Heading 1",
+        "Modelo relacional"
+      ],
+      [
+        "Normal",
+        "Figura 4"
+      ],
+      [
+        "Normal",
+        "Relaciones centrales del Sprint 3"
+      ],
+      [
+        "Normal",
+        "Nota. Elaboración técnica a partir del código y modelo de datos del proyecto."
+      ],
+      [
+        "Normal",
+        "El diagrama sintetiza el núcleo. Un cliente puede tener varios pedidos, pero la relación del pedido con cliente es opcional para CF y NIT sin cuenta. Un pedido contiene al menos una línea y puede acumular decisiones de aprobación. Cada pedido convertido se relaciona con una sola venta; una venta admite varios pagos y un comprobante persistido. Los productos mantienen las relaciones de las líneas y de los movimientos de inventario."
+      ],
+      [
+        "Normal",
+        "La identificación sin cuenta se guarda en receptor_nombre y receptor_nit del pedido. La restricción ck_receptor_pedido exige que esos dos datos aparezcan juntos y que id_cliente sea nulo. Al generar la venta se copian el nombre y documento del receptor. Esto conserva la relación con la compra sin crear una ficha de fidelización artificial."
+      ],
+      [
+        "Normal",
+        "Los pagos de proveedores se relacionan con compras mediante movimientos_financieros. El saldo de dinero se calcula combinando los cobros de ventas con movimientos financieros no anulados. Los puntos están en clientes y movimientos_puntos; no se tratan como entrada de efectivo."
+      ],
+      [
+        "Heading 2",
+        "Diccionario del núcleo"
+      ],
+      [
+        "Normal",
+        "Las columnas siguientes se obtuvieron del esquema PostgreSQL configurado. «No» en la columna Nulo identifica un dato obligatorio a nivel de base; las reglas de la API pueden imponer condiciones adicionales. Las columnas generadas de impuestos no se editan desde el formulario."
+      ],
+      [
+        "Heading 2",
+        "pedidos"
+      ],
+      [
+        "Normal",
+        "Tabla 2"
+      ],
+      [
+        "Normal",
+        "pedidos"
+      ],
+      [
+        "Heading 2",
+        "detalle_pedidos"
+      ],
+      [
+        "Normal",
+        "Tabla 3"
+      ],
+      [
+        "Normal",
+        "detalle_pedidos"
+      ],
+      [
+        "Heading 2",
+        "aprobaciones"
+      ],
+      [
+        "Normal",
+        "Tabla 4"
+      ],
+      [
+        "Normal",
+        "aprobaciones"
+      ],
+      [
+        "Heading 2",
+        "ventas"
+      ],
+      [
+        "Normal",
+        "Tabla 5"
+      ],
+      [
+        "Normal",
+        "ventas"
+      ],
+      [
+        "Heading 2",
+        "detalle_ventas"
+      ],
+      [
+        "Normal",
+        "Tabla 6"
+      ],
+      [
+        "Normal",
+        "detalle_ventas"
+      ],
+      [
+        "Heading 2",
+        "pagos"
+      ],
+      [
+        "Normal",
+        "Tabla 7"
+      ],
+      [
+        "Normal",
+        "pagos"
+      ],
+      [
+        "Heading 2",
+        "movimientos_inventario"
+      ],
+      [
+        "Normal",
+        "Tabla 8"
+      ],
+      [
+        "Normal",
+        "movimientos_inventario"
+      ],
+      [
+        "Heading 2",
+        "bitacora"
+      ],
+      [
+        "Normal",
+        "Tabla 9"
+      ],
+      [
+        "Normal",
+        "bitacora"
+      ],
+      [
+        "Heading 2",
+        "Tablas de apoyo"
+      ],
+      [
+        "Normal",
+        "Tabla 10"
+      ],
+      [
+        "Normal",
+        "Tablas de apoyo"
+      ],
+      [
+        "Heading 1",
+        "Reglas de negocio verificables"
+      ],
+      [
+        "Normal",
+        "Tabla 11"
+      ],
+      [
+        "Normal",
+        "Reglas de negocio verificables"
+      ],
+      [
+        "Heading 2",
+        "Ejemplos numéricos"
+      ],
+      [
+        "Normal",
+        "Dos unidades de Q10 generan subtotal Q20. Con descuento del 20 %, el total es Q16 y el pedido necesita aprobación. La base incluida es Q14.29 y el IVA Q1.71. Registrar primero Q5 y después Q11 completa la venta; el stock solo disminuye al confirmar el segundo pago."
+      ],
+      [
+        "Normal",
+        "En una compra de Q110, el cliente puede canjear 100 puntos por Q10 y pagar Q100 con otro método. El sistema descuenta 100 puntos y, cuando se completa la operación, calcula la acumulación sobre Q100 de dinero: 10 puntos. Un comprador identificado únicamente por NIT no puede usar ese beneficio."
+      ],
+      [
+        "Heading 1",
+        "Permisos y datos visibles"
+      ],
+      [
+        "Normal",
+        "Tabla 12"
+      ],
+      [
+        "Normal",
+        "Permisos y datos visibles"
+      ],
+      [
+        "Normal",
+        "El rol Dueño tiene alcance administrativo equivalente al Administrador. No se ha implementado una jerarquía adicional que permita a uno controlar al otro con más privilegios. Los permisos del empleado se asignan expresamente; una base vacía no crea vendedores con permisos ni contraseñas de ejemplo."
+      ],
+      [
+        "Heading 1",
+        "Contratos de API y manejo de errores"
+      ],
+      [
+        "Normal",
+        "Tabla 13"
+      ],
+      [
+        "Normal",
+        "Contratos de API y manejo de errores"
+      ],
+      [
+        "Normal",
+        "Los errores 400 señalan entradas inválidas; 401 identifica ausencia o invalidez de sesión; 403 deniega permisos; 404 indica un recurso inexistente; 409 expresa conflictos de estado, stock o duplicidad. Los fallos inesperados devuelven un mensaje controlado. No deben incorporarse contraseñas, cadenas de conexión ni tokens en capturas de depuración."
+      ],
+      [
+        "Heading 1",
+        "Transacciones e integridad"
+      ],
+      [
+        "Normal",
+        "El pago final bloquea las filas que participan en el cálculo, vuelve a consultar stock y confirma pagos, inventario y auditoría juntos. Las claves de operación y las restricciones únicas complementan esos bloqueos para evitar duplicados. Esta agrupación sigue la propiedad de confirmar todas las partes de una transacción o revertirlas, descrita por PostgreSQL Global Development Group (s. f.)."
+      ],
+      [
+        "Normal",
+        "Las claves foráneas relacionan las entidades. La bitácora conserva además un tipo de tabla y un identificador de registro: esa referencia de auditoría es descriptiva y no una clave foránea universal. Por ello, no se afirma que todos los campos de identificación de la aplicación sean relaciones físicas; se distingue el historial de las relaciones operativas obligatorias."
+      ],
+      [
+        "Heading 1",
+        "Referencias"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante. (2026). Esquema PostgreSQL y reglas del Sprint 3 [Código fuente no publicado]. database/006_sprint3.sql a database/012_caja_dueno.sql; backend/src/services/pedidos.js."
+      ],
+      [
+        "Normal",
+        "PostgreSQL Global Development Group. (s. f.). Transactions. PostgreSQL documentation. https://www.postgresql.org/docs/current/tutorial-transactions.html"
+      ]
+    ],
+    "tables": [
+      [
+        [
+          "Estado",
+          "Significado",
+          "Acciones válidas"
+        ],
+        [
+          "APROBADO",
+          "Cumple política ordinaria o tiene autorización",
+          "Generar venta; cancelar antes de la venta"
+        ],
+        [
+          "PENDIENTE_APROBACION",
+          "Requiere decisión independiente",
+          "Aprobar o rechazar con motivo; cancelar"
+        ],
+        [
+          "RECHAZADO",
+          "La excepción fue denegada",
+          "Consultar; no vender ni cobrar"
+        ],
+        [
+          "CANCELADO",
+          "La solicitud se cerró antes de vender",
+          "Consultar; no vender ni cobrar"
+        ],
+        [
+          "VENDIDO",
+          "Existe venta, con saldo por cobrar",
+          "Registrar pagos y consultar detalle"
+        ],
+        [
+          "PAGADO",
+          "Importe cubierto y salida confirmada",
+          "Consultar comprobante, reportes y auditoría"
+        ]
+      ],
+      [
+        [
+          "Campo",
+          "Tipo",
+          "Nulo / generado"
+        ],
+        [
+          "id_pedido",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_cliente",
+          "bigint",
+          "Sí"
+        ],
+        [
+          "id_usuario",
+          "bigint",
+          "No"
+        ],
+        [
+          "clave",
+          "varchar(64)",
+          "No"
+        ],
+        [
+          "estado",
+          "varchar(24)",
+          "No"
+        ],
+        [
+          "subtotal",
+          "numeric(12,2)",
+          "No"
+        ],
+        [
+          "descuento",
+          "numeric(5,2)",
+          "No"
+        ],
+        [
+          "total",
+          "numeric(12,2)",
+          "No"
+        ],
+        [
+          "fecha",
+          "timestamp",
+          "No"
+        ],
+        [
+          "iva_tasa",
+          "numeric(5,2)",
+          "No"
+        ],
+        [
+          "base_imponible",
+          "numeric(12,2)",
+          "Sí / generado"
+        ],
+        [
+          "iva",
+          "numeric(12,2)",
+          "Sí / generado"
+        ],
+        [
+          "receptor_nombre",
+          "varchar(200)",
+          "Sí"
+        ],
+        [
+          "receptor_nit",
+          "varchar(20)",
+          "Sí"
+        ]
+      ],
+      [
+        [
+          "Campo",
+          "Tipo",
+          "Nulo / generado"
+        ],
+        [
+          "id_pedido",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_producto",
+          "bigint",
+          "No"
+        ],
+        [
+          "cantidad",
+          "integer",
+          "No"
+        ],
+        [
+          "precio",
+          "numeric(12,2)",
+          "No"
+        ]
+      ],
+      [
+        [
+          "Campo",
+          "Tipo",
+          "Nulo / generado"
+        ],
+        [
+          "id_pedido",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_usuario",
+          "bigint",
+          "No"
+        ],
+        [
+          "decision",
+          "varchar(12)",
+          "No"
+        ],
+        [
+          "motivo",
+          "varchar(500)",
+          "No"
+        ],
+        [
+          "fecha",
+          "timestamp",
+          "No"
+        ]
+      ],
+      [
+        [
+          "Campo",
+          "Tipo",
+          "Nulo / generado"
+        ],
+        [
+          "id_venta",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_cliente",
+          "bigint",
+          "Sí"
+        ],
+        [
+          "id_usuario",
+          "bigint",
+          "No"
+        ],
+        [
+          "cliente_nombre",
+          "varchar(201)",
+          "No"
+        ],
+        [
+          "documento",
+          "varchar(20)",
+          "Sí"
+        ],
+        [
+          "clave",
+          "varchar(64)",
+          "No"
+        ],
+        [
+          "total",
+          "numeric(12,2)",
+          "No"
+        ],
+        [
+          "fecha",
+          "timestamp",
+          "No"
+        ],
+        [
+          "id_pedido",
+          "bigint",
+          "Sí"
+        ],
+        [
+          "iva_tasa",
+          "numeric(5,2)",
+          "No"
+        ],
+        [
+          "base_imponible",
+          "numeric(12,2)",
+          "Sí / generado"
+        ],
+        [
+          "iva",
+          "numeric(12,2)",
+          "Sí / generado"
+        ]
+      ],
+      [
+        [
+          "Campo",
+          "Tipo",
+          "Nulo / generado"
+        ],
+        [
+          "id_detalle",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_venta",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_producto",
+          "bigint",
+          "No"
+        ],
+        [
+          "cantidad",
+          "bigint",
+          "No"
+        ],
+        [
+          "precio",
+          "numeric(12,2)",
+          "No"
+        ]
+      ],
+      [
+        [
+          "Campo",
+          "Tipo",
+          "Nulo / generado"
+        ],
+        [
+          "id_pago",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_venta",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_usuario",
+          "bigint",
+          "No"
+        ],
+        [
+          "clave",
+          "varchar(64)",
+          "No"
+        ],
+        [
+          "monto",
+          "numeric(12,2)",
+          "No"
+        ],
+        [
+          "metodo",
+          "varchar(20)",
+          "No"
+        ],
+        [
+          "referencia",
+          "varchar(100)",
+          "Sí"
+        ],
+        [
+          "fecha",
+          "timestamp",
+          "No"
+        ],
+        [
+          "puntos_canjeados",
+          "integer",
+          "No"
+        ],
+        [
+          "recibido",
+          "numeric(12,2)",
+          "Sí"
+        ]
+      ],
+      [
+        [
+          "Campo",
+          "Tipo",
+          "Nulo / generado"
+        ],
+        [
+          "id_movimiento",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_producto",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_recepcion",
+          "bigint",
+          "Sí"
+        ],
+        [
+          "id_usuario",
+          "bigint",
+          "Sí"
+        ],
+        [
+          "tipo",
+          "varchar(15)",
+          "No"
+        ],
+        [
+          "cantidad",
+          "bigint",
+          "No"
+        ],
+        [
+          "stock_anterior",
+          "bigint",
+          "No"
+        ],
+        [
+          "stock_nuevo",
+          "bigint",
+          "No"
+        ],
+        [
+          "fecha",
+          "timestamp",
+          "No"
+        ],
+        [
+          "id_venta",
+          "bigint",
+          "Sí"
+        ]
+      ],
+      [
+        [
+          "Campo",
+          "Tipo",
+          "Nulo / generado"
+        ],
+        [
+          "id_bitacora",
+          "bigint",
+          "No"
+        ],
+        [
+          "id_usuario",
+          "bigint",
+          "Sí"
+        ],
+        [
+          "accion",
+          "varchar(80)",
+          "No"
+        ],
+        [
+          "tabla_afectada",
+          "varchar(50)",
+          "No"
+        ],
+        [
+          "id_registro_afectado",
+          "bigint",
+          "Sí"
+        ],
+        [
+          "detalle",
+          "varchar(1000)",
+          "Sí"
+        ],
+        [
+          "fecha_hora",
+          "timestamp",
+          "No"
+        ]
+      ],
+      [
+        [
+          "Tabla",
+          "Función y relación principal"
+        ],
+        [
+          "usuarios",
+          "Cuenta, rol, estado, sueldo, horario y puesto; referencia de quien registra operaciones"
+        ],
+        [
+          "roles, permisos y rol_permiso",
+          "Catálogo de autorización; Administrador 1, Empleado 2 y Dueño 3"
+        ],
+        [
+          "categorias y productos",
+          "Organización del catálogo; productos conserva precio, stock y stock mínimo"
+        ],
+        [
+          "proveedores, compras y detalle_compras",
+          "Origen del abastecimiento y costos de cada compra"
+        ],
+        [
+          "recepciones y recuperaciones_compra",
+          "Recepción y documentación de rechazos a proveedores"
+        ],
+        [
+          "imagenes_productos",
+          "Imagen vinculada al producto, separada del listado principal"
+        ],
+        [
+          "movimientos_financieros",
+          "Egresos, otros ingresos, retiros, saldo inicial y pagos de compra"
+        ],
+        [
+          "movimientos_puntos",
+          "Cambios de puntos, saldo y relación con cliente y venta"
+        ],
+        [
+          "comprobantes",
+          "Contenido histórico de la venta pagada en una relación única con venta"
+        ],
+        [
+          "correos_pendientes",
+          "Cola operativa de notificaciones; no debe usarse como evidencia de entrega al destinatario"
+        ],
+        [
+          "migraciones",
+          "Control de cambios de esquema aplicados; no se elimina en la limpieza del negocio"
+        ]
+      ],
+      [
+        [
+          "Código",
+          "Regla",
+          "Resultado esperado"
+        ],
+        [
+          "RN01",
+          "El servidor obtiene el precio del producto activo",
+          "Se ignoran precios manipulados en la petición"
+        ],
+        [
+          "RN02",
+          "Un pedido admite de 1 a 100 líneas sin producto repetido",
+          "Cantidades enteras positivas; entradas inválidas rechazadas"
+        ],
+        [
+          "RN03",
+          "El descuento va de 0 a 50 %, con hasta dos decimales",
+          "Requiere DESCUENTOS_APLICAR cuando es mayor a cero"
+        ],
+        [
+          "RN04",
+          "Descuento mayor a 10 % o total desde Q5,000",
+          "Estado pendiente de aprobación"
+        ],
+        [
+          "RN05",
+          "Una persona distinta aprueba, con motivo",
+          "El creador no autoriza su propio pedido"
+        ],
+        [
+          "RN06",
+          "Solo un pedido aprobado genera venta",
+          "Una sola venta por pedido, incluso ante reintentos"
+        ],
+        [
+          "RN07",
+          "Los abonos no descuentan ni reservan stock",
+          "La salida se confirma al completar el pago"
+        ],
+        [
+          "RN08",
+          "El pago no supera el saldo pendiente",
+          "Solicitud excesiva sin persistencia"
+        ],
+        [
+          "RN09",
+          "Tarjeta y transferencia incluyen referencia",
+          "Rechazo si falta el identificador del cobro"
+        ],
+        [
+          "RN10",
+          "Efectivo recibido no puede ser inferior al cobro",
+          "Cambio igual a recibido menos monto cobrado"
+        ],
+        [
+          "RN11",
+          "El pago final vuelve a comprobar existencias",
+          "No hay salida negativa ni sobreventa concurrente"
+        ],
+        [
+          "RN12",
+          "Una clave identifica un intento lógico",
+          "Repetir lo mismo no duplica; cambiar contenido genera conflicto"
+        ],
+        [
+          "RN13",
+          "Solo el cliente registrado participa en puntos",
+          "CF y NIT sin cuenta quedan excluidos"
+        ],
+        [
+          "RN14",
+          "Q100 de dinero en venta completada generan 10 puntos",
+          "Se consideran bloques completos; puntos canjeados no generan nuevos puntos"
+        ],
+        [
+          "RN15",
+          "100 puntos equivalen a Q10",
+          "Canje por bloques y limitado por saldo y total pendiente"
+        ],
+        [
+          "RN16",
+          "Precios registrados incluyen IVA configurado de 12 %",
+          "Base = total / 1.12 redondeada; IVA = total menos base"
+        ],
+        [
+          "RN17",
+          "Comprobante interno al completar la venta",
+          "Dos copias; no sustituye certificación FEL"
+        ],
+        [
+          "RN18",
+          "Pago de compra genera egreso vinculado",
+          "Compra a crédito no descuenta dinero hasta registrar pago"
+        ],
+        [
+          "RN19",
+          "Los puntos no son dinero ingresado",
+          "Se excluyen del flujo de caja"
+        ],
+        [
+          "RN20",
+          "Usuarios con historial se desactivan",
+          "No se borran operaciones para eliminar a un empleado"
+        ],
+        [
+          "RN21",
+          "La API impone restricciones de rol y propietario",
+          "Empleado no consulta finanzas ni ventas de otras personas"
+        ],
+        [
+          "RN22",
+          "Cambios pendientes al salir de un formulario",
+          "Guardar y salir, descartar o continuar; error conserva datos"
+        ]
+      ],
+      [
+        [
+          "Función",
+          "Empleado",
+          "Administrador y Dueño"
+        ],
+        [
+          "Crear cliente desde ventas",
+          "Con permiso de ventas",
+          "Permitido"
+        ],
+        [
+          "Consultar o cobrar ventas",
+          "Solo propias y con permisos específicos",
+          "Todas, según permisos administrativos configurados"
+        ],
+        [
+          "Aprobar excepciones",
+          "No",
+          "Sí; nunca el propio pedido"
+        ],
+        [
+          "Finanzas, compras y proveedores",
+          "No",
+          "Sí"
+        ],
+        [
+          "Reportes globales y auditoría",
+          "No",
+          "Sí"
+        ],
+        [
+          "Usuarios y roles",
+          "No",
+          "Sí; permisos de roles administrativos protegidos"
+        ],
+        [
+          "Carnet, sueldo y horario",
+          "Solo el propio",
+          "Datos de personal desde Usuarios"
+        ]
+      ],
+      [
+        [
+          "Ruta",
+          "Propósito",
+          "Control principal"
+        ],
+        [
+          "POST /api/ventas/clientes",
+          "Alta del comprador desde caja",
+          "VENTAS_GESTIONAR y validaciones de cliente"
+        ],
+        [
+          "POST /api/pedidos",
+          "Pedido, detalles y estado inicial",
+          "Stock, producto activo, descuento y receptor"
+        ],
+        [
+          "GET /api/pedidos",
+          "Búsqueda combinada y paginación",
+          "Propiedad del pedido y permiso de ventas"
+        ],
+        [
+          "POST /api/pedidos/:id/decision",
+          "Aprobación o rechazo",
+          "Rol administrativo, segundo usuario y motivo"
+        ],
+        [
+          "POST /api/pedidos/:id/venta",
+          "Conversión a venta",
+          "Estado aprobado y unicidad"
+        ],
+        [
+          "POST /api/pedidos/:id/pagos",
+          "Cobro o abono",
+          "Saldo, puntos, método y stock final"
+        ],
+        [
+          "GET /api/pedidos/:id/comprobante",
+          "Documento de venta pagada",
+          "Pago completo y propiedad"
+        ],
+        [
+          "GET /api/reportes/sprint3/ventas",
+          "Reporte por día de pedido",
+          "REPORTES_VER y rol administrativo"
+        ],
+        [
+          "GET /api/reportes/sprint3/productos",
+          "Unidades e importe bruto",
+          "Mismos filtros y restricciones"
+        ],
+        [
+          "GET /api/finanzas/exportar",
+          "Movimientos del rango completo",
+          "Solo administración y fechas válidas"
+        ],
+        [
+          "DELETE /api/usuarios/:id",
+          "Eliminar cuenta sin operaciones",
+          "Administración, cuenta ajena y ausencia de referencias"
+        ]
+      ]
+    ]
+  },
+  "03": {
+    "paragraphs": [
+      [
+        "Normal",
+        "Entrega 3: pruebas, resultados y guía de demostración"
+      ],
+      [
+        "Normal",
+        "David García · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Yordy Carreto · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Daylin Loarca · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "[Institución y carrera]"
+      ],
+      [
+        "Normal",
+        "[Curso y sección]"
+      ],
+      [
+        "Normal",
+        "[Nombre del docente]"
+      ],
+      [
+        "Normal",
+        "20 de octubre de 2026"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante · Entrega 3"
+      ],
+      [
+        "Heading 1",
+        "Contenido"
+      ],
+      [
+        "toc 1",
+        "Contenido\t2"
+      ],
+      [
+        "toc 1",
+        "Entrega 3: pruebas, resultados y guía de demostración\t4"
+      ],
+      [
+        "toc 1",
+        "Objetivo de la verificación\t4"
+      ],
+      [
+        "toc 1",
+        "Resultado de ejecución técnica\t4"
+      ],
+      [
+        "toc 1",
+        "Matriz de casos automatizados\t5"
+      ],
+      [
+        "toc 1",
+        "Datos para la demostración manual\t7"
+      ],
+      [
+        "toc 2",
+        "M01. Venta con inventario disponible\t8"
+      ],
+      [
+        "toc 2",
+        "M02. Intento sin inventario\t9"
+      ],
+      [
+        "toc 2",
+        "M03. Descuento y aprobación independiente\t9"
+      ],
+      [
+        "toc 2",
+        "M04. Abono y pago final\t10"
+      ],
+      [
+        "toc 2",
+        "M05. Pago inválido o excesivo\t10"
+      ],
+      [
+        "toc 2",
+        "M06. Restricciones del empleado\t11"
+      ],
+      [
+        "toc 2",
+        "M07. Búsqueda avanzada\t11"
+      ],
+      [
+        "toc 2",
+        "M08. Dos reportes y descarga\t12"
+      ],
+      [
+        "toc 2",
+        "M09. Registro de auditoría\t12"
+      ],
+      [
+        "toc 2",
+        "M10. NIT con y sin cuenta\t13"
+      ],
+      [
+        "toc 2",
+        "M11. Puntos más dinero\t13"
+      ],
+      [
+        "toc 2",
+        "M12. Egreso y saldo\t14"
+      ],
+      [
+        "toc 1",
+        "Cómo ejecutar nuevamente las pruebas\t14"
+      ],
+      [
+        "toc 1",
+        "Registro de incidencias y aceptación\t15"
+      ],
+      [
+        "toc 1",
+        "Referencias\t15"
+      ],
+      [
+        "Normal",
+        "Índice automático: en Word, hacer clic derecho y elegir Actualizar campo si cambia la paginación."
+      ],
+      [
+        "Heading 1",
+        "Entrega 3: pruebas, resultados y guía de demostración"
+      ],
+      [
+        "Heading 1",
+        "Objetivo de la verificación"
+      ],
+      [
+        "Normal",
+        "La verificación busca demostrar que el flujo de venta conserva dinero, existencias y relaciones entre registros. No basta con que una pantalla muestre un mensaje de éxito: también debe comprobarse el estado del pedido, el pago asociado, el stock y la auditoría. Por ese motivo se combinan pruebas de integración de API y base de datos con pruebas de navegación."
+      ],
+      [
+        "Normal",
+        "Las pruebas de backend utilizan la base PostgreSQL configurada, crean datos temporales y los eliminan al finalizar. Las pruebas de Playwright ejecutan un navegador real, pero simulan respuestas de API. Estas últimas prueban el recorrido de interfaz y no equivalen a una demostración desde el navegador conectada a Neon. El ensayo presencial del equipo y sus capturas quedan pendientes hasta que se realicen."
+      ],
+      [
+        "Heading 1",
+        "Resultado de ejecución técnica"
+      ],
+      [
+        "Normal",
+        "Tabla 1"
+      ],
+      [
+        "Normal",
+        "Resultado de ejecución técnica"
+      ],
+      [
+        "Normal",
+        "La limpieza de la base se ejecuta después de la verificación. Por ello, los productos, clientes y ventas utilizados por las pruebas no deben permanecer como datos iniciales del negocio. El equipo tendrá que crear un conjunto pequeño de demostración antes de exponer el Sprint."
+      ],
+      [
+        "Heading 1",
+        "Matriz de casos automatizados"
+      ],
+      [
+        "Normal",
+        "La suite backend/tests/sprint3.test.js contiene los casos que siguen. La numeración corresponde al identificador del caso, aunque el orden físico de ejecución puede variar. Los resultados descritos aquí corresponden a las ejecuciones verificadas, no a una afirmación de que los tres integrantes ejecutaron personalmente cada prueba."
+      ],
+      [
+        "Normal",
+        "Tabla 2"
+      ],
+      [
+        "Normal",
+        "Matriz de casos automatizados"
+      ],
+      [
+        "Heading 1",
+        "Datos para la demostración manual"
+      ],
+      [
+        "Normal",
+        "Se propone crear una categoría «Papelería demo», un proveedor del equipo y un producto «Cuaderno demo» con precio final Q10. Registrar una compra de 10 unidades a costo Q5 deja stock de 10 y, si se marca pagada, un egreso Q50. Usar datos de prueba identificados y correos controlados por el equipo, sin direcciones de terceros."
+      ],
+      [
+        "Normal",
+        "Crear dos cuentas administrativas diferentes para demostrar la aprobación independiente, y una cuenta Empleado con VENTAS_GESTIONAR y PAGOS_REGISTRAR. Si se quiere que el vendedor solicite descuento, asignar DESCUENTOS_APLICAR. El segundo aprobador debe ser Administrador o Dueño; un empleado con un permiso administrativo antiguo sigue bloqueado por la API."
+      ],
+      [
+        "Normal",
+        "La tabla de ejecución manual se completa durante la presentación. Los valores siguientes son resultados esperados, no resultados observados. Para cada caso, anotar el identificador generado y conservar capturas legibles."
+      ],
+      [
+        "Heading 2",
+        "M01. Venta con inventario disponible"
+      ],
+      [
+        "Normal",
+        "Responsable: David García. Revisor: Yordy Carreto. Preparación: producto con 10 unidades y precio Q10."
+      ],
+      [
+        "Normal",
+        "1. Abrir Ventas, elegir CF y agregar dos unidades."
+      ],
+      [
+        "Normal",
+        "2. Continuar al cobro; revisar total Q20 y estado pendiente de pago."
+      ],
+      [
+        "Normal",
+        "3. Registrar efectivo recibido Q25 para un cobro Q20."
+      ],
+      [
+        "Normal",
+        "4. Abrir el comprobante y consultar inventario."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: cambio Q5, pedido Pagado, una venta con dos unidades y stock final 8. El comprobante muestra el método efectivo y el desglose incluido de IVA. Resultado observado: [completar]. Pedido/venta: [completar]."
+      ],
+      [
+        "Normal",
+        "Figura 1"
+      ],
+      [
+        "Normal",
+        "Venta disponible y salida de inventario — evidencia E01"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 2",
+        "M02. Intento sin inventario"
+      ],
+      [
+        "Normal",
+        "Responsable: David García. Revisor: Daylin Loarca. Solicitar más unidades de las existentes y continuar."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: mensaje de inventario insuficiente; no aparece un pedido nuevo y el stock no cambia. Registrar stock inicial, cantidad solicitada y búsqueda posterior. Resultado observado: [completar]."
+      ],
+      [
+        "Normal",
+        "Figura 2"
+      ],
+      [
+        "Normal",
+        "Rechazo por inventario insuficiente — evidencia E02"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 2",
+        "M03. Descuento y aprobación independiente"
+      ],
+      [
+        "Normal",
+        "Responsable: David García. Revisor: Yordy Carreto. Crear dos unidades de Q10 con descuento del 20 %, total Q16. Intentar aprobar con el creador; luego ingresar con otra cuenta administrativa y aprobar con un motivo real de demostración."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: estado pendiente, rechazo de autoaprobación y decisión posterior registrada por otra persona. Después de aprobar, generar la venta y cobrar Q16. Resultado observado: [completar]. Identificadores de creador y aprobador: [completar]."
+      ],
+      [
+        "Normal",
+        "Figura 3"
+      ],
+      [
+        "Normal",
+        "Pedido que requiere aprobación — evidencia E03"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 2",
+        "M04. Abono y pago final"
+      ],
+      [
+        "Normal",
+        "Responsable: Yordy Carreto. Revisor: David García. En una venta de Q20 registrar Q5 y comprobar que el stock se mantiene. Registrar después Q15."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: el primer pago conserva saldo Q15 y no produce salida; el segundo completa el total y descuenta dos unidades una sola vez. Resultado observado: [completar]. Pagos: [completar]."
+      ],
+      [
+        "Normal",
+        "Figura 4"
+      ],
+      [
+        "Normal",
+        "Abono y pago completo — evidencia E04"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 2",
+        "M05. Pago inválido o excesivo"
+      ],
+      [
+        "Normal",
+        "Responsable: Yordy Carreto. Revisor: Daylin Loarca. Intentar pagar más del saldo o usar tarjeta sin referencia."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: la aplicación impide continuar o la API devuelve error; no se agrega un pago. Corregir los datos sin volver a crear la venta. Resultado observado: [completar]."
+      ],
+      [
+        "Heading 2",
+        "M06. Restricciones del empleado"
+      ],
+      [
+        "Normal",
+        "Responsable: Yordy Carreto. Revisor: David García. Ingresar como empleado, revisar su carnet e intentar acceder a las funciones administrativas a través del recorrido permitido de la aplicación."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: no aparecen finanzas, administración ni reportes globales. La prueba automatizada de API comprueba además 403 al invocar rutas restringidas. Las ventas visibles pertenecen a la cuenta conectada. Resultado observado: [completar]."
+      ],
+      [
+        "Normal",
+        "Figura 5"
+      ],
+      [
+        "Normal",
+        "Vista y permisos del empleado — evidencia E05"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 2",
+        "M07. Búsqueda avanzada"
+      ],
+      [
+        "Normal",
+        "Responsable: Daylin Loarca. Revisor: David García. Combinar nombre o NIT, estado Pagado y rango que incluya la fecha del pedido de M01. Cambiar después una fecha para excluirlo."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: el pedido aparece solo cuando cumple todos los filtros. Una fecha imposible se rechaza. Resultado observado: [completar]."
+      ],
+      [
+        "Heading 2",
+        "M08. Dos reportes y descarga"
+      ],
+      [
+        "Normal",
+        "Responsable: Daylin Loarca. Revisor: Yordy Carreto. Abrir Reportes, consultar ventas por día de pedido y productos vendidos; descargar cada CSV y abrirlo."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: ventas incluye pedidos pagados; productos incluye unidades e importe bruto antes del descuento general. Los totales no deben compararse sin reconocer esa diferencia. El CSV conserva las filas consultadas. Resultado observado: [completar]."
+      ],
+      [
+        "Normal",
+        "Figura 6"
+      ],
+      [
+        "Normal",
+        "Reportes iniciales y archivos descargados — evidencia E06"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 2",
+        "M09. Registro de auditoría"
+      ],
+      [
+        "Normal",
+        "Responsable: Yordy Carreto. Revisor: Daylin Loarca. Como administrador, abrir auditoría y localizar el pedido de M01 o M03."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: aparecen eventos de pedido, venta, pago y salida, además de aprobación cuando corresponda. Anotar el identificador para relacionar las capturas. Resultado observado: [completar]."
+      ],
+      [
+        "Normal",
+        "Figura 7"
+      ],
+      [
+        "Normal",
+        "Auditoría de una venta demostrada — evidencia E07"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 2",
+        "M10. NIT con y sin cuenta"
+      ],
+      [
+        "Normal",
+        "Responsable: Daylin Loarca. Revisor: David García. En un carrito con productos, elegir Registrar cliente con puntos, completar nombre y NIT y continuar. En otra compra elegir NIT solo para esta compra."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: el primer recorrido crea una ficha de cliente sin perder el carrito. El segundo conserva el NIT en el comprobante, no crea ficha ni ofrece puntos. Resultado observado: [completar]."
+      ],
+      [
+        "Normal",
+        "Figura 8"
+      ],
+      [
+        "Normal",
+        "Identificación desde caja — evidencia E08"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 2",
+        "M11. Puntos más dinero"
+      ],
+      [
+        "Normal",
+        "Responsable: Yordy Carreto. Revisor: Daylin Loarca. Usar una cuenta de cliente con 100 puntos obtenidos mediante compras completadas de demostración. Crear una venta de Q110, canjear 100 puntos y cobrar Q100."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: Q10 de puntos y Q100 de dinero, sin sobrepago. La nueva acumulación se calcula sobre el dinero. No se debe editar el saldo directamente para afirmar que se comprobó la acumulación. Resultado observado: [completar]."
+      ],
+      [
+        "Heading 2",
+        "M12. Egreso y saldo"
+      ],
+      [
+        "Normal",
+        "Responsable: David García. Revisor: Yordy Carreto. Registrar una compra pagada y verificar que aparece como egreso. Después registrar un gasto de insumos que no se incorpora a inventario."
+      ],
+      [
+        "Normal",
+        "Resultado esperado: cada salida disminuye el saldo por el método elegido y conserva su concepto; el pago de compra queda vinculado a la compra. Resultado observado: [completar]."
+      ],
+      [
+        "Normal",
+        "Figura 9"
+      ],
+      [
+        "Normal",
+        "Conciliación de ingresos y egresos — evidencia E09"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 1",
+        "Cómo ejecutar nuevamente las pruebas"
+      ],
+      [
+        "Normal",
+        "Desde backend: npm run test:sprint3. Desde frontend: npx playwright test tests/sprint3.spec.js tests/finanzas.spec.js tests/operacion.spec.js tests/permisos.spec.js. Verificar además npm run lint y npm run build en frontend. No ejecutar pruebas de integración simultáneas mientras se capturan evidencias con datos de demostración, porque comparten la base configurada."
+      ],
+      [
+        "Normal",
+        "Antes de ejecutar, confirmar que .env apunta a la base acordada y que las migraciones están aplicadas. Guardar la salida completa y el código de terminación. Una prueba fallida se documenta, se corrige y se vuelve a ejecutar; no se cambia su resultado manualmente para que parezca aprobada."
+      ],
+      [
+        "Heading 1",
+        "Registro de incidencias y aceptación"
+      ],
+      [
+        "Normal",
+        "Tabla 3"
+      ],
+      [
+        "Normal",
+        "Registro de incidencias y aceptación"
+      ],
+      [
+        "Normal",
+        "La aceptación manual permanece pendiente hasta completar los resultados observados. David revisará el flujo y las decisiones; Yordy verificará datos y permisos; Daylin revisará reportes, capturas y consistencia documental. Cada uno registrará su revisión con fecha real."
+      ],
+      [
+        "Heading 1",
+        "Referencias"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante. (2026). Pruebas de integración y navegador del Sprint 3 [Código y resultados de ejecución no publicados]. backend/tests/sprint3.test.js; frontend/tests/sprint3.spec.js; frontend/tests/finanzas.spec.js; frontend/tests/permisos.spec.js; frontend/tests/operacion.spec.js."
+      ]
+    ],
+    "tables": [
+      [
+        [
+          "Verificación",
+          "Resultado ejecutado el 20/10/2026",
+          "Alcance"
+        ],
+        [
+          "Backend Sprint 3",
+          "37 aprobadas; 0 fallidas",
+          "API y PostgreSQL configurado"
+        ],
+        [
+          "Navegador",
+          "34 aprobadas; 0 fallidas",
+          "Playwright con respuestas de API simuladas"
+        ],
+        [
+          "Compilación",
+          "Correcta",
+          "npm run build"
+        ],
+        [
+          "Lint",
+          "Correcto",
+          "npm run lint"
+        ]
+      ],
+      [
+        [
+          "Caso",
+          "Verificación",
+          "Resultado"
+        ],
+        [
+          "01",
+          "flujo completo: venta, pago, salida y auditoría atómicos",
+          "Aprobado"
+        ],
+        [
+          "02",
+          "sin inventario no crea pedido",
+          "Aprobado"
+        ],
+        [
+          "03",
+          "descuento alto exige aprobación independiente",
+          "Aprobado"
+        ],
+        [
+          "04",
+          "descuento calculado por servidor e ignorar precios enviados",
+          "Aprobado"
+        ],
+        [
+          "05",
+          "abonos no descuentan stock; saldo final sí",
+          "Aprobado"
+        ],
+        [
+          "06",
+          "sobrepago rechazado sin persistencia",
+          "Aprobado"
+        ],
+        [
+          "07",
+          "reintentos simultáneos no duplican pedido ni venta",
+          "Aprobado"
+        ],
+        [
+          "08",
+          "pago simultáneo repetido descuenta una sola vez",
+          "Aprobado"
+        ],
+        [
+          "09",
+          "permisos restringen todas las operaciones sensibles",
+          "Aprobado"
+        ],
+        [
+          "10",
+          "cancelación impide venta; rechazo guarda motivo",
+          "Aprobado"
+        ],
+        [
+          "11",
+          "inventario agotado al pagar revierte pago completo",
+          "Aprobado"
+        ],
+        [
+          "12",
+          "búsquedas combinadas y fechas inválidas",
+          "Aprobado"
+        ],
+        [
+          "13",
+          "reportes concilian ventas pagadas y unidades",
+          "Aprobado"
+        ],
+        [
+          "14",
+          "límites, redondeos y umbral de aprobación",
+          "Aprobado"
+        ],
+        [
+          "15",
+          "ruta antigua no permite omitir el flujo",
+          "Aprobado"
+        ],
+        [
+          "16",
+          "cliente inactivo y productos repetidos rechazados",
+          "Aprobado"
+        ],
+        [
+          "17",
+          "claves reutilizadas con datos distintos generan conflicto",
+          "Aprobado"
+        ],
+        [
+          "18",
+          "dos pedidos compiten por último stock sin sobreventa",
+          "Aprobado"
+        ],
+        [
+          "19",
+          "vendedor sin permiso específico no aplica descuentos",
+          "Aprobado"
+        ],
+        [
+          "20",
+          "caja: puntos más efectivo, acumulación y reintento sin duplicar",
+          "Aprobado"
+        ],
+        [
+          "21",
+          "caja: saldo insuficiente revierte pago",
+          "Aprobado"
+        ],
+        [
+          "22",
+          "caja: pago completo con puntos no acumula puntos nuevos",
+          "Aprobado"
+        ],
+        [
+          "23",
+          "caja: efectivo recibido insuficiente no registra pago",
+          "Aprobado"
+        ],
+        [
+          "24",
+          "caja: Consumidor Final puede comprar pero no canjear",
+          "Aprobado"
+        ],
+        [
+          "25",
+          "IVA incluido: total intacto, descuento, venta y reporte conciliados",
+          "Aprobado"
+        ],
+        [
+          "26",
+          "finanzas: ingresos, egresos, saldo, rango y reintentos",
+          "Aprobado"
+        ],
+        [
+          "27",
+          "finanzas: no cuenta puntos y usa la fecha del cobro",
+          "Aprobado"
+        ],
+        [
+          "28",
+          "empleados: finanzas y administracion bloqueadas aun con permisos asignados",
+          "Aprobado"
+        ],
+        [
+          "29",
+          "finanzas: rechaza montos, puntos y fechas invalidos",
+          "Aprobado"
+        ],
+        [
+          "30",
+          "finanzas: pagos de compra concurrentes no exceden su total",
+          "Aprobado"
+        ],
+        [
+          "31",
+          "finanzas: apertura, saldo anterior y duplicados",
+          "Aprobado"
+        ],
+        [
+          "32",
+          "compras pagadas descuentan saldo y reintentos no duplican",
+          "Aprobado"
+        ],
+        [
+          "33",
+          "carnet privado por usuario y sueldo validado",
+          "Aprobado"
+        ],
+        [
+          "34",
+          "NIT sin cuenta conserva receptor, no crea cliente ni permite puntos",
+          "Aprobado"
+        ],
+        [
+          "35",
+          "Dueño administra y eliminacion protege historial y cuenta propia",
+          "Aprobado"
+        ],
+        [
+          "36",
+          "exportacion financiera incluye mas de una pagina y restringe empleados",
+          "Aprobado"
+        ],
+        [
+          "37",
+          "vendedor registra cliente desde caja sin permiso de administrar clientes",
+          "Aprobado"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E01\nPegar la caja con total Q20 y, debajo, el producto con stock 10 antes y 8 después. Deben verse el identificador de venta y el método de pago; no mostrar credenciales.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E02\nMostrar cantidad solicitada, existencias y mensaje de error. Agregar una segunda captura de historial sin una operación nueva correspondiente al intento.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E03\nMostrar el 20 %, el total Q16 y el estado pendiente. Añadir detalle de la decisión con motivo y cuenta aprobadora diferente.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E04\nPegar el detalle con ambos pagos, el saldo después del primero y el movimiento final de inventario.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E05\nMostrar el menú del empleado y su carnet. Usar sueldo y horario de demostración, sin datos privados de una persona ajena al equipo.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E06\nPegar una captura de cada reporte con sus filtros y otra de cada CSV abierto. Deben verse encabezados y valores que puedan compararse.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E07\nMostrar la bitácora con identificador de pedido, acciones y usuario. Relacionarla con E01 o E03; no usar una fila de otra operación.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E08\nMostrar el alta de cliente dentro de ventas y una operación distinta con NIT sin cuenta. Pegar el comprobante de esta última sin exponer documentos de terceros.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E09\nMostrar Mi dinero con rango visible, la compra pagada y el gasto de insumos. Indicar saldo antes y después en el pie de figura.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "Incidencia",
+          "Caso afectado",
+          "Responsable",
+          "Corrección y repetición",
+          "Estado"
+        ],
+        [
+          "[Completar si ocurre]",
+          "[Mxx o caso automático]",
+          "[Nombre]",
+          "[Evidencia y resultado]",
+          "[Abierta/cerrada]"
+        ]
+      ]
+    ]
+  },
+  "04": {
+    "paragraphs": [
+      [
+        "Normal",
+        "Entrega 3: seguimiento Scrum, Review y retrospectiva"
+      ],
+      [
+        "Normal",
+        "David García · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Yordy Carreto · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Daylin Loarca · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "[Institución y carrera]"
+      ],
+      [
+        "Normal",
+        "[Curso y sección]"
+      ],
+      [
+        "Normal",
+        "[Nombre del docente]"
+      ],
+      [
+        "Normal",
+        "20 de octubre de 2026"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante · Entrega 3"
+      ],
+      [
+        "Heading 1",
+        "Contenido"
+      ],
+      [
+        "toc 1",
+        "Contenido\t2"
+      ],
+      [
+        "toc 1",
+        "Entrega 3: seguimiento Scrum, Review y retrospectiva\t3"
+      ],
+      [
+        "toc 1",
+        "Estado de las evidencias del proceso\t3"
+      ],
+      [
+        "toc 1",
+        "Reconstrucción técnica para preparar la conversación\t3"
+      ],
+      [
+        "toc 1",
+        "Asignación para la reunión de cierre\t4"
+      ],
+      [
+        "toc 1",
+        "Agenda propuesta para esta noche\t4"
+      ],
+      [
+        "toc 1",
+        "Acta del seguimiento real\t5"
+      ],
+      [
+        "toc 1",
+        "Formato para Daily de los próximos días\t6"
+      ],
+      [
+        "toc 1",
+        "Sprint Review: documento preparado para completar\t7"
+      ],
+      [
+        "toc 1",
+        "Sprint Retrospective: análisis propuesto\t8"
+      ],
+      [
+        "toc 2",
+        "Acuerdos reales de retrospectiva\t9"
+      ],
+      [
+        "toc 1",
+        "Lista de cierre de evidencias\t10"
+      ],
+      [
+        "toc 1",
+        "Referencias\t10"
+      ],
+      [
+        "Normal",
+        "Índice automático: en Word, hacer clic derecho y elegir Actualizar campo si cambia la paginación."
+      ],
+      [
+        "Heading 1",
+        "Entrega 3: seguimiento Scrum, Review y retrospectiva"
+      ],
+      [
+        "Heading 1",
+        "Estado de las evidencias del proceso"
+      ],
+      [
+        "Normal",
+        "El equipo indicó que no realizó reuniones Daily Scrum durante el trabajo previo. Por tanto, este documento no contiene actas históricas de reuniones que no ocurrieron. Sí incorpora una reconstrucción técnica de los temas trabajados, formatos para registrar la reunión real de esta noche y una propuesta de mejora para el siguiente Sprint."
+      ],
+      [
+        "Normal",
+        "La reconstrucción describe lo que puede revisarse en el producto, no quién lo terminó en una fecha determinada. No se asignan fechas pasadas, asistencia, duración ni acuerdos inventados. Una captura tomada durante la reunión de cierre solo acreditará ese encuentro y no reemplazará las evidencias de Daily anteriores."
+      ],
+      [
+        "Normal",
+        "Schwaber y Sutherland (2020) distinguen el seguimiento diario, la revisión del incremento y la retrospectiva. En este proyecto se conservará esa separación: el seguimiento organiza el trabajo inmediato, la Review contrasta resultados y la retrospectiva identifica cambios en la forma de trabajar."
+      ],
+      [
+        "Heading 1",
+        "Reconstrucción técnica para preparar la conversación"
+      ],
+      [
+        "Normal",
+        "Los siguientes bloques permiten que cada integrante estudie el incremento antes de exponer. Son un resumen organizado del código actual, sin atribución histórica de autoría individual. Los temas deben contrastarse con la aplicación y con los resultados del documento de pruebas."
+      ],
+      [
+        "Normal",
+        "Tabla 1"
+      ],
+      [
+        "Normal",
+        "Reconstrucción técnica para preparar la conversación"
+      ],
+      [
+        "Heading 1",
+        "Asignación para la reunión de cierre"
+      ],
+      [
+        "Normal",
+        "David García preparará el recorrido pedido–aprobación–venta y revisará el objetivo del Sprint. Yordy Carreto comprobará pagos, inventario, permisos y resultados de pruebas; facilitará el registro de pendientes. Daylin Loarca preparará reportes, comprobantes y documentos, y organizará las capturas con autorización de los participantes."
+      ],
+      [
+        "Normal",
+        "Estos son encargos para el cierre. Cada integrante debe completar en la reunión qué hizo realmente, qué verificó y qué necesita revisar. El hecho de tener un bloque asignado no demuestra que haya desarrollado históricamente todas sus funciones."
+      ],
+      [
+        "Heading 1",
+        "Agenda propuesta para esta noche"
+      ],
+      [
+        "Normal",
+        "Fecha prevista: 20 de octubre de 2026, zona America/Guatemala. Hora de inicio y finalización: [completar cuando ocurra]. Plataforma o lugar: [completar]. Enlace de reunión: [opcional; no publicar accesos privados]."
+      ],
+      [
+        "Normal",
+        "Tabla 2"
+      ],
+      [
+        "Normal",
+        "Agenda propuesta para esta noche"
+      ],
+      [
+        "Normal",
+        "La agenda es una propuesta, no una constancia de asistencia. Si no se completan todos los casos, registrar cuáles faltaron y fijar una nueva acción con responsable. No rellenar los espacios con resultados supuestos."
+      ],
+      [
+        "Heading 1",
+        "Acta del seguimiento real"
+      ],
+      [
+        "Normal",
+        "Fecha: [completar]. Inicio: [completar]. Fin: [completar]. Participantes presentes: [completar]. Objetivo inmediato: preparar la presentación del flujo completo y resolver los pendientes observados."
+      ],
+      [
+        "Normal",
+        "Tabla 3"
+      ],
+      [
+        "Normal",
+        "Acta del seguimiento real"
+      ],
+      [
+        "Normal",
+        "Acuerdos adoptados: [completar]. Cambios en el Sprint Backlog: [completar IDs]. Próxima comprobación: [fecha y responsable]."
+      ],
+      [
+        "Normal",
+        "Figura 1"
+      ],
+      [
+        "Normal",
+        "Reunión real de seguimiento de cierre — evidencia R01"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 1",
+        "Formato para Daily de los próximos días"
+      ],
+      [
+        "Normal",
+        "El siguiente formato se utilizará únicamente si se realiza un nuevo encuentro de seguimiento. Se puede duplicar para otra fecha real. Una reunión futura no corrige por sí sola la falta de reuniones históricas, pero sí permite mejorar la trazabilidad del trabajo restante."
+      ],
+      [
+        "Normal",
+        "Fecha y hora reales: [completar]. Participantes: [completar]. Objetivo del Sprint al que se contribuye: [completar]."
+      ],
+      [
+        "Normal",
+        "Tabla 4"
+      ],
+      [
+        "Normal",
+        "Formato para Daily de los próximos días"
+      ],
+      [
+        "Normal",
+        "Nota del encuentro y enlace a evidencia: [completar]. Cambios acordados en tareas: [completar]."
+      ],
+      [
+        "Heading 1",
+        "Sprint Review: documento preparado para completar"
+      ],
+      [
+        "Normal",
+        "La Review comprobará el incremento frente al objetivo de la entrega. El punto de partida técnico es un sistema con pedidos, decisiones, ventas, cobros y salidas verificadas por pruebas. La aceptación del equipo aún debe registrarse después de observar la demostración."
+      ],
+      [
+        "Normal",
+        "Fecha real: [completar]. Participantes y personas invitadas: [completar]. Presentó cada bloque: [completar]. Versión del código o commit mostrado: [completar]. Base de demostración utilizada: [nombre lógico, sin cadena de conexión]."
+      ],
+      [
+        "Normal",
+        "Tabla 5"
+      ],
+      [
+        "Normal",
+        "Sprint Review: documento preparado para completar"
+      ],
+      [
+        "Normal",
+        "Comentarios del equipo o docente: [completar]. Cambios solicitados: [completar]. Elementos que pasan al Product Backlog: [PB y motivo]. Responsable de comunicar la decisión: [completar]."
+      ],
+      [
+        "Normal",
+        "Figura 2"
+      ],
+      [
+        "Normal",
+        "Demostración real durante la Sprint Review — evidencia R02"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 1",
+        "Sprint Retrospective: análisis propuesto"
+      ],
+      [
+        "Normal",
+        "Los puntos siguientes son observaciones preparadas para discutir, no acuerdos ya adoptados. El equipo debe conservar solo aquellos que reconozca como aplicables y añadir sus propias experiencias. Conviene describir situaciones concretas y acordar acciones pequeñas que puedan verificarse."
+      ],
+      [
+        "Normal",
+        "Tabla 6"
+      ],
+      [
+        "Normal",
+        "Sprint Retrospective: análisis propuesto"
+      ],
+      [
+        "Heading 2",
+        "Acuerdos reales de retrospectiva"
+      ],
+      [
+        "Normal",
+        "Fecha y duración reales: [completar]. Facilitó: [completar]."
+      ],
+      [
+        "Normal",
+        "Tabla 7"
+      ],
+      [
+        "Normal",
+        "Acuerdos reales de retrospectiva"
+      ],
+      [
+        "Normal",
+        "Figura 3"
+      ],
+      [
+        "Normal",
+        "Retrospectiva y acuerdos del equipo — evidencia R03"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 1",
+        "Lista de cierre de evidencias"
+      ],
+      [
+        "Normal",
+        "- Completar fecha y hora reales de cada encuentro."
+      ],
+      [
+        "Normal",
+        "- Verificar que cada captura corresponde al evento descrito."
+      ],
+      [
+        "Normal",
+        "- No reutilizar una captura de esta noche como evidencia de varios Daily pasados."
+      ],
+      [
+        "Normal",
+        "- Relacionar cada observación de la Review con un caso o requisito."
+      ],
+      [
+        "Normal",
+        "- Registrar al menos una mejora concreta con responsable y fecha."
+      ],
+      [
+        "Normal",
+        "- Revisar nombres, carnés y datos institucionales antes de entregar."
+      ],
+      [
+        "Heading 1",
+        "Referencias"
+      ],
+      [
+        "Normal",
+        "Schwaber, K., & Sutherland, J. (2020). The Scrum Guide. https://scrumguides.org/scrum-guide.html"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante. (2026). Backlogs, código y resultados técnicos del Sprint 3 [Material de trabajo no publicado]."
+      ]
+    ],
+    "tables": [
+      [
+        [
+          "Bloque reconstruido",
+          "Evidencia técnica disponible",
+          "Tema que debe revisar el equipo"
+        ],
+        [
+          "Pedido y reglas comerciales",
+          "Servicio de cálculo, estados y rutas de pedidos",
+          "Por qué el 20 % requiere aprobación y el 10 % no"
+        ],
+        [
+          "Venta, pago e inventario",
+          "Detalles de venta, pagos y transacción final",
+          "Diferencia entre generar venta, abonar y completar el pago"
+        ],
+        [
+          "Control y consulta",
+          "Permisos, auditoría, búsquedas y dos reportes",
+          "Qué ve cada rol y cómo se localiza una operación"
+        ],
+        [
+          "Ampliaciones del negocio",
+          "Puntos, NIT sin cuenta, comprobantes y finanzas",
+          "Diferencia entre puntos, dinero, comprobante y factura fiscal"
+        ],
+        [
+          "Preparación de la entrega",
+          "Pruebas, documentos y limpieza",
+          "Qué está comprobado técnicamente y qué falta demostrar en equipo"
+        ]
+      ],
+      [
+        [
+          "Momento",
+          "Duración orientativa",
+          "Objetivo y responsable"
+        ],
+        [
+          "Apertura",
+          "5 minutos",
+          "Confirmar objetivo, participantes y autorización de capturas; David"
+        ],
+        [
+          "Seguimiento de cierre",
+          "Hasta 15 minutos",
+          "Revisar tareas pendientes y próximos pasos; facilita Yordy"
+        ],
+        [
+          "Sprint Review",
+          "30 minutos",
+          "Demostrar casos M01 a M10 y contrastar aceptación; equipo"
+        ],
+        [
+          "Retrospectiva",
+          "15 minutos",
+          "Identificar dificultades y acordar mejoras; facilita Yordy"
+        ],
+        [
+          "Cierre documental",
+          "10 minutos",
+          "Guardar capturas, asignar correcciones y revisar carnés; Daylin"
+        ]
+      ],
+      [
+        [
+          "Participante",
+          "Qué verificó realmente",
+          "Qué hará a continuación",
+          "Bloqueo y ayuda necesaria"
+        ],
+        [
+          "David García",
+          "[Completar con evidencia o identificador]",
+          "[Tarea concreta]",
+          "[Bloqueo o ninguno]"
+        ],
+        [
+          "Yordy Carreto",
+          "[Completar con evidencia o identificador]",
+          "[Tarea concreta]",
+          "[Bloqueo o ninguno]"
+        ],
+        [
+          "Daylin Loarca",
+          "[Completar con evidencia o identificador]",
+          "[Tarea concreta]",
+          "[Bloqueo o ninguno]"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA R01\nInsertar captura de la reunión de esta noche con participantes identificables y el tablero o lista de tareas compartida. Anotar fecha, hora y qué tarea estaban revisando. No describirla como un Daily de un día anterior.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "Persona",
+          "Avance comprobado desde el último encuentro",
+          "Plan inmediato",
+          "Impedimento"
+        ],
+        [
+          "David García",
+          "[Completar]",
+          "[Completar]",
+          "[Completar]"
+        ],
+        [
+          "Yordy Carreto",
+          "[Completar]",
+          "[Completar]",
+          "[Completar]"
+        ],
+        [
+          "Daylin Loarca",
+          "[Completar]",
+          "[Completar]",
+          "[Completar]"
+        ]
+      ],
+      [
+        [
+          "Elemento revisado",
+          "Demostración prevista",
+          "Decisión real y observación"
+        ],
+        [
+          "Flujo completo",
+          "M01, pedido y pago con stock",
+          "[Aceptado / pendiente / rechazado y motivo]"
+        ],
+        [
+          "Error de inventario",
+          "M02, solicitud superior al stock",
+          "[Completar]"
+        ],
+        [
+          "Descuento y aprobación",
+          "M03, otro usuario decide",
+          "[Completar]"
+        ],
+        [
+          "Abonos y salida automática",
+          "M04, stock antes y después",
+          "[Completar]"
+        ],
+        [
+          "Restricciones y auditoría",
+          "M06 y M09",
+          "[Completar]"
+        ],
+        [
+          "Reportes descargables",
+          "M08, comparación con CSV",
+          "[Completar]"
+        ],
+        [
+          "Registro desde caja",
+          "M10, cuenta y NIT sin cuenta",
+          "[Completar]"
+        ],
+        [
+          "Documentación y limpieza",
+          "Revisión de archivos y estado inicial",
+          "[Completar]"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA R02\nMostrar participantes y pantalla compartida con el pedido pagado, reporte o auditoría que se está explicando. Relacionar la captura con un caso Mxx y una decisión de la tabla.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "Observación para discutir",
+          "Consecuencia",
+          "Mejora propuesta"
+        ],
+        [
+          "No se realizaron Daily durante el trabajo anterior",
+          "No hay evidencia histórica de seguimiento y bloqueos",
+          "Programar seguimiento breve y registrar tareas el mismo día"
+        ],
+        [
+          "Existían datos de prueba junto a los del negocio",
+          "Confusión al demostrar saldos, empleados y reportes",
+          "Usar datos DEMO y una base o rama de pruebas separada"
+        ],
+        [
+          "Había documentos repetidos y cifras antiguas de pruebas",
+          "La entrega podía contradecir el estado del código",
+          "Mantener un índice único y actualizar resultados desde la ejecución"
+        ],
+        [
+          "Se añadieron funciones de negocio fuera del núcleo inicial",
+          "Aumenta el esfuerzo de revisión",
+          "Separar requisitos obligatorios de ampliaciones en el backlog"
+        ],
+        [
+          "Falta comprobar la recuperación operativa y FEL",
+          "El sistema no cubre toda la operación comercial real",
+          "Priorizar esas brechas antes de depender de él en producción"
+        ]
+      ],
+      [
+        [
+          "Acción acordada",
+          "Responsable",
+          "Fecha compromiso",
+          "Cómo se comprobará"
+        ],
+        [
+          "[Seleccionar o redactar una mejora]",
+          "[Nombre]",
+          "[Fecha]",
+          "[Resultado observable]"
+        ],
+        [
+          "[Seleccionar o redactar una mejora]",
+          "[Nombre]",
+          "[Fecha]",
+          "[Resultado observable]"
+        ],
+        [
+          "[Seleccionar o redactar una mejora]",
+          "[Nombre]",
+          "[Fecha]",
+          "[Resultado observable]"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA R03\nInsertar captura del tablero o documento de acuerdos durante la reunión real. Deben verse las acciones, responsables y fechas; una imagen de rostros sin acuerdos no demuestra el contenido de la retrospectiva.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ]
+    ]
+  },
+  "05": {
+    "paragraphs": [
+      [
+        "Normal",
+        "Entrega 3: manual de uso, conexión y preparación de evidencias"
+      ],
+      [
+        "Normal",
+        "David García · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Yordy Carreto · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Daylin Loarca · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "[Institución y carrera]"
+      ],
+      [
+        "Normal",
+        "[Curso y sección]"
+      ],
+      [
+        "Normal",
+        "[Nombre del docente]"
+      ],
+      [
+        "Normal",
+        "20 de octubre de 2026"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante · Entrega 3"
+      ],
+      [
+        "Heading 1",
+        "Contenido"
+      ],
+      [
+        "toc 1",
+        "Contenido\t2"
+      ],
+      [
+        "toc 1",
+        "Entrega 3: manual de uso, conexión y preparación de evidencias\t3"
+      ],
+      [
+        "toc 1",
+        "Estado inicial del sistema\t3"
+      ],
+      [
+        "toc 1",
+        "Conexión y puesta en marcha\t3"
+      ],
+      [
+        "toc 1",
+        "Preparación de un catálogo desde cero\t4"
+      ],
+      [
+        "toc 1",
+        "Atención de una venta\t5"
+      ],
+      [
+        "toc 1",
+        "Consultar comprobantes e imprimir\t6"
+      ],
+      [
+        "toc 1",
+        "Reportes y búsquedas\t6"
+      ],
+      [
+        "toc 1",
+        "Consultar ingresos, egresos y saldo\t7"
+      ],
+      [
+        "toc 1",
+        "Administración y eliminación\t7"
+      ],
+      [
+        "toc 1",
+        "Salir con datos pendientes\t8"
+      ],
+      [
+        "toc 1",
+        "Solución de problemas frecuentes\t8"
+      ],
+      [
+        "toc 1",
+        "Edición de los documentos\t9"
+      ],
+      [
+        "toc 1",
+        "Referencias\t9"
+      ],
+      [
+        "Normal",
+        "Índice automático: en Word, hacer clic derecho y elegir Actualizar campo si cambia la paginación."
+      ],
+      [
+        "Heading 1",
+        "Entrega 3: manual de uso, conexión y preparación de evidencias"
+      ],
+      [
+        "Heading 1",
+        "Estado inicial del sistema"
+      ],
+      [
+        "Normal",
+        "La base de negocio se dejó vacía por solicitud del equipo. No hay clientes, productos, categorías, proveedores, empleados de demostración, pedidos, ventas, pagos ni movimientos financieros precargados. Se conservan las cuentas administrativas reales, los roles Administrador, Empleado y Dueño, sus permisos y el registro de migraciones."
+      ],
+      [
+        "Normal",
+        "Las contraseñas de las cuentas conservadas no se cambiaron y no se incluyen en estos documentos. Tampoco se crean cuentas de los integrantes automáticamente. Un administrador deberá registrar las cuentas personales necesarias y asignar permisos antes de iniciar la demostración."
+      ],
+      [
+        "Heading 1",
+        "Conexión y puesta en marcha"
+      ],
+      [
+        "Normal",
+        "El motor activo del Sprint 3 es PostgreSQL/Neon. Oracle permanece como referencia histórica; las migraciones nuevas de pedidos, puntos y finanzas no se han implementado para trabajar diariamente con Oracle. Cada integrante puede ejecutar el código localmente y conectarse a la misma base acordada por el equipo."
+      ],
+      [
+        "Normal",
+        "1. Instalar Node.js y disponer del repositorio actualizado. Ejecutar npm install dentro de backend y frontend."
+      ],
+      [
+        "Normal",
+        "2. Crear backend/.env a partir de backend/.env.example. Configurar DB_ENGINE=postgres, la cadena de conexión y JWT_SECRET por un canal privado."
+      ],
+      [
+        "Normal",
+        "3. Si el esquema ya está actualizado, no volver a importar la migración inicial de Oracle. Para aplicar el incremento pendiente, ejecutar npm run migrate:sales y npm run migrate:sprint3 desde backend."
+      ],
+      [
+        "Normal",
+        "4. Ejecutar npm run build dentro de frontend."
+      ],
+      [
+        "Normal",
+        "5. Ejecutar npm start dentro de backend y abrir http://localhost:3000."
+      ],
+      [
+        "Normal",
+        "6. Para desarrollo, iniciar backend y npm run dev en frontend. La configuración de Vite debe apuntar a /api a través del proxy documentado."
+      ],
+      [
+        "Normal",
+        "Compartir la base no publica la aplicación en Internet. La computadora de cada integrante ejecuta su propia copia del servidor; los registros se comparten porque las conexiones apuntan a la misma base. Una rama distinta de Neon contiene datos independientes. No pegar URLs de conexión, .env ni tokens en las capturas de la exposición."
+      ],
+      [
+        "Normal",
+        "La guía docs/NEON.md amplía la conexión entre equipos. docs/GMAIL.md explica SMTP cuando se necesiten notificaciones. El envío de correo no es requisito para demostrar pedido, venta y pago; no es necesario configurar un correo de terceros para hacer la entrega."
+      ],
+      [
+        "Heading 1",
+        "Preparación de un catálogo desde cero"
+      ],
+      [
+        "Normal",
+        "Registrar primero una categoría y un producto con su código y precio final. Crear un proveedor y registrar una compra recibida para incorporar existencias. En la compra, indicar si ya se pagó en efectivo, tarjeta o transferencia, o si queda a crédito. Una compra marcada como pagada también genera el egreso vinculado."
+      ],
+      [
+        "Normal",
+        "Crear luego un empleado para la demostración y asignar las funciones que deba usar. El carnet muestra los datos de esa cuenta, su sueldo, horario y ventas propias. Sueldo y horario se editan desde Usuarios; el sueldo informado no genera automáticamente una nómina ni un egreso."
+      ],
+      [
+        "Normal",
+        "Para demostrar aprobación independiente hacen falta dos personas con cuentas administrativas distintas. Nadie puede aprobar el pedido que creó, incluso si tiene rol Dueño. No compartir una misma cuenta durante la exposición porque se perdería la evidencia de quién realizó cada acción."
+      ],
+      [
+        "Normal",
+        "Figura 1"
+      ],
+      [
+        "Normal",
+        "Catálogo y cuentas de demostración — evidencia E10"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 1",
+        "Atención de una venta"
+      ],
+      [
+        "Normal",
+        "En Ventas, la opción Cliente ofrece tres recorridos. Consumidor Final atiende sin registro personal. NIT solo para esta compra conserva nombre o razón social y documento en esa operación, sin cuenta ni puntos. Registrar cliente con puntos da de alta la ficha de fidelización dentro de caja y conserva los productos del carrito."
+      ],
+      [
+        "Normal",
+        "Agregar producto y cantidad, revisar el resumen y continuar. Los importes mostrados incluyen el IVA configurado. Si se solicita descuento, el servidor determina si hace falta aprobación. Cuando el pedido queda aprobado y la cuenta tiene permiso de cobro, la pantalla abre la caja; de lo contrario, la operación se continúa desde el historial."
+      ],
+      [
+        "Normal",
+        "En efectivo, ingresar cuánto entrega la persona para calcular el cambio. En tarjeta o transferencia, indicar referencia. El sistema registra el pago que el vendedor confirma; no realiza un cargo bancario ni verifica automáticamente que una transferencia llegó a una cuenta del negocio."
+      ],
+      [
+        "Normal",
+        "Si se usa una cuenta de cliente con puntos, indicar bloques disponibles de 100 puntos por Q10 y cobrar la diferencia por otro método. Una compra totalmente pagada con puntos no produce ingreso de dinero ni nueva acumulación sobre ese importe."
+      ],
+      [
+        "Heading 1",
+        "Consultar comprobantes e imprimir"
+      ],
+      [
+        "Normal",
+        "La opción de impresión automática abre el diálogo del navegador al completar el cobro. Desde ese diálogo se elige impresora o Guardar como PDF. Se generan una copia para el negocio y otra para el cliente. No se guarda un PDF silenciosamente ni se envía a una impresora sin intervención del navegador."
+      ],
+      [
+        "Normal",
+        "El historial de ventas pagadas permite volver a abrir el comprobante. Su contenido conserva cliente, documento, productos, total, IVA y formas de pago. El documento está identificado expresamente como comprobante informativo; no es una factura FEL autorizada."
+      ],
+      [
+        "Normal",
+        "Figura 2"
+      ],
+      [
+        "Normal",
+        "Comprobante en dos copias — evidencia E11"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 1",
+        "Reportes y búsquedas"
+      ],
+      [
+        "Normal",
+        "En Historial se combinan nombre o documento, estado y fechas. La página contiene hasta 50 pedidos y permite continuar en las siguientes. En Reportes, consultar ventas pagadas por día de creación del pedido o productos vendidos. Los dos reportes pueden descargarse como CSV."
+      ],
+      [
+        "Normal",
+        "El reporte por productos muestra importe bruto antes del descuento general; el reporte de ventas incluye importes netos y desglose. En consecuencia, no deben presentarse sus totales como equivalentes cuando hay descuentos. En Mi dinero se filtra por la fecha del movimiento de cobro, que puede diferir de la fecha del pedido."
+      ],
+      [
+        "Heading 1",
+        "Consultar ingresos, egresos y saldo"
+      ],
+      [
+        "Normal",
+        "El dashboard de administración abre Mi dinero. Elegir día, mes, año o un rango permite revisar ingresos, egresos y balance del período. Saldo disponible incorpora el historial anterior hasta la fecha final. Desplegar los movimientos para ver el detalle y los saldos por efectivo, tarjeta y transferencia."
+      ],
+      [
+        "Normal",
+        "Para insumos que no entran al inventario, usar Registrar movimiento y elegir Gasto del negocio. Para mercadería, registrar la compra y cómo se pagó. Si una compra quedó a crédito, su detalle permite registrar pagos hasta cubrir el pendiente. No registrar el mismo pago otra vez como gasto, porque se duplicaría la salida de dinero."
+      ],
+      [
+        "Normal",
+        "Si existía dinero antes de comenzar a usar la aplicación, registrar Saldo inicial con fecha de comienzo del historial y método correspondiente. No usar la apertura para volver a introducir ventas que ya están registradas. El saldo de tarjeta representa cobros registrados y no acredita una liquidación bancaria."
+      ],
+      [
+        "Heading 1",
+        "Administración y eliminación"
+      ],
+      [
+        "Normal",
+        "Administrador y Dueño pueden administrar usuarios. Eliminar se permite únicamente cuando la cuenta no tiene operaciones relacionadas; si hay historial, usar Desactivar. La cuenta propia no puede eliminarse. El cambio de rol propio tampoco se permite: otra cuenta administrativa debe realizar una reasignación legítima."
+      ],
+      [
+        "Normal",
+        "La limpieza general realizada para esta entrega es una operación de mantenimiento excepcional, con respaldo previo. No es un botón de uso cotidiano ni un mecanismo para borrar ventas del negocio. El script backend/scripts/limpiarEntrega3.js exige un argumento explícito y no se ejecuta al iniciar el servidor."
+      ],
+      [
+        "Heading 1",
+        "Salir con datos pendientes"
+      ],
+      [
+        "Normal",
+        "Al cambiar de pantalla con un formulario modificado, aparece el aviso Guardar y salir, Salir sin guardar o Seguir editando. El guardado utiliza las validaciones normales; si falla, se conserva el formulario. Si se cierra o recarga el navegador, se muestra su advertencia nativa, que no ofrece guardar desde el propio aviso."
+      ],
+      [
+        "Normal",
+        "Figura 3"
+      ],
+      [
+        "Normal",
+        "Protección de cambios pendientes — evidencia E12"
+      ],
+      [
+        "Normal",
+        "Nota. Espacio reservado para evidencia real del equipo; aún no incorporada."
+      ],
+      [
+        "Heading 1",
+        "Solución de problemas frecuentes"
+      ],
+      [
+        "Normal",
+        "Tabla 1"
+      ],
+      [
+        "Normal",
+        "Solución de problemas frecuentes"
+      ],
+      [
+        "Heading 1",
+        "Edición de los documentos"
+      ],
+      [
+        "Normal",
+        "Las portadas incluyen nombres completos y espacios para carnés, institución, curso y docente. Los encabezados usan estilos de Word y el índice es automático. Después de cambiar texto o pegar capturas, seleccionar todo y actualizar campos con F9 para corregir referencias de páginas."
+      ],
+      [
+        "Normal",
+        "Las capturas deben insertarse dentro de los espacios indicados y conservar un pie de figura con fecha, responsable y resultado observado. Se recomienda mantenerlas en línea con el texto para evitar que se desplacen al editar. La presentación usa una adaptación de APA 7 para trabajo estudiantil: márgenes de 2.54 cm, letra Times New Roman de 12 puntos, interlineado doble en el cuerpo, numeración de página, tablas y figuras tituladas y referencias. Las tablas usan espaciado reducido para facilitar su lectura; revisar cualquier instrucción adicional del docente."
+      ],
+      [
+        "Heading 1",
+        "Referencias"
+      ],
+      [
+        "Normal",
+        "American Psychological Association. (2024). Paper format. APA Style. https://apastyle.apa.org/style-grammar-guidelines/paper-format"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante. (2026). Manual de operación y configuración del proyecto [Documentación de trabajo no publicada]. docs/NEON.md; docs/GMAIL.md; frontend/src/pages/Pedidos.jsx; frontend/src/components/Finanzas.jsx."
+      ]
+    ],
+    "tables": [
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E10\nPegar categoría, producto y existencias iniciales, más la lista de cuentas de prueba con sus roles. Ocultar correos privados y no mostrar contraseñas.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E11\nMostrar la copia del negocio y la del cliente o el PDF resultante. Deben verse número de comprobante, productos, IVA incluido, total y método de pago.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "INSERTAR AQUÍ LA CAPTURA E12\nEscribir un dato sin guardarlo, intentar volver al menú y capturar las tres opciones. Después verificar que Seguir editando conserva el valor.\nFecha y hora: __________   Capturó: __________\nResultado observado: ____________________________________"
+        ]
+      ],
+      [
+        [
+          "Situación",
+          "Qué revisar"
+        ],
+        [
+          "No aparecen productos para vender",
+          "Catálogo activo y stock incorporado mediante compra"
+        ],
+        [
+          "No aparecen funciones de administración",
+          "Rol activo, permisos y sesión de la cuenta correcta"
+        ],
+        [
+          "El pedido pide otro aprobador",
+          "Descuento mayor a 10 % o total desde Q5,000; usar una cuenta distinta"
+        ],
+        [
+          "El cobro falla después de un abono",
+          "Verificar stock actual; los pedidos no reservan existencias"
+        ],
+        [
+          "El NIT ya está registrado",
+          "Seleccionar la ficha existente o usar NIT sin cuenta para esa compra"
+        ],
+        [
+          "Un gasto no disminuye el saldo visible",
+          "Revisar fecha final del filtro, método y confirmación del registro"
+        ],
+        [
+          "No aparece el diálogo de impresión",
+          "Abrir comprobante desde historial y pulsar Imprimir / Guardar PDF"
+        ],
+        [
+          "No conecta a Neon",
+          "Revisar variables privadas, red y motor PostgreSQL; no publicar .env"
+        ]
+      ]
+    ]
+  },
+  "06": {
+    "paragraphs": [
+      [
+        "Normal",
+        "Entrega 3: informe de cumplimiento y estado final"
+      ],
+      [
+        "Normal",
+        "David García · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Yordy Carreto · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "Daylin Loarca · Carné: ______________"
+      ],
+      [
+        "Normal",
+        "[Institución y carrera]"
+      ],
+      [
+        "Normal",
+        "[Curso y sección]"
+      ],
+      [
+        "Normal",
+        "[Nombre del docente]"
+      ],
+      [
+        "Normal",
+        "20 de octubre de 2026"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante · Entrega 3"
+      ],
+      [
+        "Heading 1",
+        "Contenido"
+      ],
+      [
+        "toc 1",
+        "Contenido\t2"
+      ],
+      [
+        "toc 1",
+        "Entrega 3: informe de cumplimiento y estado final\t3"
+      ],
+      [
+        "toc 1",
+        "Dictamen de la revisión\t3"
+      ],
+      [
+        "toc 1",
+        "Matriz de requisitos obligatorios\t3"
+      ],
+      [
+        "toc 1",
+        "Verificación técnica final\t5"
+      ],
+      [
+        "toc 1",
+        "Limpieza de datos autorizada\t5"
+      ],
+      [
+        "toc 1",
+        "Organización de la documentación\t7"
+      ],
+      [
+        "toc 1",
+        "Evaluación para una librería real\t7"
+      ],
+      [
+        "toc 1",
+        "Pendientes concretos de los integrantes\t8"
+      ],
+      [
+        "toc 1",
+        "Referencias\t9"
+      ],
+      [
+        "Normal",
+        "Índice automático: en Word, hacer clic derecho y elegir Actualizar campo si cambia la paginación."
+      ],
+      [
+        "Heading 1",
+        "Entrega 3: informe de cumplimiento y estado final"
+      ],
+      [
+        "Heading 1",
+        "Dictamen de la revisión"
+      ],
+      [
+        "Normal",
+        "El incremento implementa el proceso exigido desde cliente hasta salida de inventario y supera el mínimo de dos reportes y diez pruebas. El código fue revisado junto con la ejecución técnica documentada. Se entregan documentos editables para planificación, diseño, reglas, pruebas, operación y seguimiento Scrum."
+      ],
+      [
+        "Normal",
+        "El cumplimiento académico completo sigue condicionado a incorporar evidencias reales de la presentación y de las reuniones que efectivamente se realicen. El equipo indicó que no hubo Daily históricos; por ello ese punto no puede calificarse como demostrado. Preparar formatos o reconstruir técnicamente el trabajo no cambia esa situación."
+      ],
+      [
+        "Heading 1",
+        "Matriz de requisitos obligatorios"
+      ],
+      [
+        "Normal",
+        "Tabla 1"
+      ],
+      [
+        "Normal",
+        "Matriz de requisitos obligatorios"
+      ],
+      [
+        "Heading 1",
+        "Verificación técnica final"
+      ],
+      [
+        "Normal",
+        "Tabla 2"
+      ],
+      [
+        "Normal",
+        "Verificación técnica final"
+      ],
+      [
+        "Normal",
+        "Las pruebas del navegador no reemplazan una revisión en los equipos físicos de los tres integrantes. La demostración manual deberá mostrar los mismos identificadores de pedido, venta y auditoría para evitar que capturas aisladas parezcan un flujo que en realidad no corresponde a la misma operación."
+      ],
+      [
+        "Heading 1",
+        "Limpieza de datos autorizada"
+      ],
+      [
+        "Normal",
+        "Tabla 3"
+      ],
+      [
+        "Normal",
+        "Limpieza de datos autorizada"
+      ],
+      [
+        "Normal",
+        "Se conserva la estructura relacional y la configuración para volver a llenar el sistema. No se cambian contraseñas y no se reinician secuencias, de modo que los próximos identificadores pueden tener saltos. Un salto en el número no significa que persistan datos ocultos. La tabla de migraciones tampoco debe quedar vacía, porque registra la versión del esquema."
+      ],
+      [
+        "Normal",
+        "La copia previa contiene información privada y hashes de cuentas. Se conserva localmente en .migration-backups, carpeta excluida de Git y fuera del paquete de entrega. No debe pegarse en un documento ni usarse como captura académica. La limpieza no convierte ese respaldo puntual en una política de recuperación operativa ya probada."
+      ],
+      [
+        "Heading 1",
+        "Organización de la documentación"
+      ],
+      [
+        "Normal",
+        "Se conservan los documentos de entregas anteriores como antecedentes y se elimina de docs el material duplicado o temporal: paquetes repetidos, archivos de validación de Word, informes técnicos antiguos y fuentes duplicadas. La documentación operativa vigente queda en las guías de conexión y en el manual de esta entrega. Los generadores y sus fuentes se mantienen en scripts/documentacion para que puedan regenerarse los Word, sin mezclar herramientas con documentos finales."
+      ],
+      [
+        "Normal",
+        "El índice docs/README.md identifica qué abrir y qué completar. Los seis documentos de Sprint 3 son editables y no requieren conservar una segunda copia PDF para poder modificarlos. Los anexos de captura distinguen evidencia técnica, demostración de interfaz y reunión real."
+      ],
+      [
+        "Heading 1",
+        "Evaluación para una librería real"
+      ],
+      [
+        "Normal",
+        "La aplicación es una base funcional para control interno y para una prueba piloto. Aún no debe confundirse con un sistema comercial completo ni con una solución tributaria certificada. El saldo registrado depende de que se ingresen todas las entradas y salidas; no equivale por sí solo a utilidad o saldo bancario conciliado."
+      ],
+      [
+        "Normal",
+        "Tabla 4"
+      ],
+      [
+        "Normal",
+        "Evaluación para una librería real"
+      ],
+      [
+        "Normal",
+        "La SAT describe FEL como un modelo que incorpora emisión y certificación de documentos electrónicos; por ello, imprimir el comprobante interno con IVA no satisface automáticamente ese proceso (Superintendencia de Administración Tributaria, s. f.). La implementación fiscal debe revisarse con el contador y el proveedor de certificación del negocio."
+      ],
+      [
+        "Heading 1",
+        "Pendientes concretos de los integrantes"
+      ],
+      [
+        "Normal",
+        "David García revisará el flujo y preparará el segundo aprobador. Yordy Carreto contrastará los resultados de pruebas, los permisos y el movimiento final. Daylin Loarca completará los datos de portada y colocará las capturas. Los tres realizarán la Review y la retrospectiva, registrarán sus decisiones reales y revisarán que ninguna evidencia se describa con una fecha o un evento que no corresponde."
+      ],
+      [
+        "Normal",
+        "Tabla 5"
+      ],
+      [
+        "Normal",
+        "Pendientes concretos de los integrantes"
+      ],
+      [
+        "Heading 1",
+        "Referencias"
+      ],
+      [
+        "Normal",
+        "American Psychological Association. (2024). Paper format. APA Style. https://apastyle.apa.org/style-grammar-guidelines/paper-format"
+      ],
+      [
+        "Normal",
+        "Librería La Crayola Gigante. (2026). Implementación, verificación y limpieza del Sprint 3 [Código y registro técnico no publicados]. backend/tests/sprint3.test.js; backend/scripts/limpiarEntrega3.js."
+      ],
+      [
+        "Normal",
+        "Superintendencia de Administración Tributaria. (s. f.). Factura electrónica en línea. https://en.portal.sat.gob.gt/portal/efactura/"
+      ]
+    ],
+    "tables": [
+      [
+        [
+          "Requisito del enunciado",
+          "Evidencia técnica o documental",
+          "Evaluación"
+        ],
+        [
+          "Cliente → pedido",
+          "Alta desde caja, CF, NIT sin cuenta y pedidos",
+          "Implementado y probado"
+        ],
+        [
+          "Validación de inventario",
+          "Crear pedido, aprobar, generar venta y pago final",
+          "Implementado y probado"
+        ],
+        [
+          "Aprobación",
+          "Decisión independiente y motivo",
+          "Implementado y probado"
+        ],
+        [
+          "Venta → pago → salida",
+          "Venta única, pagos y movimiento final transaccional",
+          "Implementado y probado"
+        ],
+        [
+          "Pedidos y estados",
+          "Rutas de pedidos y seis estados documentados",
+          "Implementado y probado"
+        ],
+        [
+          "Ventas y detalle",
+          "Relación única con pedido y líneas de productos",
+          "Implementado y probado"
+        ],
+        [
+          "Pagos y descuentos",
+          "Efectivo, tarjeta, transferencia y reglas comerciales",
+          "Implementado y probado"
+        ],
+        [
+          "Restricciones por rol",
+          "API y vistas de Empleado, Administrador y Dueño",
+          "Implementado y probado"
+        ],
+        [
+          "Auditoría",
+          "Bitácora de pedidos, decisiones, ventas, cobros y salidas",
+          "Implementado y probado"
+        ],
+        [
+          "Manejo de errores",
+          "Validación, conflicto, autorización y reversión",
+          "Implementado y probado"
+        ],
+        [
+          "Búsquedas avanzadas",
+          "Cliente/documento, estado, fechas y página",
+          "Implementado y probado"
+        ],
+        [
+          "Venta con inventario",
+          "Casos automáticos 01 y 05; manual M01",
+          "Verificación técnica; captura del equipo pendiente"
+        ],
+        [
+          "Intento sin inventario",
+          "Caso 02; manual M02",
+          "Verificación técnica; captura pendiente"
+        ],
+        [
+          "Pedido con aprobación y descuento",
+          "Casos 03 y 04; manual M03",
+          "Verificación técnica; captura pendiente"
+        ],
+        [
+          "Pago y cambio automático de stock",
+          "Casos 01, 05 y 08; manual M04",
+          "Verificación técnica; captura pendiente"
+        ],
+        [
+          "Registro de auditoría",
+          "Caso 01; manual M09",
+          "Verificación técnica; captura pendiente"
+        ],
+        [
+          "Al menos dos reportes",
+          "Ventas por día y productos vendidos, con CSV",
+          "Cumplido técnicamente"
+        ],
+        [
+          "Al menos diez pruebas",
+          "Suite de integración y suite de navegador",
+          "Mínimo superado"
+        ],
+        [
+          "Product Backlog",
+          "Documento 01, PB01 a PB17",
+          "Actualizado"
+        ],
+        [
+          "Historias de usuario",
+          "Documento 01, HU01 a HU10",
+          "Actualizadas y con aceptación"
+        ],
+        [
+          "Sprint Backlog",
+          "Documento 01, S3-01 a S3-15",
+          "Asignado para revisión y cierre"
+        ],
+        [
+          "Diagramas",
+          "Documento 02, arquitectura, proceso, estados y relaciones",
+          "Actualizados"
+        ],
+        [
+          "Modelo de datos",
+          "Documento 02 y esquema consultado",
+          "Actualizado"
+        ],
+        [
+          "Reglas de negocio",
+          "Documento 02, RN01 a RN22",
+          "Documentadas"
+        ],
+        [
+          "Evidencia de Daily Scrum",
+          "Documento 04 reconoce ausencia y ofrece formato real",
+          "No acreditada históricamente"
+        ],
+        [
+          "Sprint Review",
+          "Documento 04 con agenda y matriz de decisión",
+          "Preparado; reunión y aceptación pendientes"
+        ],
+        [
+          "Sprint Retrospective",
+          "Documento 04 con temas y registro de acuerdos",
+          "Preparado; acuerdos reales pendientes"
+        ]
+      ],
+      [
+        [
+          "Verificación",
+          "Resultado ejecutado el 20/10/2026",
+          "Alcance"
+        ],
+        [
+          "Backend Sprint 3",
+          "37 aprobadas; 0 fallidas",
+          "API y PostgreSQL configurado"
+        ],
+        [
+          "Navegador",
+          "34 aprobadas; 0 fallidas",
+          "Playwright con respuestas de API simuladas"
+        ],
+        [
+          "Compilación",
+          "Correcta",
+          "npm run build"
+        ],
+        [
+          "Lint",
+          "Correcto",
+          "npm run lint"
+        ]
+      ],
+      [
+        [
+          "Grupo o tabla",
+          "Antes",
+          "Después"
+        ],
+        [
+          "aprobaciones",
+          "1",
+          "0"
+        ],
+        [
+          "bitacora",
+          "40",
+          "0"
+        ],
+        [
+          "categorias",
+          "7",
+          "0"
+        ],
+        [
+          "clientes",
+          "3",
+          "0"
+        ],
+        [
+          "compras",
+          "10",
+          "0"
+        ],
+        [
+          "comprobantes",
+          "6",
+          "0"
+        ],
+        [
+          "correos_pendientes",
+          "6",
+          "0"
+        ],
+        [
+          "detalle_compras",
+          "10",
+          "0"
+        ],
+        [
+          "detalle_pedidos",
+          "15",
+          "0"
+        ],
+        [
+          "detalle_ventas",
+          "13",
+          "0"
+        ],
+        [
+          "imagenes_productos",
+          "6",
+          "0"
+        ],
+        [
+          "migraciones",
+          "12",
+          "12"
+        ],
+        [
+          "movimientos_financieros",
+          "0",
+          "0"
+        ],
+        [
+          "movimientos_inventario",
+          "26",
+          "0"
+        ],
+        [
+          "movimientos_puntos",
+          "1",
+          "0"
+        ],
+        [
+          "pagos",
+          "7",
+          "0"
+        ],
+        [
+          "pedidos",
+          "11",
+          "0"
+        ],
+        [
+          "permisos",
+          "20",
+          "20"
+        ],
+        [
+          "productos",
+          "7",
+          "0"
+        ],
+        [
+          "proveedores",
+          "9",
+          "0"
+        ],
+        [
+          "recepciones",
+          "10",
+          "0"
+        ],
+        [
+          "recuperaciones_compra",
+          "0",
+          "0"
+        ],
+        [
+          "rol_permiso",
+          "44",
+          "44"
+        ],
+        [
+          "roles",
+          "4",
+          "3"
+        ],
+        [
+          "usuarios",
+          "12",
+          "3"
+        ],
+        [
+          "ventas",
+          "9",
+          "0"
+        ]
+      ],
+      [
+        [
+          "Prioridad",
+          "Brecha observada",
+          "Siguiente resultado esperado"
+        ],
+        [
+          "Antes de facturación fiscal",
+          "El comprobante actual no es FEL",
+          "Integración con certificación, autorización y documentos fiscales válidos"
+        ],
+        [
+          "Antes de depender del sistema",
+          "Falta recuperación operativa ensayada",
+          "Copias automáticas y restauración comprobada con tiempos definidos"
+        ],
+        [
+          "Alta",
+          "No hay apertura y cierre por turno",
+          "Arqueo, diferencias, retiros y responsable de caja"
+        ],
+        [
+          "Alta",
+          "Falta devolución de ventas pagadas",
+          "Reembolso, stock, comprobante y puntos ligados a la venta original"
+        ],
+        [
+          "Alta",
+          "No se calcula costo histórico de lo vendido",
+          "Margen y utilidad con un método de costo acordado"
+        ],
+        [
+          "Siguiente",
+          "Selección del catálogo mediante listas",
+          "Búsqueda rápida y lector de código de barras"
+        ],
+        [
+          "Siguiente",
+          "No hay conversión de presentaciones",
+          "Unidades, paquetes, cajas y resmas con equivalencias controladas"
+        ]
+      ],
+      [
+        [
+          "Revisión final",
+          "Responsable",
+          "Confirmación real"
+        ],
+        [
+          "Flujo y criterios funcionales",
+          "David García",
+          "[Fecha y observación]"
+        ],
+        [
+          "Pruebas, inventario y permisos",
+          "Yordy Carreto",
+          "[Fecha y observación]"
+        ],
+        [
+          "Documentos, reportes y capturas",
+          "Daylin Loarca",
+          "[Fecha y observación]"
+        ],
+        [
+          "Decisión de presentación",
+          "Equipo",
+          "[Aceptada / pendiente; motivo]"
+        ]
+      ]
+    ]
+  }
+}

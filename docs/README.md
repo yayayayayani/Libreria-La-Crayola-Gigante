@@ -1,6 +1,7 @@
 # Documentación
 
-- [Entrega 3: documentos editables, pruebas y evidencias](sprint3/README.md).
+- [Sprint 3 — informe integrado editable](Sprint_3_Analisis_de_Sistemas.docx).
+- [Sprint 3 — guía de la entrega y datos de demostración](sprint3/README.md).
 - [Sprint 1 — informe editable](Sprint%201%20Libreria%20Crayola.docx).
 - [Sprint 2 — informe editable](Sprint_2_Análisis_de_Sistemas.docx).
 - [Conexión y puesta en marcha](NEON.md).

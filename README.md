@@ -20,9 +20,9 @@ La salida de inventario ocurre al completar el pago. Las restricciones se verifi
 
 ## Entrega y documentación
 
-Consultar el [índice de documentos](docs/README.md) y los [seis Word del Sprint 3](docs/sprint3/README.md), con planificación, modelo, reglas, pruebas, Scrum, manual y revisión de cumplimiento. Las entregas anteriores se conservan como antecedentes editables.
+Consultar el [índice de documentos](docs/README.md) y el [informe integrado del Sprint 3](docs/Sprint_3_Analisis_de_Sistemas.docx), con planificación, modelo, reglas, pruebas, Scrum, manual, capturas de la aplicación y revisión de cumplimiento. Sigue la estructura de la entrega del Sprint 2.
 
-Verificación del 20/10/2026: 37 pruebas del backend y 34 del navegador aprobadas; lint y compilación correctos. Las pruebas del navegador utilizan respuestas de API simuladas. Después se limpiaron 21 tablas de negocio y se conservaron tres cuentas administrativas, roles, permisos y migraciones.
+Verificación del 20/10/2026: 37 pruebas del backend y 34 del navegador aprobadas; lint y compilación correctos. Las pruebas del navegador utilizan respuestas de API simuladas. El 21/10/2026 se cargaron datos ficticios relacionados: 40 productos, 20 clientes, cuatro proveedores, tres empleados y 64 pedidos, incluidos 57 pagados. Se comprobaron inventario, pagos y puntos sin diferencias; las cuentas administrativas existentes se conservaron.
 
 ## Pruebas
 

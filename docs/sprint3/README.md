@@ -1,22 +1,23 @@
-# Entrega 3 — Sprint 3
+﻿# Entrega 3 — Sprint 3
 
-Documentos Word editables, con formato académico basado en APA 7, portadas para David García, Yordy Carreto y Daylin Loarca y espacios para carné e información institucional.
+Abrir el [informe integrado editable](../Sprint_3_Analisis_de_Sistemas.docx). Reemplaza los seis documentos anteriores y sigue la estructura del informe del Sprint 2.
 
-| Documento | Contenido |
-|---|---|
-| [01. Planificación y backlogs](01_Planificacion_y_backlogs.docx) | Product Backlog, historias, criterios de aceptación y tareas asignadas. |
-| [02. Diseño, modelo y reglas](02_Diseno_modelo_y_reglas.docx) | Arquitectura, diagramas, diccionario de datos, reglas y permisos. |
-| [03. Pruebas y demostración](03_Pruebas_y_demostracion.docx) | 37 casos de backend, 34 escenarios de navegador y guion de demostración. |
-| [04. Scrum, Review y retrospectiva](04_Scrum_review_y_retrospectiva.docx) | Reconstrucción técnica identificada como tal; actas y espacios para evidencia real. |
-| [05. Manual de uso y conexión](05_Manual_de_uso_y_conexion.docx) | Configuración, caja, puntos, comprobantes, finanzas y administración. |
-| [06. Informe de cumplimiento](06_Informe_de_cumplimiento.docx) | Matriz de requisitos, limpieza de datos, limitaciones y recomendaciones. |
+Incluye portada institucional, índice, planificación, Product Backlog, historias de usuario, Sprint Backlog, tablero Kanban, arquitectura, flujo, estados, modelo relacional, reglas, permisos, pruebas, capturas de la app, seguimiento Scrum, Review, retrospectiva, manual y matriz de cumplimiento.
 
-## Verificación del 20 de octubre de 2026
+## Datos cargados el 21/10/2026
 
-37 pruebas de backend y 34 de navegador aprobadas; lint y compilación correctos. Las pruebas del navegador simulan las respuestas de la API. La base quedó limpia después de probar: 21 tablas de negocio vacías; se conservaron tres cuentas administrativas, roles, permisos y migraciones.
+- 8 categorías y 40 productos.
+- 20 clientes, 4 proveedores y 3 empleados ficticios.
+- 4 compras y 64 pedidos: 57 pagados, 3 pendientes de aprobación, 1 aprobado, 1 rechazado, 1 cancelado y 1 con abono.
+- 58 ventas, 66 registros de pago y 57 comprobantes.
+- 153 movimientos de inventario, 20 movimientos de puntos y 11 movimientos financieros.
 
-## Antes de entregar
+Inventario, puntos y pagos conciliados sin diferencias. El conjunto es de demostración; las operaciones no representan ingresos reales del negocio. Las cuentas administrativas existentes se conservaron.
 
-Completar carné, institución, curso y docente. Insertar las capturas en los espacios E01–E12 y R01–R03, siguiendo las instrucciones de cada recuadro. Registrar los resultados reales de la reunión, Review y retrospectiva; no se acreditan reuniones diarias que no ocurrieron. En Word, actualizar el índice después de editar.
+La carga se puede reanudar desde backend con `node scripts/cargarDemostracion.js --cargar`. Su estado y las claves de las cuentas demo se guardan en `.migration-backups/demo-libreria-v1.json`, excluido de Git. No ejecutar la limpieza para iniciar la aplicación.
 
-Los comprobantes del sistema son internos: no sustituyen documentos tributarios certificados por FEL. Los dos reportes comerciales se descargan como CSV.
+## Para completar la presentación
+
+Agregar carnés y las capturas indicadas en los recuadros E01–E06 y S01–S03. Completar las decisiones de Review y los acuerdos de retrospectiva. Las capturas del sistema ya incluidas corresponden a la aplicación conectada; los espacios de reuniones se completan con las sesiones realizadas.
+
+Después de editar en Word, actualizar el índice. Las fuentes del informe están en `scripts/documentacion`; regenerarlo sobrescribe las ediciones manuales del Word.

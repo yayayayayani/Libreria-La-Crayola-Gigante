@@ -16,4 +16,4 @@ Desde `frontend`, ejecutar `npm install`. Configurar `.env` con `VITE_API_URL=ht
 
 Ingresar con una cuenta administrativa conservada. Registrar personal, categorías, productos, proveedores y clientes según corresponda. Registrar compras para ingresar existencias y el saldo inicial en Mi dinero. Las cuentas de los clientes son registros comerciales; no permiten iniciar sesión.
 
-Consultar [el manual editable](sprint3/05_Manual_de_uso_y_conexion.docx) para operación, permisos y solución de problemas. La limpieza del 20/10/2026 dejó vacías las tablas de negocio y conservó configuración y acceso administrativo. Los respaldos privados se encuentran fuera de `docs`.
+Consultar la sección 8 del [informe editable del Sprint 3](Sprint_3_Analisis_de_Sistemas.docx) para operación, permisos y solución de problemas. Después de la limpieza del 20/10/2026 se cargó un conjunto de demostración el 21/10/2026. Actualmente la base contiene productos, clientes, compras, ventas y movimientos ficticios relacionados. Los respaldos privados se encuentran fuera de `docs`.
