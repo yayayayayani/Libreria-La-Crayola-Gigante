@@ -1,3 +1,4 @@
+import ExportarCsv from "../components/ExportarCsv";
 import { useState } from "react";
 import api from "../services/api";
 import useActualizacion from "../hooks/useActualizacion";
@@ -230,6 +231,7 @@ export default function Ventas({ token, permisos, onVolver }) {
         </form>
       </section>
       <h3>Ventas registradas</h3>
+      <ExportarCsv filas={ventas} nombre="ventas" columnas={['ID_VENTA', 'FECHA', 'CLIENTE_NOMBRE', 'DOCUMENTO', 'TOTAL']} disabled={ocupado} />
       <div className="tabla-scroll">
         <table className="usuarios-tabla">
           <thead>

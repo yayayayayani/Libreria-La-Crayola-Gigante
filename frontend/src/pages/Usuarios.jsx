@@ -1,3 +1,4 @@
+import ExportarCsv from "../components/ExportarCsv";
 import { useEffect, useState } from "react";
 import { Plus, Pencil, Search, ArrowLeft, Save } from "lucide-react";
 import api from "../services/api";
@@ -307,7 +308,8 @@ function Usuarios({ token, onVolver, identidad }) {
         </div>
 
         <div className="tabla-scroll">
-          <table className="usuarios-tabla">
+          <ExportarCsv filas={filtrados} nombre="usuarios" columnas={['NOMBRE_COMPLETO', 'NOMBRE_USUARIO', 'ROL', 'ESTADO']} disabled={cargando} />
+            <table className="usuarios-tabla">
             <thead>
               <tr>
                 <th>Nombre completo</th>

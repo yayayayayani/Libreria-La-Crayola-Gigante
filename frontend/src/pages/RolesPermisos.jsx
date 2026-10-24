@@ -1,3 +1,4 @@
+import ExportarCsv from "../components/ExportarCsv";
 import { useEffect, useState, useMemo } from "react";
 import { ArrowLeft, ShieldCheck, Save, Lock } from "lucide-react";
 import { soloAdmin } from "../services/acceso";
@@ -151,6 +152,7 @@ function RolesPermisos({ token, onVolver, puedeAdministrar = false }) {
 
         <form key={rolSeleccionado} onSubmit={e => { e.preventDefault(); guardarPermisos(); }}>
         <h3>Permisos del rol</h3>
+        <ExportarCsv filas={permisos.filter(p => esAdministrador || !soloAdmin.has(p.CODIGO)).map(p => ({ ROL: rolActual?.NOMBRE, CODIGO: p.CODIGO, DESCRIPCION: p.DESCRIPCION, ASIGNADO: seleccionados.includes(p.ID_PERMISO) ? 'Sí' : 'No' }))} nombre="permisos-del-rol" columnas={['ROL', 'CODIGO', 'DESCRIPCION', 'ASIGNADO']} disabled={cargando || guardando || Boolean(error) || !rolSeleccionado} alcance="permisos en pantalla (incluye cambios sin guardar)" />
 
         {esAdministrador && (
           <div className="roles-advertencia">
