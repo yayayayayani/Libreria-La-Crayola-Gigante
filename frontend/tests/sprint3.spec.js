@@ -22,7 +22,7 @@ async function iniciar(page, permisos = ["VENTAS_GESTIONAR", "DESCUENTOS_APLICAR
       return ok({ completo: !!estado.imprimir, mensaje: "Pago completo e inventario actualizado" }, 201);
     }
     if (path === "/pedidos/1/comprobante") return ok({ numero: "CV-00000001", negocio: "La Crayola Gigante", fecha: "2026-10-20T12:00:00Z", venta: { ...estado.pedido, CLIENTE_NOMBRE: "Consumidor Final", DOCUMENTO: "CF" }, detalles: [{ NOMBRE: "Cuaderno <especial>", CODIGO: "CUA", CANTIDAD: 2, PRECIO: 10 }], pagos: [{ MONTO: 20, METODO: "EFECTIVO", RECIBIDO: 25 }] });
-    if (path === "/pedidos/1") return ok({ pedido: estado.pedido, puntosDisponibles: 100, movimientosPuntos: [], detalles: [{ NOMBRE: "Cuaderno", CANTIDAD: 2, PRECIO: 10 }], pagos: [], aprobaciones: [] });
+    if (path === "/pedidos/1") return ok({ pedido: estado.pedido, puntosDisponibles: estado.puntosDisponibles ?? 100, movimientosPuntos: [], detalles: [{ NOMBRE: "Cuaderno", CANTIDAD: 2, PRECIO: 10 }], pagos: [], aprobaciones: [] });
     if (path === "/pedidos/1/decision") {
       estado.decision = r.postDataJSON(); estado.pedido.ESTADO = estado.decision.decision; return ok({ mensaje: "Decisión registrada" });
     }
@@ -36,13 +36,13 @@ async function iniciar(page, permisos = ["VENTAS_GESTIONAR", "DESCUENTOS_APLICAR
   await page.getByRole("button", { name: /^Ventas a clientes/ }).click();
   return estado;
 }
-async function crear(page, descuento) {
+async function crear(page, descuento, mensaje = "Pedido #1") {
   await page.getByRole("combobox", { name: "Cliente", exact: true }).selectOption("1");
   await page.getByRole("combobox", { name: "Producto", exact: true }).selectOption("1");
   await page.getByLabel("Cantidad", { exact: true }).fill("2");
   if (descuento !== undefined) await page.getByLabel("Descuento (%)", { exact: true }).fill(String(descuento));
   await page.getByRole("button", { name: "Continuar al cobro", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("Pedido #1");
+  await expect(page.getByRole("status")).toContainText(mensaje);
 }
 test("pedido, venta, pago, reportes y auditoría visibles", async ({ page }) => {
   const estado = await iniciar(page);
@@ -202,8 +202,8 @@ test("reporte descargable conserva filas y neutraliza formulas",async({page})=>{
   const descarga=page.waitForEvent('download');
   await page.getByRole('button',{name:'Descargar CSV',exact:true}).click();
   const archivo=await descarga;
-  expect(archivo.suggestedFilename()).toBe('reporte-productos.csv');
-  const csv=await readFile(await archivo.path(),'utf8');expect(csv).toContain("\"'=1+1\"");expect(csv).toContain('"2","20"');
+  expect(archivo.suggestedFilename()).toMatch(/^reporte-productos-inicio-hoy-\d{4}-\d{2}-\d{2}\.csv$/);
+  const csv=await readFile(await archivo.path(),'utf8');expect(csv).toContain("\"'=1+1\"");expect(csv).toContain('"2","20.00"');
 });
 
 
@@ -222,4 +222,38 @@ test("NIT duplicado al registrar cliente conserva formulario y carrito",async({p
   await page.setViewportSize({width:390,height:844});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:'test-results/cliente-caja-mobile.png',fullPage:true});
+});
+
+
+test("saldo de 30 puntos permite cobrar sin ofrecer un canje inválido", async ({ page }) => {
+  const estado = await iniciar(page, undefined, true);
+  estado.puntosDisponibles = 30;
+  await crear(page, 0, "Venta lista");
+  const puntos = page.getByLabel(/Usar puntos/);
+  await expect(puntos).toBeDisabled();
+  await expect(page.getByText(/Te faltan 70 puntos/)).toBeVisible();
+  await expect(page.getByLabel("Monto a cobrar (Q)")).toHaveValue("20.00");
+  await page.getByLabel("Efectivo recibido (Q)").fill("25");
+  await expect(page.getByText("Cambio: Q5.00")).toBeVisible();
+  await page.getByRole("button", { name: "Confirmar cobro", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  expect(estado.pago).toMatchObject({ puntos: 0, monto: 20 });
+});
+
+test("canje inválido no descuenta ni permite cobrar, y se puede corregir", async ({ page }) => {
+  await iniciar(page, undefined, true);
+  await crear(page, 0, "Venta lista");
+  const puntos = page.getByLabel(/Usar puntos/);
+  for (const valor of ["30", "200", "-100", "1.5"]) {
+    await puntos.fill(valor);
+    await expect(page.getByLabel("Monto a cobrar (Q)")).toHaveValue("20.00");
+    await expect(page.getByRole("button", { name: "Confirmar cobro", exact: true })).toBeDisabled();
+    await expect(page.getByText(/No se ha aplicado el canje/)).toBeVisible();
+  }
+  await puntos.fill("100");
+  await expect(page.getByLabel("Monto a cobrar (Q)")).toHaveValue("10.00");
+  await expect(page.getByRole("button", { name: "Confirmar cobro", exact: true })).toBeEnabled();
+  await puntos.fill("");
+  await expect(page.getByLabel("Monto a cobrar (Q)")).toHaveValue("20.00");
+  await expect(page.getByRole("button", { name: "Confirmar cobro", exact: true })).toBeEnabled();
 });

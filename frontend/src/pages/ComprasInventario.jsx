@@ -1,3 +1,4 @@
+import ExportarCsv from "../components/ExportarCsv";
 import Telefono from "../components/Telefono";
 import Documento from "../components/Documento";
 import { tipoDocumento, formatearDocumento } from "../services/documentos";
@@ -190,6 +191,17 @@ export default function ComprasInventario({ token, permisos, onVolver }) {
           </button>
         ))}
       </nav>
+      {tabVisible && <ExportarCsv
+        filas={tabVisible === "Proveedores" ? proveedores : tabVisible === "Compras" ? compras : tabVisible === "Inventario" ? (soloAlertas ? alertas : inventario) : movimientos}
+        nombre={tabVisible === "Inventario" && soloAlertas ? "inventario-por-reponer" : tabVisible.toLowerCase()}
+        columnas={{
+          Proveedores: ['NOMBRE', 'NIT', 'CORREO', 'ESTADO'],
+          Compras: ['ID_COMPRA', 'PROVEEDOR', 'FACTURA', 'TOTAL', 'PENDIENTE_PAGO', 'PENDIENTE_RECUPERAR', 'ID_RECEPCION', 'ESTADO'],
+          Inventario: ['CODIGO', 'NOMBRE', 'STOCK', 'STOCK_MINIMO', 'ESTADO', 'ALERTA'],
+          Movimientos: ['FECHA', 'NOMBRE', 'TIPO', 'CANTIDAD', 'STOCK_ANTERIOR', 'STOCK_NUEVO', 'ID_VENTA', 'ID_COMPRA', 'ID_RECEPCION'],
+        }[tabVisible]}
+        disabled={ocupado}
+      />}
       {error && (
         <p className="error-message" role="alert">
           {error}

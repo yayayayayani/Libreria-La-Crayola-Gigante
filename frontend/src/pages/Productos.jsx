@@ -1,3 +1,4 @@
+import ExportarCsv from "../components/ExportarCsv";
 import FotoProducto from "../components/FotoProducto";
 
 import { useEffect, useState } from "react";
@@ -471,6 +472,7 @@ function Productos({ token, onVolver, permisos = [] }) {
           </div>
 
           <div className="tabla-scroll">
+            <ExportarCsv filas={filtrados} nombre="productos" columnas={['CODIGO', 'NOMBRE', 'CATEGORIA', 'PRECIO', 'STOCK', 'ESTADO']} disabled={cargando} />
             <table className="usuarios-tabla">
               <thead>
                 <tr>

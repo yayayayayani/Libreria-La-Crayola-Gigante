@@ -1,0 +1,4 @@
+
+.exportar-reporte { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+.exportar-reporte button { display: inline-flex; align-items: center; gap: 8px; }
+.exportar-reporte small { color: #475569; }

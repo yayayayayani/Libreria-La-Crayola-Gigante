@@ -1,3 +1,4 @@
+import ExportarCsv from "../components/ExportarCsv";
 import Telefono from "../components/Telefono";
 import Documento from "../components/Documento";
 import { tipoDocumento, formatearDocumento } from "../services/documentos";
@@ -265,6 +266,7 @@ function Clientes({ token, onVolver, permisos = [] }) {
           </div>
 
           <div className="tabla-scroll">
+            <ExportarCsv filas={filtrados} nombre="clientes" columnas={['ID_CLIENTE', 'NOMBRES', 'APELLIDOS', 'NIT', 'TELEFONO', 'CORREO', 'ESTADO']} disabled={cargando} />
             <table className="usuarios-tabla">
               <thead>
                 <tr>

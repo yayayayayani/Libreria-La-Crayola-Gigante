@@ -1,7 +1,7 @@
+import ExportarCsv from "../components/ExportarCsv";
 import { useState } from "react";
 import ComprobanteVenta from "../components/ComprobanteVenta";
 import api from "../services/api";
-import { descargarCsv } from '../services/descargas';
 import useActualizacion from "../hooks/useActualizacion";
 import { ShoppingBag, ArrowLeft, ClipboardList, Plus, Search, ShieldCheck, BarChart3 } from "lucide-react";
 import "./Pedidos.css";
@@ -60,6 +60,10 @@ export default function Pedidos({ token, permisos, onVolver }) {
   const total = Math.round(subtotal * 100 * (10000 - Math.round(Number(form.descuento || 0) * 100)) / 10000) / 100;
   const baseImponible = Math.round(Math.round(total * 100) * 100 / 112) / 100;
   const ivaIncluido = (Math.round(total * 100) - Math.round(baseImponible * 100)) / 100;
+  const pendienteCobro = detalle ? (Math.round(Number(detalle.pedido.TOTAL) * 100) - detalle.pagos.reduce((n, p) => n + Math.round(Number(p.MONTO) * 100), 0)) / 100 : 0;
+  const maximoPuntos = Math.max(0, Math.floor(Math.min(Number(detalle?.puntosDisponibles || 0) / 100, Math.round(pendienteCobro * 100) / 1000)) * 100);
+  const puntosValidos = Number.isSafeInteger(Number(pago.puntos)) && Number(pago.puntos) >= 0 && Number(pago.puntos) % 100 === 0 && Number(pago.puntos) <= maximoPuntos;
+  const puntosAplicados = puntosValidos ? Number(pago.puntos) : 0;
   return <main className="usuarios-page sprint2 pedidos-workspace">
     <button className="pedidos-back" onClick={onVolver}><ArrowLeft size={16} /> Volver al menú</button>
     <header className="modulo-header"><h2>Ventas</h2></header>
@@ -106,7 +110,8 @@ export default function Pedidos({ token, permisos, onVolver }) {
       {["desde", "hasta"].map((s) => <label key={s}>{s === "desde" ? "Desde" : "Hasta"}<input type="date" value={filtros[s]} onChange={(e) => setFiltros({ ...filtros, [s]: e.target.value, pagina: 1 })} /></label>)}
       <label>Página (50 resultados)<input type="number" min="1" max="100000" value={filtros.pagina} onChange={(e) => setFiltros({ ...filtros, pagina: e.target.value })} /></label><button disabled={ocupado}>Buscar</button>
     </form></details>
-    <div className="tabla-scroll"><table className="usuarios-tabla"><thead><tr><th>Pedido</th><th>Cliente</th><th>Estado</th><th>Total</th><th>Pagado</th><th>Forma de pago</th><th>Acciones</th></tr></thead><tbody>
+    <ExportarCsv filas={pedidos} nombre="historial-pedidos" columnas={['ID_PEDIDO', 'FECHA', 'NOMBRES', 'APELLIDOS', 'ESTADO', 'TOTAL', 'PAGADO']} disabled={ocupado} alcance="pedidos de la página consultada (máximo 50)" />
+      <div className="tabla-scroll"><table className="usuarios-tabla"><thead><tr><th>Pedido</th><th>Cliente</th><th>Estado</th><th>Total</th><th>Pagado</th><th>Forma de pago</th><th>Acciones</th></tr></thead><tbody>
       {pedidos.map((p) => <tr key={p.ID_PEDIDO}><td><strong className="pedidos-number">#{p.ID_PEDIDO}</strong></td><td>{p.NOMBRES} {p.APELLIDOS}</td><td><span className={`pedidos-status status-${p.ESTADO}`}>{estados[p.ESTADO] || p.ESTADO}</span></td><td className="pedidos-money">Q{dinero(p.TOTAL)}</td><td className="pedidos-money">Q{dinero(p.PAGADO)}</td><td><div className="pago-desglose">{["EFECTIVO", "TARJETA", "TRANSFERENCIA", "PUNTOS"].filter((m) => Number(p[m]) > 0).map((m) => <span key={m}>{({ EFECTIVO: "Efectivo", TARJETA: "Tarjeta", TRANSFERENCIA: "Transferencia", PUNTOS: "Puntos" })[m]}: <strong>Q{dinero(p[m])}</strong></span>)}{!Number(p.PAGADO) && <span>Sin pagos</span>}</div></td><td><div className="pedidos-actions">
         <button disabled={ocupado} onClick={() => abrir(p)}>Ver detalle</button>
         {p.ESTADO === "PAGADO" && <button disabled={ocupado} onClick={() => ejecutar(() => verComprobante(p.ID_PEDIDO))}>Ver comprobante</button>}
@@ -120,26 +125,33 @@ export default function Pedidos({ token, permisos, onVolver }) {
       {detalle.pedido.IVA != null && <div className="caja-impuestos"><span>Base sin IVA: <strong>Q{dinero(detalle.pedido.BASE_IMPONIBLE)}</strong></span><span>IVA incluido ({detalle.pedido.IVA_TASA}%): <strong>Q{dinero(detalle.pedido.IVA)}</strong></span><span>Total con IVA: <strong>Q{dinero(detalle.pedido.TOTAL)}</strong></span></div>}
       <details open={detalle.pedido.ESTADO !== "VENDIDO"}><summary>Ver productos, pagos e historial</summary><Tabla filas={detalle.detalles} /><h4>Aprobaciones</h4><Tabla filas={detalle.aprobaciones} /><h4>Pagos</h4><Tabla filas={detalle.pagos} />{detalle.movimientosPuntos?.length > 0 && <details><summary>Historial de puntos del cliente</summary><Tabla filas={detalle.movimientosPuntos} /></details>}</details>
       {detalle.pedido.ESTADO === "PENDIENTE_APROBACION" && puede("PEDIDOS_APROBAR") && <div><label>Motivo<input maxLength="500" value={motivo} onChange={(e) => setMotivo(e.target.value)} /></label>{["APROBADO", "RECHAZADO"].map((decision) => <button key={decision} disabled={ocupado || !motivo.trim()} onClick={() => accion(detalle.pedido.ID_PEDIDO, "decision", { decision, motivo })}>{decision === "APROBADO" ? "Aprobar" : "Rechazar"}</button>)}</div>}
-      {detalle.pedido.ESTADO === "VENDIDO" && puede("PAGOS_REGISTRAR") && <form onReset={()=>setPago({...pago,puntos:0,recibido:"",referencia:""})} onSubmit={(e) => { e.preventDefault(); accion(detalle.pedido.ID_PEDIDO, "pagos", { ...pago, monto: Number(pago.monto), puntos: Number(pago.puntos), recibido: pago.metodo === "EFECTIVO" && pago.recibido !== "" ? Number(pago.recibido) : null }); }}><fieldset disabled={ocupado}>
+      {detalle.pedido.ESTADO === "VENDIDO" && puede("PAGOS_REGISTRAR") && <form onReset={()=>setPago({...pago,puntos:0,monto:dinero(pendienteCobro),recibido:"",referencia:""})} onSubmit={(e) => { e.preventDefault(); if (!puntosValidos) return; accion(detalle.pedido.ID_PEDIDO, "pagos", { ...pago, monto: Number(pago.monto), puntos: Number(pago.puntos), recibido: pago.metodo === "EFECTIVO" && pago.recibido !== "" ? Number(pago.recibido) : null }); }}><fieldset disabled={ocupado}>
         <h3>Confirmar cobro</h3>{error && <p role="alert" className="error-message">{error}</p>}
         <p>Por cobrar: <strong>Q{dinero(detalle.pedido.TOTAL - detalle.pagos.reduce((n, p) => n + Number(p.MONTO), 0))}</strong></p>
         {detalle.pedido.ID_CLIENTE ? <label>Usar puntos · disponibles: {detalle.puntosDisponibles || 0}
-          <input type="number" min="0" step="100" max={Math.floor(Math.min(detalle.puntosDisponibles || 0, (detalle.pedido.TOTAL - detalle.pagos.reduce((n, p) => n + Number(p.MONTO), 0)) * 10) / 100) * 100} value={pago.puntos} onChange={(e) => {
-            const puntos = Number(e.target.value);
-            setPago({ ...pago, puntos, monto: dinero(detalle.pedido.TOTAL - detalle.pagos.reduce((n, p) => n + Number(p.MONTO), 0) - puntos / 10) });
+          <input type="number" min="0" step="100" max={maximoPuntos} disabled={maximoPuntos === 0} aria-describedby="ayuda-canje" aria-invalid={!puntosValidos} value={pago.puntos} onChange={(e) => {
+            const puntos = e.target.value;
+            const valor = Number(puntos);
+            const valido = Number.isSafeInteger(valor) && valor >= 0 && valor % 100 === 0 && valor <= maximoPuntos;
+            setPago({ ...pago, puntos, monto: dinero(pendienteCobro - (valido ? valor / 10 : 0)) });
           }} />
-          <small>Opcional: cada 100 puntos cubren Q10. Cubierto: Q{dinero(pago.puntos / 10)}</small>
+          <small id="ayuda-canje">{maximoPuntos === 0
+            ? Number(detalle.puntosDisponibles || 0) < 100
+              ? `Necesitas al menos 100 puntos para canjear Q10. Te faltan ${100 - Number(detalle.puntosDisponibles || 0)} puntos. Puedes cobrar sin canjear.`
+              : 'El saldo por cobrar es menor a Q10. No se pueden canjear puntos en este cobro.'
+            : `Opcional: canjea múltiplos de 100 puntos (Q10), hasta ${maximoPuntos} puntos. Cubierto: Q${dinero(puntosAplicados / 10)}`}</small>
+          {!puntosValidos && <small role="alert">Ingresa 0 o un múltiplo de 100, hasta {maximoPuntos}. No se ha aplicado el canje.</small>}
         </label> : <p>Consumidor Final · Esta venta no acumula ni canjea puntos.</p>}
-        <label>Monto a cobrar (Q)<input type="number" required min={pago.puntos > 0 ? "0" : "0.01"} step="0.01" value={pago.monto} onChange={(e) => setPago({ ...pago, monto: e.target.value })} /></label>
+        <label>Monto a cobrar (Q)<input type="number" required min={puntosAplicados > 0 ? "0" : "0.01"} step="0.01" value={pago.monto} onChange={(e) => setPago({ ...pago, monto: e.target.value })} /></label>
         <label>Método<select value={pago.metodo} onChange={(e) => setPago({ ...pago, metodo: e.target.value, recibido: "", referencia: "" })}>{["EFECTIVO", "TARJETA", "TRANSFERENCIA"].map((m) => <option key={m}>{m}</option>)}</select></label>
         {pago.metodo === "EFECTIVO" && Number(pago.monto) > 0 ? <><label>Efectivo recibido (Q)<input type="number" required min={pago.monto} step="0.01" value={pago.recibido} onChange={(e) => setPago({ ...pago, recibido: e.target.value })} /></label><p className="caja-cambio">Cambio: Q{dinero(Math.max(0, Number(pago.recibido) - Number(pago.monto)))}</p></> : Number(pago.monto) > 0 && <><p>Confirma que recibiste el pago en tu terminal o cuenta bancaria.</p><label>Referencia<input required maxLength="100" value={pago.referencia} onChange={(e) => setPago({ ...pago, referencia: e.target.value })} /></label></>}
-        <button className="btn-primary pedidos-submit">{ocupado ? "Registrando…" : "Confirmar cobro"}</button>
+        <button disabled={!puntosValidos} className="btn-primary pedidos-submit">{ocupado ? "Registrando…" : "Confirmar cobro"}</button>
       </fieldset></form>}
     </section>}
     {puede("REPORTES_VER") && <section className="form-panel pedidos-reports" hidden={vista !== "reportes"}><div className="pedidos-section-title"><span className="pedidos-section-icon"><BarChart3 size={21} /></span><div><h3>Reportes de pedidos pagados</h3><p></p></div></div><div className="reporte-filtros">{['desde','hasta'].map(campo=><label key={campo}>{campo==='desde'?'Desde reporte':'Hasta reporte'}<input type="date" value={filtros[campo]} onChange={e=>{setFiltros({...filtros,[campo]:e.target.value});setReporte(null);}}/></label>)}<label>Cliente del reporte<input value={filtros.cliente} onChange={e=>{setFiltros({...filtros,cliente:e.target.value});setReporte(null);}}/></label></div><p>Fecha de creación del pedido.</p>{["ventas", "productos"].map((tipo) => <button className={reporte?.tipo === tipo ? "report-active" : ""} key={tipo} disabled={ocupado} onClick={() => ejecutar(async () => { const r = await api.get(`/reportes/sprint3/${tipo}`, { ...config, params: { ...filtros, estado: "" } }); setReporte({ tipo, filas: r.data }); })}>{tipo === "ventas" ? "Ventas por día" : "Productos vendidos"}</button>)}
-      {reporte && <><h4>{reporte.tipo === "ventas" ? "Ventas por día de pedido" : "Productos vendidos (importe bruto antes de descuentos)"}</h4><button disabled={!reporte.filas.length} onClick={()=>descargarCsv(reporte.filas, `reporte-${reporte.tipo}.csv`)}>Descargar CSV</button><Tabla filas={reporte.filas} /></>}
+      {reporte && <><h4>{reporte.tipo === "ventas" ? "Ventas por día de pedido" : "Productos vendidos (importe bruto antes de descuentos)"}</h4><ExportarCsv filas={reporte.filas} nombre={`reporte-${reporte.tipo}-${filtros.desde || "inicio"}-${filtros.hasta || "hoy"}`} disabled={ocupado} /><Tabla filas={reporte.filas} /></>}
     </section>}
-    {puede("BITACORA_VER") && <section className="form-panel" hidden={vista !== "reportes"}><h3>Auditoría</h3><button disabled={ocupado} onClick={() => ejecutar(async () => { const r = await api.get("/auditoria/sprint3", config); setAuditoria(r.data); })}>Consultar últimas 200 acciones</button>{auditoria && <Tabla filas={auditoria} />}</section>}
+    {puede("BITACORA_VER") && <section className="form-panel" hidden={vista !== "reportes"}><h3>Auditoría</h3><button disabled={ocupado} onClick={() => ejecutar(async () => { const r = await api.get("/auditoria/sprint3", config); setAuditoria(r.data); })}>Consultar últimas 200 acciones</button>{auditoria && <><ExportarCsv filas={auditoria} nombre="auditoria-pedidos" alcance="acciones consultadas (máximo 200)" disabled={ocupado} /><Tabla filas={auditoria} /></>}</section>}
     {comprobante && <ComprobanteVenta {...comprobante} onCerrar={() => setComprobante(null)} />}
   </main>;
 }
