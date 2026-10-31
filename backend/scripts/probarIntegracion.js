@@ -55,4 +55,3 @@ const suites = files.length ? files : ["tests/sprint2.test.js", "tests/sprint3.t
 Promise.all(suites.map(file => main([file]).catch(e => {
   console.error("Pruebas de integración:", file, e.code || e.message); process.exitCode = 1;
 })));
-

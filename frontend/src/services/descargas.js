@@ -1,6 +1,8 @@
 const importes = /^(PRECIO|COSTO|TOTAL|SUBTOTAL|MONTO|PAGADO|PENDIENTE_PAGO|PENDIENTE_RECUPERAR|DESCUENTOS|BASE_IMPONIBLE|IVA|CANJE_PUNTOS|INGRESOS|EGRESOS|BALANCE|SALDO|IMPORTE_BRUTO)$/;
 const etiquetas = { DIA: 'Fecha', CODIGO: 'Código', TELEFONO: 'Teléfono', DIRECCION: 'Dirección', METODO: 'Método', NIT: 'NIT / DPI', STOCK: 'Existencias', STOCK_MINIMO: 'Existencia mínima', IVA: 'IVA', BASE_IMPONIBLE: 'Base sin IVA', CANJE_PUNTOS: 'Canje de puntos', IMPORTE_BRUTO: 'Importe bruto antes de descuentos' };
 export function encabezadoCsv(campo) {
+  // Los reportes del dashboard ya proporcionan títulos legibles con su moneda.
+  if (!/^[A-Z_]+$/.test(campo)) return campo;
   const nombre = etiquetas[campo] || campo.toLowerCase().replaceAll('_', ' ').replace(/^./, c => c.toUpperCase());
   return nombre + (importes.test(campo) ? ' (Q)' : '');
 }

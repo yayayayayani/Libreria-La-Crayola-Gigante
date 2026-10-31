@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { contenidoCsv } from '../src/services/descargas.js';
+import { contenidoCsv, encabezadoCsv } from '../src/services/descargas.js';
 
 test('CSV conserva acentos, comas, comillas y saltos sin exponer campos ajenos al reporte', () => {
   const csv = contenidoCsv([{ NOMBRE: 'Lápiz, "azul"\nnuevo', PRECIO: 12.5, SECRETO: 'oculto' }], ['NOMBRE', 'PRECIO']);
@@ -22,4 +22,10 @@ test('fechas contables conservan su día y las horas se muestran en Guatemala', 
 test('columnas estables, vacíos y estados legibles', () => {
   assert.equal(contenidoCsv([], ['NOMBRE', 'TOTAL']), '\uFEFF"Nombre","Total (Q)"');
   assert.equal(contenidoCsv([{ ESTADO: 'A', TOTAL: null, ALERTA: 1 }]), '\uFEFF"Estado","Total (Q)","Alerta"\r\n"Activo","","Reponer"');
+});
+
+
+test("conserva encabezados legibles del dashboard y su moneda", () => {
+  assert.equal(encabezadoCsv("Total (Q)"), "Total (Q)");
+  assert.equal(encabezadoCsv("Código"), "Código");
 });

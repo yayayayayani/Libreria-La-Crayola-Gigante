@@ -96,4 +96,3 @@ test("eliminar usuario conserva nombre y cuenta en el historial",async()=>{
   assert.equal(JSON.parse(b.DETALLE).nombreCompleto,'Ana López');assert.equal(JSON.parse(b.DETALLE).nombreUsuario,'ana_s4');
   assert.equal((await filas(c,'SELECT id_usuario FROM usuarios WHERE id_usuario=:id',{id})).length,0);await c.rollback();
 });
-

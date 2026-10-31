@@ -189,4 +189,3 @@ test("auditoría legible, nombres afectados y guía cuando el módulo está vac�
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.locator('.operativo-auditoria').screenshot({path:'test-results/auditoria-clara-mobile.png'});
 });
-
