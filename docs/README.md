@@ -8,3 +8,7 @@
 - [Configuración de correo](GMAIL.md).
 
 Los informes anteriores se conservan como antecedentes. Para el funcionamiento actual consultar el manual de la Entrega 3. Las fuentes para regenerar sus Word están en `scripts/documentacion/`; los respaldos privados no forman parte de la entrega.
+
+## Sprint 4
+
+- [Funciones, manual operativo, API, pruebas y puesta en marcha](SPRINT4.md).

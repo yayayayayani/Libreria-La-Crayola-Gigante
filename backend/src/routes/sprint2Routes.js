@@ -1,3 +1,4 @@
+const { auditar } = require("../services/auditoria");
 const router = require("express").Router();
 const { verificarToken } = require("../middlewares/authMiddleware");
 const { verificarPermiso } = require("../middlewares/permisosMiddleware");
@@ -82,6 +83,7 @@ router.post(
       "INSERT INTO proveedores(nombre,nit,correo,telefono,direccion) VALUES (:nombre,:nit,:correo,:telefono,:direccion)",
       datos,
     );
+    await auditar(c, req, "PROVEEDOR_CREADO", "PROVEEDORES", (await filas(c, "SELECT id_proveedor FROM proveedores WHERE nit=:nit", { nit: datos.nit }))[0].ID_PROVEEDOR, "Proveedor registrado");
     await c.commit();
     res.status(201).json({ mensaje: "Proveedor registrado" });
   }),
@@ -99,6 +101,7 @@ router.put(
       { ...datos, estado: req.body.estado, id },
     );
     exigir(r.rowsAffected, "Proveedor no encontrado", 404);
+    await auditar(c, req, "PROVEEDOR_ACTUALIZADO", "PROVEEDORES", id, "Datos actualizados");
     await c.commit();
     res.json({ mensaje: "Proveedor actualizado" });
   }),
@@ -124,6 +127,7 @@ router.delete(
       409,
     );
     await c.execute("DELETE FROM proveedores WHERE id_proveedor=:id", { id });
+    await auditar(c, req, "PROVEEDOR_ELIMINADO", "PROVEEDORES", id, "Proveedor sin compras eliminado");
     await c.commit();
     res.json({ mensaje: "Proveedor eliminado" });
   }),
@@ -140,6 +144,7 @@ router.patch(
       estado,
     });
     exigir(r.rowsAffected, "Proveedor no encontrado", 404);
+    await auditar(c, req, "PROVEEDOR_ESTADO", "PROVEEDORES", id, `Estado: ${estado}`);
     await c.commit();
     res.json({
       mensaje: estado === "A" ? "Proveedor activado" : "Proveedor desactivado",
@@ -210,6 +215,7 @@ router.post(
       `INSERT INTO recuperaciones_compra(id_compra,id_usuario,tipo,monto,referencia,fecha_documento,observaciones,clave)
        VALUES (:id,:usuario,:tipo,:monto,:referencia,:fechaDocumento,:observaciones,:clave) RETURNING id_recuperacion INTO :salida`,
       { id, usuario: req.usuario.ID_USUARIO, ...datos, salida: idSalida() });
+    await auditar(c, req, "RECUPERACION_REGISTRADA", "COMPRAS", id, `${datos.tipo}: Q${datos.monto}`);
     await c.commit();
     res.status(201).json({ mensaje: "Resolución registrada", id: r.outBinds.salida[0] });
   }),
@@ -347,6 +353,7 @@ router.patch(
       id,
     });
     exigir(r.rowsAffected, "Producto no encontrado", 404);
+    await auditar(c, req, "MINIMO_ACTUALIZADO", "PRODUCTOS", id, `Mínimo: ${minimo}`);
     await c.commit();
     res.json({ mensaje: "Nivel mínimo actualizado" });
   }),

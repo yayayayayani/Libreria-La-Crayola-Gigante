@@ -18,6 +18,10 @@ Seguir la [guía de conexión](docs/NEON.md): instalar dependencias en backend y
 
 La salida de inventario ocurre al completar el pago. Las restricciones se verifican en el backend, además de las vistas del frontend. Administrador y Dueño tienen acceso administrativo; Empleado dispone de las funciones autorizadas y su información personal.
 
+## Sprint 4
+
+El inicio incorpora un resumen operativo con indicadores, gráficas, alertas, reportes CSV e impresión/PDF, y auditoría general paginada. Los cambios de catálogos se auditan en la misma transacción. Consultar [implementación, uso y verificación de Sprint 4](docs/SPRINT4.md).
+
 ## Entrega y documentación
 
 Consultar el [índice de documentos](docs/README.md) y el [informe integrado del Sprint 3](docs/Sprint_3_Analisis_de_Sistemas.docx), con planificación, modelo, reglas, pruebas, Scrum, manual, capturas de la aplicación y revisión de cumplimiento. Sigue la estructura de la entrega del Sprint 2.
@@ -26,6 +30,6 @@ Verificación del 20/10/2026: 37 pruebas del backend y 34 del navegador aprobada
 
 ## Pruebas
 
-En una base destinada a pruebas, desde backend: npm run test:sprint3. Desde frontend: npx playwright test tests/sprint3.spec.js tests/finanzas.spec.js tests/operacion.spec.js tests/permisos.spec.js, npm run lint y npm run build.
+Desde backend: `npm run test:unit` y `npm run test:integration`. La integración crea y elimina un esquema temporal aislado con datos ficticios; requiere permiso para crear esquemas. Los comandos `test:sprint2` y `test:sprint3` también usan este aislamiento. Desde frontend: `npx playwright test`, `npm run lint` y `npm run build`.
 
 Los registros de prueba y respaldos privados no forman parte de la entrega. Las fuentes y el generador de documentos están en scripts/documentacion. No publicar .env, contraseñas ni respaldos.

@@ -1,3 +1,4 @@
+const { auditar } = require("../services/auditoria");
 const oracledb = require("../config/driver");
 const { nombreValido, documentoValido, normalizarTelefono } = require("../services/validaciones");
 
@@ -150,9 +151,11 @@ const crearCliente = async (req, res) => {
           type: oracledb.NUMBER,
         },
       },
-      { autoCommit: true },
+      { autoCommit: false },
     );
 
+    await auditar(conexion, req, "CLIENTE_CREADO", "CLIENTES", resultado.outBinds.id[0], "Registro creado");
+    await conexion.commit();
     return res.status(201).json({
       mensaje: "Cliente registrado correctamente",
       id: resultado.outBinds.id[0],
@@ -204,7 +207,7 @@ const modificarCliente = async (req, res) => {
          DIRECCION = :direccion
        WHERE ID_CLIENTE = :id`,
       { ...cliente, id },
-      { autoCommit: true },
+      { autoCommit: false },
     );
 
     if (resultado.rowsAffected === 0) {
@@ -213,6 +216,8 @@ const modificarCliente = async (req, res) => {
       });
     }
 
+    await auditar(conexion, req, "CLIENTE_ACTUALIZADO", "CLIENTES", id, "Datos del registro actualizados");
+    await conexion.commit();
     return res.json({
       mensaje: "Cliente actualizado correctamente",
     });
@@ -253,7 +258,7 @@ const cambiarEstado = async (req, res) => {
        SET ESTADO = :estado
        WHERE ID_CLIENTE = :id`,
       { estado, id },
-      { autoCommit: true },
+      { autoCommit: false },
     );
 
     if (resultado.rowsAffected === 0) {
@@ -262,6 +267,8 @@ const cambiarEstado = async (req, res) => {
       });
     }
 
+    await auditar(conexion, req, "CLIENTE_ESTADO", "CLIENTES", id, `Estado: ${estado}`);
+    await conexion.commit();
     return res.json({
       mensaje: "Estado actualizado correctamente",
     });

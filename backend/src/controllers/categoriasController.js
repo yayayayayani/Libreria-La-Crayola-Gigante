@@ -1,3 +1,4 @@
+const { auditar } = require("../services/auditoria");
 const oracledb = require("../config/driver");
 
 const conectar = () =>
@@ -60,9 +61,12 @@ const crearCategoria = async (req, res) => {
         nombre: nombre.trim(),
         descripcion: descripcion?.trim() || null,
       },
-      { autoCommit: true },
+      { autoCommit: false },
     );
 
+    const categoria = await conexion.execute("SELECT id_categoria FROM categorias WHERE nombre=:nombre", { nombre: nombre.trim() });
+    await auditar(conexion, req, "CATEGORIA_CREADA", "CATEGORIAS", categoria.rows[0][0], "Categoría registrada");
+    await conexion.commit();
     res.status(201).json({
       mensaje: "Categoría registrada correctamente",
     });

@@ -1,3 +1,4 @@
+const { auditar } = require("../services/auditoria");
 const oracledb = require("../config/driver");
 const bcrypt = require("bcryptjs");
 const { nombreValido, correoValido, exigir } = require("../services/validaciones");
@@ -169,6 +170,7 @@ const crearUsuario = async (req, res) => {
       "Cuenta registrada",
       "Tu cuenta de Librería La Crayola Gigante fue registrada. Solicita tus datos de acceso al administrador. No compartas tu contraseña.",
     );
+    await auditar(conexion, req, "USUARIO_CREADO", "USUARIOS", (await conexion.execute("SELECT id_usuario FROM usuarios WHERE nombre_usuario=:nombre", { nombre: nombreUsuario.trim() })).rows[0][0], "Registro creado");
     await conexion.commit();
 
     return res.status(201).json({
@@ -277,6 +279,7 @@ const modificarUsuario = async (req, res) => {
       "Cuenta actualizada",
       "Los datos de tu cuenta en Librería La Crayola Gigante fueron actualizados por un usuario autorizado. Si no esperabas este cambio, contacta al administrador.",
     );
+    await auditar(conexion, req, "USUARIO_ACTUALIZADO", "USUARIOS", id, "Datos del registro actualizados");
     await conexion.commit();
 
     return res.json({
@@ -329,7 +332,7 @@ const cambiarEstado = async (req, res) => {
        SET ESTADO = :estado
        WHERE ID_USUARIO = :id AND (:actorRol IN (1,3) OR ID_ROL = :actorRol)`,
       { estado, id, actorRol: req.usuario.ID_ROL },
-      { autoCommit: true },
+      { autoCommit: false },
     );
 
     if (resultado.rowsAffected === 0) {
@@ -338,6 +341,8 @@ const cambiarEstado = async (req, res) => {
       });
     }
 
+    await auditar(conexion, req, "USUARIO_ESTADO", "USUARIOS", id, `Estado: ${estado}`);
+    await conexion.commit();
     return res.json({
       mensaje: "Estado actualizado correctamente",
     });
@@ -359,20 +364,20 @@ const eliminarUsuario = async (req, res) => {
     exigir(id!==req.usuario.ID_USUARIO,'No puedes eliminar tu propia cuenta',403);
     c=await conectar();
     const {filas}=require('../services/db');
-    const [u]=await filas(c,'SELECT id_usuario,nombre_usuario FROM usuarios WHERE id_usuario=:id FOR UPDATE',{id});
+    const [u]=await filas(c,'SELECT id_usuario,nombre_usuario,nombre_completo FROM usuarios WHERE id_usuario=:id FOR UPDATE',{id});
     exigir(u,'Usuario no encontrado',404);
     // Comprobar también referencias con ON DELETE CASCADE antes de borrar.
     const referencias=await filas(c,`SELECT t.relname tabla,a.attname columna FROM pg_constraint k
       JOIN pg_class t ON t.oid=k.conrelid JOIN pg_namespace n ON n.oid=t.relnamespace
       JOIN pg_attribute a ON a.attrelid=t.oid AND a.attnum=ANY(k.conkey)
-      WHERE k.contype='f' AND k.confrelid='usuarios'::regclass AND n.nspname='public'`);
+      WHERE k.contype='f' AND k.confrelid='usuarios'::regclass AND n.nspname=current_schema()`);
     const quote=s=>'"'+s.replaceAll('"','""')+'"';
     for(const r of referencias){
-      const vinculados=await filas(c,`SELECT 1 FROM public.${quote(r.TABLA)} WHERE ${quote(r.COLUMNA)}=:id LIMIT 1`,{id});
+      const vinculados=await filas(c,`SELECT 1 FROM ${quote(r.TABLA)} WHERE ${quote(r.COLUMNA)}=:id LIMIT 1`,{id});
       exigir(!vinculados.length,'Este usuario tiene historial. Desactívalo para conservar sus operaciones.',409);
     }
     await c.execute('DELETE FROM usuarios WHERE id_usuario=:id',{id});
-    await c.execute("INSERT INTO bitacora(id_usuario,accion,tabla_afectada,id_registro_afectado,detalle) VALUES (:actor,'USUARIO_ELIMINADO','USUARIOS',:id,:detalle)",{actor:req.usuario.ID_USUARIO,id,detalle:`Usuario sin operaciones: ${u.NOMBRE_USUARIO}`});
+    await c.execute("INSERT INTO bitacora(id_usuario,accion,tabla_afectada,id_registro_afectado,detalle) VALUES (:actor,'USUARIO_ELIMINADO','USUARIOS',:id,:detalle)",{actor:req.usuario.ID_USUARIO,id,detalle:JSON.stringify({nombreCompleto:u.NOMBRE_COMPLETO,nombreUsuario:u.NOMBRE_USUARIO,motivo:"Cuenta sin operaciones eliminada"})});
     await c.commit();res.json({mensaje:'Usuario eliminado'});
   }catch(e){if(c)await c.rollback();res.status(e.status||(e.code==='23503'?409:500)).json({mensaje:e.status?e.message:e.code==='23503'?'El usuario tiene historial; desactívalo.':'No se pudo eliminar el usuario'});}
   finally{if(c)await c.close();}

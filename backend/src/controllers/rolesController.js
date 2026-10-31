@@ -1,3 +1,4 @@
+const { auditar } = require("../services/auditoria");
 const { permisoVisible } = require("../services/acceso");
 const oracledb = require("../config/driver");
 
@@ -169,6 +170,7 @@ const actualizarPermisos = async (req, res) => {
       );
     }
 
+    await auditar(conexion, req, "PERMISOS_ACTUALIZADOS", "ROLES", idRol, `Permisos asignados: ${permisos.join(", ") || "ninguno"}`);
     await conexion.commit();
 
     return res.json({

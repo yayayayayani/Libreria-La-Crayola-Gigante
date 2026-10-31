@@ -1,3 +1,4 @@
+if (!/^sprint4_test_[a-f0-9]{16}$/.test(process.env.CRAYOLA_TEST_SCHEMA || "")) throw new Error("Ejecuta npm run test:integration para aislar los datos de prueba");
 require("dotenv").config({ quiet: true });
 const { test, before, after } = require("node:test");
 const assert = require("node:assert/strict");
@@ -39,6 +40,7 @@ before(async () => {
   base = `http://127.0.0.1:${server.address().port}/api`;
 });
 after(async () => {
+  try {
   if (server) await new Promise((r) => server.close(r));
   if (c) {
     await c.rollback();
@@ -68,6 +70,10 @@ after(async () => {
     await c.commit(); await c.close();
   }
   await driver.cerrarPool();
+  } finally {
+    if (c) await c.close();
+    await require("../src/config/driver").cerrarPool();
+  }
 });
 test("01 flujo completo: venta, pago, salida y auditoría atómicos", async () => {
   const antes = await stock(), id = await crear();

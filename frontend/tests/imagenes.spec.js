@@ -72,7 +72,7 @@ async function inicio(page) {
   await page.locator("#usuario").fill("demo");
   await page.locator("#contrasena").fill("demo");
   await page.getByRole("button", { name: "Iniciar sesión" }).click();
-  await expect(page.getByText("¡Bienvenido, Equipo!")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Hola, Equipo" })).toBeVisible();
   return estado;
 }
 test("foto tiene vista previa, persiste al guardar y puede quitarse", async ({ page }) => {
@@ -104,7 +104,7 @@ test("archivo incompatible no reemplaza la selección", async ({ page }) => {
   await expect(page.getByAltText("Vista previa del producto")).toHaveCount(0);
 });
 test("vistas de escritorio y móvil conservan navegación sin desbordamiento", async ({ page }) => {
-  const destino = path.resolve("../docs/entrega2/evidencias");
+  const destino = path.resolve("test-results/imagenes");
   fs.mkdirSync(destino, { recursive: true });
   await page.setViewportSize({ width: 1440, height: 960 });
   await inicio(page);

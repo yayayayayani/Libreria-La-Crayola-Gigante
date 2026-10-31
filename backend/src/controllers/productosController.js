@@ -1,3 +1,4 @@
+const { auditar } = require("../services/auditoria");
 const { prepararImagen, guardarImagen } = require("../services/imagenes");
 
 const oracledb = require("../config/driver");
@@ -174,6 +175,7 @@ const crearProducto = async (req, res) => {
       { id: resultado.outBinds.id[0], usuario: req.usuario.ID_USUARIO, stock: producto.stock },
     );
     await guardarImagen(conexion, resultado.outBinds.id[0], imagen);
+    await auditar(conexion, req, "PRODUCTO_CREADO", "PRODUCTOS", resultado.outBinds.id[0], "Registro creado");
     await conexion.commit();
 
     res.status(201).json({
@@ -251,6 +253,7 @@ const modificarProducto = async (req, res) => {
     }
 
     await guardarImagen(conexion, id, imagen);
+    await auditar(conexion, req, "PRODUCTO_ACTUALIZADO", "PRODUCTOS", id, "Datos del registro actualizados");
     await conexion.commit();
     res.json({
       mensaje: "Producto actualizado correctamente",
@@ -294,7 +297,7 @@ const cambiarEstado = async (req, res) => {
        SET ESTADO = :estado
        WHERE ID_PRODUCTO = :id`,
       { id, estado },
-      { autoCommit: true },
+      { autoCommit: false },
     );
 
     if (resultado.rowsAffected === 0) {
@@ -303,6 +306,8 @@ const cambiarEstado = async (req, res) => {
       });
     }
 
+    await auditar(conexion, req, "PRODUCTO_ESTADO", "PRODUCTOS", id, `Estado: ${estado}`);
+    await conexion.commit();
     res.json({
       mensaje: "Estado actualizado correctamente",
     });

@@ -36,13 +36,18 @@ app.use("/api/ventas", require("./routes/ventasRoutes"));
 app.use("/api/productos", productosRoutes);
 app.use("/api/categorias", categoriasRoutes);
 app.use("/api", require("./routes/sprint2Routes"));
+app.use("/api", require("./routes/sprint4Routes"));
+app.use("/api", (req, res) => res.status(404).json({ mensaje: "Ruta no encontrada" }));
 
 app.use((err, req, res, next) => {
   if (err.type === "entity.too.large")
     return res.status(413).json({ mensaje: "El archivo supera el tamaño permitido" });
   if (err.type === "entity.parse.failed")
     return res.status(400).json({ mensaje: "El cuerpo JSON no es válido" });
-  next(err);
+  if (res.headersSent) return next(err);
+  const status = Number.isInteger(err.status) && err.status >= 400 && err.status < 500 ? err.status : 500;
+  if (status === 500) console.error("Error de API:", err.code || err.name);
+  res.status(status).json({ mensaje: status === 500 ? "No se pudo completar la operación. Intenta nuevamente." : err.message });
 });
 
 // Una misma dirección sirve la aplicación y la API en el equipo compartido.

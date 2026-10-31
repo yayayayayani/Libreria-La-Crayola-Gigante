@@ -1,3 +1,4 @@
+if (!/^sprint4_test_[a-f0-9]{16}$/.test(process.env.CRAYOLA_TEST_SCHEMA || "")) throw new Error("Ejecuta npm run test:integration para aislar los datos de prueba");
 require("dotenv").config({ quiet: true });
 const { test, before, after } = require("node:test");
 const assert = require("node:assert/strict");
@@ -213,6 +214,7 @@ before(async () => {
   base = `http://127.0.0.1:${server.address().port}/api`;
 });
 after(async () => {
+  try {
   if (server) await new Promise((resolve) => server.close(resolve));
   if (c) {
     // Eliminar exclusivamente registros de esta ejecución; no toca datos del usuario.
@@ -245,6 +247,7 @@ after(async () => {
     await c.execute("DELETE FROM productos WHERE id_categoria=:id", { id: categoria || -1 });
     await c.execute("DELETE FROM categorias WHERE id_categoria=:id", { id: categoria || -1 });
     await c.execute("DELETE FROM correos_pendientes WHERE destinatario=:correo", { correo });
+    await c.execute("DELETE FROM bitacora WHERE id_usuario IN (:u,:o)", { u: usuario || -1, o: otroUsuario || -1 });
     await c.execute("DELETE FROM usuarios WHERE id_usuario IN (:u,:o)", {
       u: usuario || -1,
       o: otroUsuario || -1,
@@ -252,6 +255,10 @@ after(async () => {
     await c.execute("DELETE FROM roles WHERE id_rol=:id", { id: rol || -1 });
     await c.commit();
     await c.close();
+  }
+  } finally {
+    if (c) await c.close();
+    await require("../src/config/driver").cerrarPool();
   }
 });
 test("01 compra genera detalle, recepción, movimiento y suma stock", async () => {

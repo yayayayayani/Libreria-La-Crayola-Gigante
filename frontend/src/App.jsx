@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { permisosVisibles } from "./services/acceso";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import DashboardOperativo from "./pages/DashboardOperativo";
 import Usuarios from "./pages/Usuarios";
 import RolesPermisos from "./pages/RolesPermisos";
 import Ventas from "./pages/Pedidos";
@@ -15,6 +16,7 @@ import "./theme.css";
 import './orden.css';
 
 const permisosPagina = {
+  estadisticas: ["REPORTES_VER", "BITACORA_VER"],
   ventas: "VENTAS_GESTIONAR",
   compras: ["PROVEEDORES_GESTIONAR", "COMPRAS_GESTIONAR", "INVENTARIO_VER", "INVENTARIO_GESTIONAR"],
   usuarios: "USUARIOS_GESTIONAR",
@@ -171,6 +173,9 @@ function App() {
     setPagina("dashboard");
   };
 
+  if (pagina === "estadisticas" && [1, 3].includes(identidad?.idRol) && autorizado(permisosPagina.estadisticas))
+    return <DashboardOperativo token={sesion.token} permisos={permisos} onVolver={volver} />;
+
   if (VENTAS_HABILITADAS && pagina === "ventas" && autorizado("VENTAS_GESTIONAR"))
     return <Ventas token={sesion.token} permisos={permisos} onVolver={volver} />;
 
@@ -211,6 +216,7 @@ function App() {
       onProductos={() => navegar("productos")}
       onVentas={() => navegar("ventas")}
       onCompras={() => navegar("compras")}
+      onEstadisticas={() => navegar("estadisticas")}
     />
   );
 }

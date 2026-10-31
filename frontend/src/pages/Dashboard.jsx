@@ -1,7 +1,7 @@
 import CarnetEmpleado from "../components/CarnetEmpleado";
 import Finanzas from "../components/Finanzas";
 import { VENTAS_HABILITADAS } from "../features";
-import { BookOpen, Users, Package, ShieldCheck, LogOut } from "lucide-react";
+import { BookOpen, Users, Package, ShieldCheck, LogOut, BarChart3 } from "lucide-react";
 
 function Dashboard({
   token,
@@ -14,6 +14,7 @@ function Dashboard({
   onProductos,
   onCompras,
   onVentas,
+  onEstadisticas,
 }) {
   const tienePermiso = (codigo) =>
     (Array.isArray(codigo) ? codigo : [codigo]).some((p) => permisos.includes(p));
@@ -39,6 +40,13 @@ function Dashboard({
         <h2 className="titulo-modulos">Módulos</h2>
 
         <div className="modules-grid">
+          {[1, 3].includes(usuario.idRol) && tienePermiso(["REPORTES_VER", "BITACORA_VER"]) && (
+            <button type="button" className="module-card module-button" onClick={onEstadisticas}>
+              <BarChart3 size={32} />
+              <h3>Dashboard</h3>
+              <p>Indicadores, gráficas, alertas, reportes y auditoría</p>
+            </button>
+          )}
           {VENTAS_HABILITADAS && tienePermiso("VENTAS_GESTIONAR") && (
             <button type="button" className="module-card module-button" onClick={onVentas}>
               <BookOpen size={32} />
